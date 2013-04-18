@@ -4,16 +4,27 @@
 ----
 
 ## Game Breakdown
+
+### Basic Gamepley Overview
+The object of the game is to survive oncoming waves of enemies for as long as possible. Points are earned for each enemy killed. Players control a central, stationary character that can turn in any direction to ward off foes. 
+
 ### Game Objects
     1. Player
     2. Score display
     3. Various weapons and powers in the form of the digits 0 through 9
-    4. Two different enemy types - one weak and fast, the other strong and slow
+    4. Two different enemy types - one weak and fast, the other strong and slow.
 
 ### Ordered Game Flow
     1. Start screen
     2. Main Game Screen
     3. Game over screen
+
+#### Detailed Description
+>  1. Player: Will remain stationary in the center of the screen
+>  2. Score display: 
+>  3. Weapons/powers: 
+>  4. Enemy types: **Strong/slow** enemies will come in the form of bold letters, while _weak/fast_ enemies
+      will be italicized letters.
 
 ### Code
 
