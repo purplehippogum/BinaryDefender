@@ -5,19 +5,20 @@
 
 ## Game Breakdown
 
-### Basic Gamepley Overview
-The object of the game is to survive oncoming waves of enemies for as long as possible. Points are earned for each enemy killed. Players control a central, stationary character that can turn in any direction to ward off foes. 
-
-### Game Objects
-    1. Player
-    2. Score display
-    3. Various weapons and powers in the form of the digits 0 through 9
-    4. Two different enemy types - one weak and fast, the other strong and slow.
+### Gamepley Overview
+The object of the game is to survive oncoming waves of enemies for as long as possible. Points are earned for each enemy killed. Players control a stationary character that can turn in any direction to ward off foes. Enhancing the player's basic attack are the numbers in the **binary** scoring display. The player can choose either 1 or 0 to enhance his/her basic attack. The player loses health upon colliding with an enemy. The enemy is destroyed in the process. Once the player's health has been depleted, the game is over and the (non-binary) score will be displayed.
 
 ### Ordered Game Flow
     1. Start screen
     2. Main Game Screen
     3. Game over screen
+
+### Main Game Objects
+    1. Player
+    2. Basic player projectile
+    2. Two scoring displays
+    3. Various weapons and powers in the form of the digits 0 and 1
+    4. Two different enemy types - one weak and fast, the other strong and slow.
 
 #### Detailed Description
 >  1. Player: Will remain stationary in the center of the screen
