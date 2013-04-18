@@ -24,18 +24,18 @@ The object of the game is to survive oncoming waves of enemies for as long as po
 
 ### Detailed Description of Game Objects and Controls
 >  1. **Player**
+    * Takes the form of a triangle (like the spaceship in Asteroids)
     * Remains stationary at the center of the screen.
     * Can turn 360 degrees.
-  2. **Basic Attack**
+>  2. **Basic Attack**
     * Simple projectile that does minimal damage to enemies
-  3. **Weapons/powers**
+>  3. **Weapons/powers**
     * A slicing projectile that goes through multiple enemies. It is slightly more damaging than the simple projectile
     * An area of effect projectile that explodes on contact with an enemy, doing damage in a radius around the projectile
-  4. **Score displays**
+>  4. **Score displays**
     * Score is displayed in binary in the main game screen, and in decimal in the game over screen.
     * Player may click on a digit in the score display to gain a special. Clicking on a 1 will add a slicing projectile to the player's inventory, a 0 will add an exploding projectile
-
-  5. **Enemy types**
+>  5. **Enemy types**
     * **Strong/slow** enemies will come in the form of bold letters, while _weak/fast_ enemies will be italicized letters
 
 ### Controls
