@@ -1,14 +1,19 @@
-# Game Design Document
-This is a place holder for your game design document. You are advised to write your document in [Markdown](http://daringfireball.net/projects/markdown/) and the following section will show you how to write a document using Markdown markup.
-
-Alternativley, you can write your document in plain text if you wish.
+# Digit Defender
+  _You Can Count on an Adventure_
 
 ----
 
-## Markdown
-Markdown is a human-readable structured plain text format that is used to convert text into HTML. GitHub automatically renders Markdown into HTML.
+## Game Breakdown
+### Game Objects
+    1. Player
+    2. Score display
+    3. Various weapons and powers in the form of the digits 0 through 9
+    4. Two different enemy types - one weak and fast, the other strong and slow
 
-This is a crash course on how to use Markdown. The following section will show you the plain text used to generate the document shown in the rendering section.
+### Ordered Game Flow
+    1. Start screen
+    2. Main Game Screen
+    3. Game over screen
 
 ### Code
 
