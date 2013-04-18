@@ -1,5 +1,5 @@
-# Digit Defender
-  _You Can Count on an Adventure_
+# Binary Defender
+  _Where you really only have a couple choices_
 
 ----
 
@@ -16,11 +16,11 @@ The object of the game is to survive oncoming waves of enemies for as long as po
 ### Main Game Objects
     1. Player
     2. Basic player projectile
-    2. Two scoring displays
-    3. Heads-up display for the inventory of special attacks
-    4. Various weapons and powers in the form of the digits 0 and 1
-    5. Two different enemy types - one weak and fast, the other strong and slow.
-
+    3. Two scoring displays
+    4. Health bar for player hit points
+    5. Heads-up display for the inventory of special attacks
+    6. Various weapons and powers in the form of the digits 0 and 1
+    7. Two different enemy types - one weak and fast, the other strong and slow.
 
 ### Detailed Description of Game Objects and Controls
 >  1. **Player**
@@ -29,9 +29,10 @@ The object of the game is to survive oncoming waves of enemies for as long as po
     * Can turn 360 degrees.
 >  2. **Basic Attack**
     * Simple projectile that does minimal damage to enemies
->  3. **Weapons/powers**
+>  3. **Two Special Projectiles*
     * A slicing projectile that goes through multiple enemies. It is slightly more damaging than the simple projectile
-    * An area of effect projectile that explodes on contact with an enemy, doing damage in a radius around the projectile
+    * An area of effect projectile that explodes on contact with an enemy, doing serious damage in a radius around the projectile
+    * Blast does not hurt the player
 >  4. **Score displays**
     * Score is displayed in binary in the main game screen, and in decimal in the game over screen.
     * Player may click on a digit in the score display to gain a special. Clicking on a 1 will add a slicing projectile to the player's inventory, a 0 will add an exploding projectile
@@ -45,81 +46,3 @@ Mouse is used for all control
       * Left-click on a digit in the score display to gain the corresponding ability
       * Right-click to use special weapon
       * Mouse wheel changes projectile type
-
-### Code
-
-```
-# Header 1
-## Header 2
-### Header 3
-#### Header 4
-##### Header 5
-
-You can also write in **bold** or _italics_. You can also ~~strike through~~ or write inline `Code Segments`
-
->Blockquotes are done as such.
-
-Just make sure to separate paragraphs with an emptyline. 
-Otherwise, they are considered in the same paragraph.
-
-You link to [Google](https://www.google.com) as such and lists are written has follows:
-  1. First you indent with two empty spaces.
-  1. Then, you use:
-    * `1.` to signal an ordered (i.e. numbered) list, or
-    * `*`, `-`, `+` to represent an unordered list.
-      1. Make sure to maintain indentation
-      1. As it is used to identify sub-lists
-  1. Numbering and symboles don't matter as they are auto-generated later.
-
-Tables are pretty easy to make:
-
-| Tables        | Are           | Easy          |
-| ------------- |:-------------:| -------------:|
-| left-aligned  | centered      | right-aligned |
-| header are    | bolded and    | centered      |
-| zebra stripes | are neat      | 1             |
-
-
-Images are added inline by using the following syntax
-![alt text](http://octodex.github.com/images/Professortocat_v2.png "Image Title")
-```
-
-----
-
-### Rendering
-This section shows the rendering of the plain text above.
-
-# Header 1
-## Header 2
-### Header 3
-#### Header 4
-##### Header 5
-
-You can also write in **bold** or _italics_. You can also ~~strike through~~ or write inline `Code Segments`
-
->Blockquotes are done as such.
-
-Just make sure to separate paragraphs with an emptyline. 
-Otherwise, they are considered in the same paragraph.
-
-You link to [Google](https://www.google.com) as such and lists are written has follows:
-  1. First you indent with two empty spaces.
-  1. Then, you use:
-    * `1.` to signal an ordered (i.e. numbered) list, or
-    * `*`, `-`, `+` to represent an unordered list.
-      1. Make sure to maintain indentation
-      1. As it is used to identify sub-lists
-  1. Numbering and symboles don't matter as they are auto-generated later.
-
-Tables are pretty easy to make:
-
-| Tables        | Are           | Easy          |
-| ------------- |:-------------:| -------------:|
-| left-aligned  | centered      | right-aligned |
-| header are    | bolded and    | centered      |
-| zebra stripes | are neat      | 1             |
-
-
-Images are added inline by using the following syntax
-![alt text](http://octodex.github.com/images/Professortocat_v2.png "Image Title")
-
