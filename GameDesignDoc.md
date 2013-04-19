@@ -25,10 +25,8 @@ The object of the game is to survive oncoming waves of enemies for as long as po
   3. Health bar for player hit points
   4. Special projectiles in the form of the digits 0 and 1
   5. Two scoring displays
-
   6. Heads-up display for the inventory of special projectiles
-  7. Two different enemy types - one weak and fast, the other strong and slow.
-
+  7. Two different enemy types
 
 ----
 
@@ -41,7 +39,8 @@ The object of the game is to survive oncoming waves of enemies for as long as po
 ####  2. Basic Player Projectile
   * Simple projectile that does minimal damage to enemies
   * Unlimited ammunition
-#### 3. *Health Bar For Hitpoints*
+
+#### 3. Health Bar For Hitpoints
   * Simple horizontal bar that depletes with the player's health
   * Game ends when this reaches zero
 
@@ -59,14 +58,15 @@ The object of the game is to survive oncoming waves of enemies for as long as po
 #### 6. HUD For Special Projectiles
   * Simple counters for the special projectile types. Will display an icon of the projectile with a number next to the icon
 
-####  7. Enemy types
+####  7. Two Different Enemy types
+  * Enemies come in the form of English letters
   * **Strong/slow** enemies will come in the form of bold letters, while _weak/fast_ enemies will be italicized letters
   * Enemies spawn at random locations outside of the screen, moving directly towards the player
 
-### Controls
+## Controls
 #### Mouse is used for all control
   * Player faces the direction of the mouse
-  * Left-click anywhere outside of the score display to shoot
+  * Left-click anywhere outside of the HUD and score display to shoot in that direction
   * Left-click on a digit in the score display to gain the corresponding ability
   * Right-click to use special weapon
   * Mouse wheel changes projectile type
