@@ -6,6 +6,7 @@
 The object of the game is to survive oncoming waves of enemies for as long as possible. Points are earned for each enemy killed. Players control a stationary character that can turn in any direction and ward off foes with a basic shooting attack. Enhancing the player's basic attack are the numbers in the **binary** scoring display. The player can choose either 1 or 0 **from the score display** to enhance his/her basic attack. Taking a digit from the score display decreases the score by that amount. The player loses health upon colliding with an enemy. The enemy is destroyed in the process. Once the player's health has been depleted, the game is over and the (non-binary) score will be displayed.
 
 
+
 ## Game Breakdown
 
 ### Ordered Game Flow
@@ -38,10 +39,11 @@ The object of the game is to survive oncoming waves of enemies for as long as po
 
 ####  4. **Score displays**
   * Score is displayed in binary in the main game screen, and in decimal in the game over screen.
-  * Player may click on a digit in the score display to gain a special. Clicking on a 1 will add a slicing projectile to the player's inventory, a 0 will add an exploding projectile
+  * Player may click on a digit in the score display to gain a special. Clicking on a 1 will add a slicing projectile to the player's inventory, a 0 will add an exploding projectile. Clicking on a digit in the score will remove it from the score and add it to the player inventory
 
 ####  5. **Enemy types**
   * **Strong/slow** enemies will come in the form of bold letters, while _weak/fast_ enemies will be italicized letters
+  * Enemies spawn at random locations outside of the screen, moving directly towards the player
 
 ### Controls
 #### Mouse is used for all control
