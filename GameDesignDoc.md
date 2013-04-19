@@ -1,11 +1,16 @@
 # Binary Defender
   _Where you really only have a couple choices_
 
-## Gamepley Overview
+## Gameplay Overview
 
 The object of the game is to survive oncoming waves of enemies for as long as possible. Points are earned for each enemy killed. Players control a stationary character that can turn in any direction and ward off foes with a basic shooting attack. Enhancing the player's basic attack are the numbers in the **binary** scoring display. The player can choose either 1 or 0 **from the score display** to enhance his/her basic attack. Taking a digit from the score display decreases the score by that amount. The player loses health upon colliding with an enemy. The enemy is destroyed in the process. Once the player's health has been depleted, the game is over and the (non-binary) score will be displayed.
 
+### Mock-Up Screenshots
+  ![Main Menu](http://www-scf.usc.edu/~vegaperk/main%20menu%20screen.jpg "Main Menu")
+  ![Main Game Screen](http://www-scf.usc.edu/~vegaperk/game%20screen.jpg "Game Screen")
+  ![Game Over](http://www-scf.usc.edu/~vegaperk/game%20over%20screen.jpg "Game Over Screen")
 
+----
 
 ## Game Breakdown
 
