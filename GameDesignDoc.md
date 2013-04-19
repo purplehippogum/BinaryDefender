@@ -30,6 +30,16 @@ The object of the game is to survive oncoming waves of enemies for as long as po
 
 ----
 
+## Controls
+#### Mouse is used for all control
+  * Player faces the direction of the mouse
+  * Left-click anywhere outside of the HUD and score display to shoot in that direction
+  * Left-click on a digit in the score display to gain the corresponding ability
+  * Right-click to use special weapon
+  * Mouse wheel changes projectile type
+
+----
+
 ## Detailed Description of Game Objects and Controls
 ####  1. Player
   * Takes the form of a triangle (like the spaceship in Asteroids)
@@ -45,15 +55,15 @@ The object of the game is to survive oncoming waves of enemies for as long as po
   * Game ends when this reaches zero
 
 ####  4. Two Special Projectiles
-  * Limited ammunition
+  * Limited ammunition for each
   * Ammunition gained by sacrificing score
-  * A slicing projectile that goes through multiple enemies. It is slightly more damaging than the simple projectile
-  * An area of effect projectile that explodes on contact with an enemy, doing serious damage in a radius around the projectile
+  * First special type is a slicing projectile that goes through multiple enemies. It is slightly more damaging than the simple projectile
+  * Second special type is an area of effect projectile that explodes on contact with an enemy, doing serious damage in a radius around the projectile
   * Blast does not hurt the player
 
 ####  5. Score displays
   * Score is displayed in binary in the main game screen, and in decimal in the game over screen.
-  * Player may click on a digit in the score display to gain a special. Clicking on a 1 will add a slicing projectile to the player's inventory, a 0 will add an exploding projectile. Clicking on a digit in the score will remove it from the score and add it to the player inventory
+  * Player may click on a digit in the score display to gain a special. Clicking on a 1 will add a slicing projectile to the player's inventory, clicking a 0 will add an exploding projectile. Clicking on a digit in the score will remove it from the score and add it to the player inventory
 
 #### 6. HUD For Special Projectiles
   * Simple counters for the special projectile types. Will display an icon of the projectile with a number next to the icon
@@ -62,11 +72,3 @@ The object of the game is to survive oncoming waves of enemies for as long as po
   * Enemies come in the form of English letters
   * **Strong/slow** enemies will come in the form of bold letters, while _weak/fast_ enemies will be italicized letters
   * Enemies spawn at random locations outside of the screen, moving directly towards the player
-
-## Controls
-#### Mouse is used for all control
-  * Player faces the direction of the mouse
-  * Left-click anywhere outside of the HUD and score display to shoot in that direction
-  * Left-click on a digit in the score display to gain the corresponding ability
-  * Right-click to use special weapon
-  * Mouse wheel changes projectile type
