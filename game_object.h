@@ -19,6 +19,8 @@ class GameObject : public QGraphicsRectItem
     int getVelX();
     int getVelY();
     int getRot();
+    /** Object will rotate towards @param x, @param y */
+    void face(int sx, int sy);
     void move(int windowMaxX, int windowMaxY);
     void moveUp();
     void moveDown();

@@ -5,6 +5,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QTimer>
+#include <QString>
+#include <QGraphicsSimpleTextItem>
 
 #include "game_object.h"
 
@@ -27,7 +29,12 @@ private:
 	QGraphicsView *view;
 	/** is essentially the 'framerate' for the level */
 	QTimer *timer;
-	GameObject *test;	
+	GameObject *test;
+	QPoint p;
+	
+  QString txt;
+  QBrush *red;
+  QGraphicsSimpleTextItem *item;
 
 public slots:
 	void handleTimer();

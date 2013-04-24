@@ -1,4 +1,7 @@
 #include "game_object.h"
+#include <cmath>
+
+#define PI atan(1)*4
 
 GameObject::GameObject(double nx, double ny, double w, double h, int vx, int vy) :
 	QGraphicsRectItem(nx, ny, w, h)
@@ -9,6 +12,7 @@ GameObject::GameObject(double nx, double ny, double w, double h, int vx, int vy)
 	height = h;
 	velX = vx;
 	velY = vy;
+	setTransformOriginPoint (x + width/2.0, y + height/2.0);
 }
 
 int GameObject::getVelX()
@@ -34,11 +38,29 @@ void GameObject::setVelY(int vy)
 void GameObject::setRot(int r)
 {
 	rot = r;
+	setRotation(r);
+	draw();
 }
 
 int GameObject::getRot()
 {
 	return rot;
+}
+
+void GameObject::face(int sx, int sy)
+{
+	double dx = abs(x+width/2 - sx);
+	double dy = abs(y+height/2 - sy);
+//	dy += PI;
+	double num = atan2(dy, dx)*(180/PI);
+	num *= -1;
+//	double angle = atan2(sx, sy);
+//	if(num < 0)
+//		num += 2*PI;
+//	angle *= 180/PI;
+	setRotation(num);
+	rot = num;
+	draw();
 }
 
 void GameObject::move(int windowMaxX, int windowMaxY)

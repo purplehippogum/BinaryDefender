@@ -4,8 +4,10 @@
 
 void MainWindow::handleTimer()
 {
-	test->moveUp();
-	test->moveRight();
+	p = QCursor::pos();
+	test->face(p.x(), p.y());
+  txt.setNum(test->getRot());
+  item->setText(txt);
 }
 
 void MainWindow::toggleTimer(){
@@ -33,8 +35,14 @@ MainWindow::MainWindow()  {
 	timer->setInterval(10);
 
 	/** Initialize a test GameObject */
-	test = new GameObject(0, WINDOW_MAX_Y, 20, 20, 0, 0);
+	test = new GameObject(WINDOW_MAX_X/2, WINDOW_MAX_Y/2, 50, 50, 0, 0);
 	test->setBrush(white);
+
+  item = new QGraphicsSimpleTextItem;
+  item->setBrush(white);
+  item->setPos(20, 20);
+
+	scene->addItem(item);	
 	scene->addItem(test);
 	
 	/** Game Events, or connections */
