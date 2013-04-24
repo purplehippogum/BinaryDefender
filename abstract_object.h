@@ -1,0 +1,45 @@
+#ifndef abstract_object_H
+#define abstract_object_H
+
+#include <QGraphicsPixmapItem>
+#include <QTransform>
+#include <QPixmap>
+
+class AbstractObject : public QGraphicsPixmapItem
+{
+	public:
+		AbstractObject(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy);
+    void setX(int x);
+    void setY(int y);
+    void setVelX(int vx);
+    void setVelY(int vy);
+    void setRot(int r);
+    int getX();
+    int getY();
+    int getWidth();
+    int getHeight();
+    int getVelX();
+    int getVelY();
+    int getRot();
+    /** Object will rotate towards @param x, @param y */
+    void face(int sx, int sy);
+    void move(int windowMaxX, int windowMaxY);
+    void moveUp();
+    void moveDown();
+    void moveLeft();
+    void moveRight();
+	
+	protected:
+    int x;
+    int y;
+    int width;
+    int height;
+    int velX;
+    int velY;
+    /** Stores the rotation */
+    int rot;
+    QPixmap *pixMap;
+    QTransform rotate;
+};
+
+#endif
