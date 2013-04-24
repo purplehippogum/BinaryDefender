@@ -1,5 +1,5 @@
-#ifndef abstract_object_H
-#define abstract_object_H
+#ifndef ABSTRACT_OBJECT_H
+#define ABSTRACT_OBJECT_H
 
 #include <QGraphicsPixmapItem>
 #include <QTransform>
@@ -9,11 +9,11 @@ class AbstractObject : public QGraphicsPixmapItem
 {
 	public:
 		AbstractObject(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy);
-    void setX(int x);
-    void setY(int y);
-    void setVelX(int vx);
-    void setVelY(int vy);
-    void setRot(int r);
+    virtual void setX(int x);
+    virtual void setY(int y);
+    virtual void setVelX(int vx);
+    virtual void setVelY(int vy);
+    virtual void setRot(int r);
     int getX();
     int getY();
     int getWidth();
@@ -22,12 +22,12 @@ class AbstractObject : public QGraphicsPixmapItem
     int getVelY();
     int getRot();
     /** Object will rotate towards @param x, @param y */
-    void face(int sx, int sy);
-    void move(int windowMaxX, int windowMaxY);
-    void moveUp();
-    void moveDown();
-    void moveLeft();
-    void moveRight();
+    virtual void face(int sx, int sy);
+    virtual void move(int windowMaxX, int windowMaxY);
+    virtual void moveUp(double s);
+    virtual void moveDown(double s);
+    virtual void moveLeft(double s);
+    virtual void moveRight(double s);
 	
 	protected:
     int x;

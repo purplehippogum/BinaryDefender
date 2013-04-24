@@ -11,7 +11,8 @@ AbstractObject::AbstractObject(QPixmap *pm, double nx, double ny, double w, doub
 	height = h;
 	velX = vx;
 	velY = vy;
-	setTransformOriginPoint (x + width/2.0, y + height/2.0);
+	setPos(x, y);
+	setTransformOriginPoint(x + width/2.0, y + height/2.0);
 	pixMap = new QPixmap;//(pm);// QPixmap
 	pixMap = pm;
 	setPixmap(*pm);
@@ -70,46 +71,41 @@ void AbstractObject::move(int windowMaxX, int windowMaxY)
 		velX = 0;
 		x = 0;
 	}
-
 	if (y < 0){
 		velY = 0;
 		y  = 0;
 	}
-
 	if(x+width > windowMaxX){
 		velX = 0;
 		x = windowMaxX;
 	}
-
 	if(y+height > windowMaxY){
 		velY = 0;
 		y = windowMaxY;
 	}
-
-// Redraw rectangle to new position
 }
 
-void AbstractObject::moveUp()
+void AbstractObject::moveUp(double s)
 {
-	this->moveBy(0, -1);
+	this->moveBy(0, -1*s);
 	--y;
 }
 
-void AbstractObject::moveDown()
+void AbstractObject::moveDown(double s)
 {
-	this->moveBy(0, 1);
+	this->moveBy(0, 1*s);
 	++y;
 }
 
-void AbstractObject::moveLeft()
+void AbstractObject::moveLeft(double s)
 {
-	this->moveBy(-1, 0);
+	this->moveBy(-1*s, 0);
 	--x;
 }
 
-void AbstractObject::moveRight()
+void AbstractObject::moveRight(double s)
 {
-	this->moveBy(1, 0);
+	this->moveBy(1*s, 0);
 	++x;
 }
 
