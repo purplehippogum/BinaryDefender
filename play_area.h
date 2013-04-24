@@ -11,6 +11,7 @@ class PlayArea : public QGraphicsRectItem
 	public:
 		PlayArea(int nx, int ny, int w, int h, MainWindow *window);
 		void mousePressEvent(QGraphicsSceneMouseEvent *clicked);
+		/** Handles key presses */
 	private:
 		MainWindow *main;
 };
