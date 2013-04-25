@@ -185,32 +185,33 @@ void MainWindow::handleTimer()
 
 void MainWindow::shoot()
 {
-  valid = QWidget::mapFromGlobal(valid);
-	p = QCursor::pos();
-	p = view->mapFromGlobal(p);
-	double sx = abs(player->getX() - p.x());
-	double sy = abs(player->getY() - p.y());
+  valid = view->mapFromGlobal(valid);
+	p = view->mapFromGlobal(QCursor::pos());
+//	p = QCursor::pos();
+// y offset: 90, x: 55
+	double sx = abs(player->getX()+50 - p.x());
+	double sy = abs(player->getY()+80 - p.y());
 	if(bullets.size() < 2){
-		if( ( p.y() < player->getY()+70)){// && (p.x() > (player->getX()-player->getWidth()/2) && p.x() < q3->getX()+q3->getWidth() ) ) ){// up alley
+		if( sy > sx && ( p.y() < player->getY()+80)){// && (p.x() > (player->getX()-player->getWidth()/2) && p.x() < q3->getX()+q3->getWidth() ) ) ){// up alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
 
-		else if(	( p.y() > player->getY()+player->getHeight()/2 ) ){//380 && (p.x() > 360 && p.x() < 480 ) ) ){// down alley
+		else if( sy > sx &&	( p.y() > player->getY()+80 ) ){//380 && (p.x() > 360 && p.x() < 480 ) ) ){// down alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( (p.x() < player->getX() ) ){//380 && ( p.y() < 450 && p.y() > 100 ) ) ){// left alley
+		else if( sx > sy && (p.x() < player->getX()+55 ) ){//380 && ( p.y() < 450 && p.y() > 100 ) ) ){// left alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( ( p.x() > 460 && ( p.y() < 450 && p.y() > 100 ) ) ){// right alley
+		else if( sx > sy && ( p.x() > player->getX()+55) ){//460 && ( p.y() < 450 && p.y() > 100 ) ) ){// right alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
@@ -229,20 +230,25 @@ void MainWindow::toggleTimer(){
 
 void MainWindow::SMASH()
 {
-	p = QCursor::pos();
-	if( ( p.y() < 305 && (p.x() > 360 && p.x() < 480 ) ) ){// up alley
+//	cout << "\nq1 x " << q1->getX() << endl;
+//	cout << "q1 y " << q1->getY() << endl;
+	p = view->mapFromGlobal(QCursor::pos());
+	cout << "\nmouse x " << p.x() << endl;
+	cout << "mouse y " << p.y() << endl;
+// test for top two SMASHing
+	if( ( p.y() <=  273) && (p.x() > 320 && p.x() < 384 ) ){// up alley
 		q1->setRight(true);
 		q3->setLeft(true);
 	}
-	else if(	( p.y() > 380 && (p.x() > 360 && p.x() < 480 ) ) ){// down alley
+	else if(	( p.y() > 338 && (p.x() > 320 && p.x() < 384 ) ) ){// down alley
 		q2->setRight(true);
 		q4->setLeft(true);
 	}
-	else if( (p.x() < 380 && ( p.y() < 450 && p.y() > 305 ) ) ){// left alley
+	else if( (p.x() < 321 && ( p.y() < 340 && p.y() > 270 ) ) ){// left alley
 		q1->setDown(true);
 		q2->setUp(true);
 	}
-	else if( ( p.x() > 460 && ( p.y() < 450 && p.y() > 305 ) ) ){// right alley
+	else if( ( p.x() > 380 && ( p.y() < 340 && p.y() > 270 ) ) ){// right alley
 		q3->setDown(true);
 		q4->setUp(true);
 	}
@@ -307,6 +313,8 @@ MainWindow::MainWindow()
 	/** Initialize a pixmap for the player and a test AbstractObject */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
 	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 64, 64, 100);
+	player->setTransformOriginPoint(player->getX()+40, player->getY() + 45);
+	view->mapFromGlobal(player->pos().toPoint());
 	
 	/** Initialize the health bar */
 	health = new HealthBar(-25, -42, 140, 16, 0, 0, player->getHealth());
