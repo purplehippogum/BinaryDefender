@@ -2,8 +2,8 @@
 #include <iostream>
 #include <cmath>
 
-BasicBullet::BasicBullet(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy)
-	: AbstractObject(pm, nx, ny, w, h, vx, vy)
+BasicBullet::BasicBullet(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp)
+	: AbstractObject(pm, nx, ny, w, h, vx, vy, hp)
 {
 	initX = nx;
 	initY = ny;

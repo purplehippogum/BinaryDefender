@@ -8,11 +8,12 @@
 class AbstractObject : public QGraphicsPixmapItem
 {
 	public:
-		AbstractObject(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy);
+		AbstractObject(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp);
     virtual void setX(int x);
     virtual void setY(int y);
     virtual void setVelX(int vx);
     virtual void setVelY(int vy);
+    virtual void setHealth(int h);
     virtual void setRot(int r);
     int getX();
     int getY();
@@ -20,6 +21,7 @@ class AbstractObject : public QGraphicsPixmapItem
     int getHeight();
     int getVelX();
     int getVelY();
+    int getHealth();
     int getRot();
     /** Object will rotate towards @param x, @param y */
     virtual void face(int sx, int sy);
@@ -36,6 +38,7 @@ class AbstractObject : public QGraphicsPixmapItem
     int height;
     int velX;
     int velY;
+    int health;
     /** Stores the rotation */
     int rot;
     QPixmap *pixMap;

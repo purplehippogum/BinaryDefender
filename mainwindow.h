@@ -13,6 +13,7 @@
 
 #include "player.h"
 #include "basic_bullet.h"
+#include "enemy.h"
 #include "play_area.h"
 #include "game_object.h"
 
@@ -39,11 +40,14 @@ private:
 	QGraphicsView *view;
 	/** Designates a play area to detect mouse presses */
 	PlayArea *area;
+	/** Keepts track of game time */
+	int gameTimer;
+	int seconds;
 	/** Rectangle that the enemies will travel on */
-	GameObject *pathRight;
-	GameObject *pathUp;
-	GameObject *pathLeft;
-	GameObject *pathDown;
+	GameObject *q1;
+	GameObject *q2;
+	GameObject *q3;
+	GameObject *q4;
 	/** Stores the objects in the scene */
 	std::vector<AbstractObject*> objects;
 	/** is essentially the 'framerate' for the level */
@@ -51,9 +55,18 @@ private:
 	/** Main Player object */
 	Player *player;
 	
+	/** Enemy letter objects */
+	Enemy *enemy;
+	QPixmap *enemyIMG;
+	std::vector<Enemy*> enemies;
+	int enemyCounter;
+	int rounds;
+	int enemyDelay;
+	
 	/** A simple bullet object */
 	BasicBullet *bullet;
 	bool inScene;
+	std::vector<BasicBullet*>	bullets;
 	
 	/** Stores the mouse position */
 	QPoint p;

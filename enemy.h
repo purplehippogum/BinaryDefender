@@ -1,0 +1,14 @@
+#ifndef ENEMY_H
+#define ENEMY_H
+
+#include "abstract_object.h"
+
+class Enemy : public AbstractObject
+{
+	public:
+		Enemy(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp);
+		void move(int vx, int vy);
+	private:
+};
+
+#endif

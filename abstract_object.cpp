@@ -3,7 +3,7 @@
 
 #define PI atan(1)*4
 
-AbstractObject::AbstractObject(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy)
+AbstractObject::AbstractObject(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp)
 {
 	x = nx;
 	y = ny;
@@ -11,6 +11,7 @@ AbstractObject::AbstractObject(QPixmap *pm, double nx, double ny, double w, doub
 	height = h;
 	velX = vx;
 	velY = vy;
+	health = hp;
 	setPos(x, y);
 	setTransformOriginPoint(x + width/2.0, y + height/2.0);
 	pixMap = new QPixmap;//(pm);// QPixmap
@@ -47,6 +48,16 @@ void AbstractObject::setRot(int r)
 int AbstractObject::getRot()
 {
 	return rot;
+}
+
+void AbstractObject::setHealth(int h)
+{
+	health = h;
+}
+
+int AbstractObject::getHealth()
+{
+	return health;
 }
 
 void AbstractObject::face(int sx, int sy)

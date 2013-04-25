@@ -5,40 +5,128 @@
 
 void MainWindow::handleTimer()
 {
+	++gameTimer;
+	if(gameTimer == 200){
+		++seconds;
+	}
 	if(bullet){
-		if( valid.x() < 408 && ( valid.y() < 380 && valid.y() > 345 ) ){
-			bullet->move(-1.2, 0);
+//		if( valid.x() < 408 && ( valid.y() < 380 && valid.y() > 305 ) ){
+			for(unsigned int i = 0; i < bullets.size(); i++){
+				if(bullets[i]->getX() < player->getX()){
+					bullets[i]->move(-1.2, 0);
+				}
+				else if(bullets[i]->getX() > player->getX()){
+					bullets[i]->move(1.2, 0);
+				}
+				else if(bullets[i]->getY() < player->getY()){
+					bullets[i]->move(0, -1.2);
+				}
+				else if(bullets[i]->getY() > player->getY()){
+					bullets[i]->move(0, 1.2);
+				}
+			}
+		/*}
+		else if(valid.x() > 456 && ( valid.y() < 380 && valid.y() > 305 ) ){
+			for(unsigned int i = 0; i < bullets.size(); i++){
+				if(bullets[i]->getX() > player->getX()){
+					bullets[i]->move(1.2, 0);
+				}
+			}
 		}
-		else if(valid.x() > 456 && ( valid.y() < 380 && valid.y() > 345 ) ){
-			bullet->move(1.2, 0);
-		}
-		else if(valid.y() < 345 && (valid.x() > 408 && valid.x() < 456 ) ){
-			bullet->move(0, -1.2);
+		else if(valid.y() < 305 && (valid.x() > 408 && valid.x() < 456 ) ){
+			for(unsigned int i = 0; i < bullets.size(); i++){
+				if(bullets[i]->getY() < player->getY()){
+					bullets[i]->move(0, -1.2);
+				}
+			}
 		}
 		else if(valid.y() > 380 && (valid.x() > 408 && valid.x() < 456 ) ){
-			bullet->move(0, 1.2);
-		}
+			for(unsigned int i = 0; i < bullets.size(); i++){
+				if(bullets[i]->getY() > player->getY()){
+					bullets[i]->move(0, 1.2);
+				}
+			}
+		}*/
 		if(bullet->getX() <= -50 || bullet->getX() > WINDOW_MAX_X){
 			inScene = false;
 		}
-		if(bullet->getY() <= -50 || bullet->getY() > WINDOW_MAX_Y){
+		if(bullet->getY() <= -30 || bullet->getY() > WINDOW_MAX_Y - 20){
 			inScene = false;
 		}
+	}
+	if(gameTimer%400 == 0){
+		srand(p.x());
+		int dir = rand()%3;
+		switch(dir){
+			case 0: { enemy = new Enemy(enemyIMG, player->getX()+WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 2);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			case 1: { enemy = new Enemy(enemyIMG, player->getX()-WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 2);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			case 2: { enemy = new Enemy(enemyIMG, player->getX(), player->getY()+WINDOW_MAX_Y/2, 32, 32, 0, 0, 2);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			case 3: { enemy = new Enemy(enemyIMG, player->getX()+WINDOW_MAX_X/2, player->getY()-WINDOW_MAX_Y/2, 32, 32, 0, 0, 2);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+		}
+		
+	}
+	if(enemy && gameTimer%5 == 0){
+//		std::cout << "Movee" << std::endl;
+		for(unsigned int i = 0; i < enemies.size(); i++){
+			enemies[i]->move(player->getX(), player->getY());
+		}
+	}
+	if(enemyCounter == 0){// beginning of a new round
+		enemyCounter = ( (rounds * 50)/seconds) - (30 * 100 - player->getHealth() );
+		seconds = 0;
+		++rounds;
 	}
 }
 
 void MainWindow::shoot()
 {
 	p = QCursor::pos();
-	if(!inScene){
-		if( (p.x() < 418 && ( p.y() < 380 && p.y() > 345 ) ) || ( p.x() > 448 && ( p.y() < 380 && p.y() > 345 ) ) ||
-		( p.y() < 345 && (p.x() > 418 && p.x() < 448 ) ) || ( p.y() > 380 && (p.x() > 418 && p.x() < 448 ) ) ){
+//	if(!inScene){
+		if(	( p.y() > 380 && (p.x() > 418 && p.x() < 448 ) ) ){
 			valid = p;
 			inScene = true;
-			bullet = new BasicBullet(bbIMG, player->getX()+6, player->getY(), 16, 16, p.x(), p.y());
-			scene->addItem(bullet); objects.push_back(bullet);
+			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1);
+			scene->addItem(bullet);
+			bullets.push_back(bullet);
 		}
-	}
+		else if( (p.x() < 418 && ( p.y() < 380 && p.y() > 305 ) ) ){
+			valid = p;
+			inScene = true;
+			bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1);
+			scene->addItem(bullet);
+			bullets.push_back(bullet);
+		}
+		else if( ( p.x() > 448 && ( p.y() < 380 && p.y() > 305 ) ) ){
+			valid = p;
+			inScene = true;
+			bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1);
+			scene->addItem(bullet);
+			bullets.push_back(bullet);
+		}
+		else if( ( p.y() < 305 && (p.x() > 418 && p.x() < 448 ) ) ){
+			valid = p;
+			inScene = true;
+			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1);
+			scene->addItem(bullet);
+			bullets.push_back(bullet);
+		}
+//	}
 //	std:: cout << "p.x " << p.x() << std::endl;
 //	std:: cout << "p.y " << p.y() << std::endl;
 }
@@ -67,19 +155,30 @@ MainWindow::MainWindow()  {
   valid = QWidget::mapFromGlobal(valid);
   
 	/** Initizlize and set up the play area dummy rectangle that registers clicks */
-	area = new PlayArea(-0.03*WINDOW_MAX_X, -0.03*WINDOW_MAX_Y, WINDOW_MAX_X*1.05, WINDOW_MAX_Y*1.05, this);
+	area = new PlayArea(-0.05*WINDOW_MAX_X, -0.05*WINDOW_MAX_Y, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1, this);
 //	area->setPen(Qt::NoPen);
 
 	/** Set up the paths the enemies will traverse */
 	// double nx, double ny, double w, double h, int vx, int vy
+	q1 = new GameObject(-31, -23, 320, 230, 0, 0);
+	q2 = new GameObject(-31, 272, 320, 230, 0, 0);
+	q3 = new GameObject(350, -23, 320, 230, 0, 0);
+	q4 = new GameObject(350, 272, 320, 230, 0, 0);
 	
 	/** Initialize timer that will keep the time of the scene */
 	timer = new QTimer(this);
 	timer->setInterval(5);
+	seconds = 0;
 
 	/** Initialize a pixmap for the player and a test AbstractObject */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
-	player = new Player(playerIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y/2, 64, 64, 0, 0);
+	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 64, 64, 0, 0, 100);
+	
+	/** Initialize and set up the enemies */
+	enemyIMG = new QPixmap("enemy_0.png", "png", Qt::AutoColor);
+	enemy = NULL;
+	enemyCounter = 5;
+	enemyDelay = 0;
 	
 	/** Create an image for the BasicBullet */
 	bbIMG = new QPixmap("basic_bullet.png", "png", Qt::AutoColor);
@@ -94,6 +193,10 @@ MainWindow::MainWindow()  {
 	scene->addItem(area);
 	scene->addItem(item);
 	scene->addItem(player); objects.push_back(player);
+	scene->addItem(q1);
+	scene->addItem(q2);
+	scene->addItem(q3);
+	scene->addItem(q4);
 	
 	/** Game Events, or connections */
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));
