@@ -15,6 +15,7 @@
 # Project files
 *.pro
 game_vegaperk
+moc_mainwindow.cpp
 
 # Temporary files
 *~
