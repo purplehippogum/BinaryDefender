@@ -69,7 +69,10 @@ private:
 	Enemy *enemy;
 	QPixmap *enemyIMG;
 	std::vector<Enemy*> enemies;
-	int enemyCounter;
+	/** This is how many enemies have been killed */
+	int killCount;
+	/** This is how many enemies must be killed to advance the round */
+	int enemyLimit;
 	/** Keeps track of rounds */
 	int rounds;
 	/** Displays round count */

@@ -9,8 +9,9 @@ void MainWindow::handleTimer()
 {
 	/** Keeps track of general timekeeping for round advancing purposes */
 	++gameTimer;
-	if(gameTimer == 200){
+	if(gameTimer%200 == 0){
 		++seconds;
+//		cout << "Time: " << seconds << " seconds" << endl;
 	}
 	/** SMASH the walls! */
 // SMASH the top two walls	
@@ -98,7 +99,7 @@ void MainWindow::handleTimer()
 			bullets[i]->move(0, 1.2);
 		}
 	}
-	/** Check for enemy collison with player */
+/** Check for enemy collison with player */
 	for(unsigned int i = 0; i < enemies.size(); i++){
 		if(enemies[i]->collidesWithItem(q1, Qt::IntersectsItemShape) ||
 		enemies[i]->collidesWithItem(q2, Qt::IntersectsItemShape) || 
@@ -106,15 +107,17 @@ void MainWindow::handleTimer()
 		enemies[i]->collidesWithItem(q4, Qt::IntersectsItemShape) ){
 			delete enemies[i];
 			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
+			killCount++;
 		}
 		else if(enemies[i]->collidesWithItem(player, Qt::IntersectsItemShape) ){
 			delete enemies[i];
 			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
+			killCount++;
 			player->setHealth(player->getHealth() - enemies[i]->getDamage());
 			health->setWidth(player->getHealth()*1.2);
 		}
 	}
-	/** Check for bullet exiting the scene and collision with an enemy */
+/** Check for bullet exiting the scene and collision with an enemy */
 	for(unsigned int i = 0; i < bullets.size(); i++){
 		if(bullets[i] && (bullets[i]->getX() <= -25 || bullets[i]->getX() > WINDOW_MAX_X +10||
 		bullets[i]->getY() > WINDOW_MAX_Y+10 || bullets[i]->getY() < -25) ){
@@ -131,16 +134,17 @@ void MainWindow::handleTimer()
 				if(enemies[j]->getHealth() <= 0){
 					delete enemies[j];
 					enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[j]));
-					--enemyCounter;
+					killCount++;
 				}
 			}
 		}
 	}
-// collidesWithItem ( const QGraphicsItem * other, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape )
-	if(gameTimer%400 == 0){
+/** This if statement handles enemy spawning */
+	if(gameTimer%300 == 0){// 
 		srand(p.x());
 		int dir = rand()%4;
-		++enemyCounter;
+		cout << "Enemy counter " << killCount << endl;
+		cout << "Enemy limit " << enemyLimit << endl;
 		switch(dir){
 			case 0: { enemy = new Enemy(enemyIMG, player->getX()+WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 32);
 							enemy->setDamage(5);
@@ -168,14 +172,16 @@ void MainWindow::handleTimer()
 						}
 		}
 	}
+/** Handles enemy movement. Speed, etc */
 	if(enemy && gameTimer%5 == 0){
 //		std::cout << "Movee" << std::endl;
 		for(unsigned int i = 0; i < enemies.size(); i++){
 			enemies[i]->move(player->getX(), player->getY());
 		}
 	}
-	if(enemyCounter == 0){// beginning of a new round
-		enemyCounter = ( (rounds * 50)/seconds) - (30 * 100 - player->getHealth() );
+	if(killCount >= enemyLimit){// beginning of a new round
+		enemyLimit = ( ((rounds * 50)/seconds) - ( 100 - player->getHealth() ) );
+		killCount = 0;
 		seconds = 0;
 		rounds++;
 		rString.setNum(rounds);
@@ -187,39 +193,36 @@ void MainWindow::shoot()
 {
   valid = view->mapFromGlobal(valid);
 	p = view->mapFromGlobal(QCursor::pos());
-//	p = QCursor::pos();
 // y offset: 90, x: 55
 	double sx = abs(player->getX()+50 - p.x());
 	double sy = abs(player->getY()+80 - p.y());
 	if(bullets.size() < 2){
-		if( sy > sx && ( p.y() < player->getY()+80)){// && (p.x() > (player->getX()-player->getWidth()/2) && p.x() < q3->getX()+q3->getWidth() ) ) ){// up alley
+		if( sy > sx && ( p.y() < player->getY()+80)){
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
 
-		else if( sy > sx &&	( p.y() > player->getY()+80 ) ){//380 && (p.x() > 360 && p.x() < 480 ) ) ){// down alley
+		else if( sy > sx &&	( p.y() > player->getY()+80 ) ){
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( sx > sy && (p.x() < player->getX()+55 ) ){//380 && ( p.y() < 450 && p.y() > 100 ) ) ){// left alley
+		else if( sx > sy && (p.x() < player->getX()+55 ) ){
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( sx > sy && ( p.x() > player->getX()+55) ){//460 && ( p.y() < 450 && p.y() > 100 ) ) ){// right alley
+		else if( sx > sy && ( p.x() > player->getX()+55) ){
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
 	}
-//	std:: cout << "p.x " << p.x() << std::endl;
-//	std:: cout << "p.y " << p.y() << std::endl;
 }
 
 void MainWindow::toggleTimer(){
@@ -227,15 +230,10 @@ void MainWindow::toggleTimer(){
 
 	else timer->start();
 }
-
+/** This power may be activated about once a round to effectively clear a lane of enemies */
 void MainWindow::SMASH()
 {
-//	cout << "\nq1 x " << q1->getX() << endl;
-//	cout << "q1 y " << q1->getY() << endl;
 	p = view->mapFromGlobal(QCursor::pos());
-	cout << "\nmouse x " << p.x() << endl;
-	cout << "mouse y " << p.y() << endl;
-// test for top two SMASHing
 	if( ( p.y() <=  273) && (p.x() > 320 && p.x() < 384 ) ){// up alley
 		q1->setRight(true);
 		q3->setLeft(true);
@@ -326,7 +324,8 @@ MainWindow::MainWindow()
 	/** Initialize and set up the enemies */
 	enemyIMG = new QPixmap("enemy_0.png", "png", Qt::AutoColor);
 	enemy = NULL;
-	enemyCounter = 5;
+	killCount = 0;
+	enemyLimit = 5;
 	
 	/** Create an image for the BasicBullet */
 	bbIMG = new QPixmap("basic_bullet.png", "png", Qt::AutoColor);
