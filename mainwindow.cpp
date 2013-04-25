@@ -25,6 +25,14 @@ void MainWindow::handleTimer()
 			bullets[i]->move(0, 1.2);
 		}
 	}
+	for(unsigned int i = 0; i < enemies.size(); i++){
+		if(enemies[i]->collidesWithItem(player, Qt::IntersectsItemShape)){
+			delete enemies[i];
+			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
+			player->setHealth(player->getHealth() - enemies[i]->getDamage());
+			health->setWidth(player->getHealth()*1.2);
+		}
+	}
 	for(unsigned int i = 0; i < bullets.size(); i++){
 		if(bullets[i] && (bullets[i]->getX() <= -40 || bullets[i]->getX() > WINDOW_MAX_X ||
 		bullets[i]->getY() > 900 || bullets[i]->getY() < -40) ){
@@ -38,7 +46,7 @@ void MainWindow::handleTimer()
 //				delete bullets[i];
 				bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 				if(enemies[j]->getHealth() <= 0){
-						delete enemies[j];
+					delete enemies[j];
 					enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[j]));
 				}
 			}
@@ -50,21 +58,25 @@ void MainWindow::handleTimer()
 		int dir = rand()%4;
 		switch(dir){
 			case 0: { enemy = new Enemy(enemyIMG, player->getX()+WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 32);
+							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
 			case 1: { enemy = new Enemy(enemyIMG, player->getX()-WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 32);
+							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
 			case 2: { enemy = new Enemy(enemyIMG, player->getX(), player->getY()+WINDOW_MAX_Y/2, 32, 32, 0, 0, 32);
+							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
 			case 3: { enemy = new Enemy(enemyIMG, player->getX(), player->getY()-WINDOW_MAX_Y/2, 32, 32, 0, 0, 32);
+							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
@@ -88,25 +100,25 @@ void MainWindow::shoot()
 {
 	p = QCursor::pos();
 	if(bullets.size() < 2){
-		if(	( p.y() > 380 && (p.x() > 418 && p.x() < 448 ) ) ){
+		if(	( p.y() > 380 && (p.x() > 380 && p.x() < 460 ) ) ){
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( (p.x() < 418 && ( p.y() < 380 && p.y() > 305 ) ) ){
+		else if( (p.x() < 380 && ( p.y() < 380 && p.y() > 305 ) ) ){
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( ( p.x() > 448 && ( p.y() < 380 && p.y() > 305 ) ) ){
+		else if( ( p.x() > 460 && ( p.y() < 380 && p.y() > 305 ) ) ){
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( ( p.y() < 305 && (p.x() > 418 && p.x() < 448 ) ) ){
+		else if( ( p.y() < 305 && (p.x() > 380 && p.x() < 460 ) ) ){
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
@@ -127,6 +139,7 @@ MainWindow::MainWindow()  {
 	/** Define some colors */
 	QBrush black(Qt::black);
 	QBrush white(Qt::white);
+	QBrush red(Qt::red);
 	
 	/** Initialize view and scene */
 	scene = new QGraphicsScene(0, 0, WINDOW_MAX_X, WINDOW_MAX_Y, this);
@@ -147,9 +160,13 @@ MainWindow::MainWindow()  {
 	/** Set up the paths the enemies will traverse */
 	// double nx, double ny, double w, double h, int vx, int vy
 	q1 = new GameObject(-31, -23, 320, 230, 0, 0);
+	q1->setBrush(black);
 	q2 = new GameObject(-31, 272, 320, 230, 0, 0);
+	q2->setBrush(black);
 	q3 = new GameObject(350, -23, 320, 230, 0, 0);
+	q3->setBrush(black);
 	q4 = new GameObject(350, 272, 320, 230, 0, 0);
+	q4->setBrush(black);
 	
 	/** Initialize timer that will keep the time of the scene */
 	timer = new QTimer(this);
@@ -159,6 +176,11 @@ MainWindow::MainWindow()  {
 	/** Initialize a pixmap for the player and a test AbstractObject */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
 	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 64, 64, 0, 0, 100);
+	
+	/** Initialize the health bar */
+	health = new HealthBar(0, 0, 125, 16, 0, 0, player->getHealth());
+	health->setBrush(red);
+	health->setPen(Qt::NoPen);
 	
 	/** Initialize and set up the enemies */
 	enemyIMG = new QPixmap("enemy_0.png", "png", Qt::AutoColor);
@@ -182,6 +204,7 @@ MainWindow::MainWindow()  {
 	scene->addItem(q2);
 	scene->addItem(q3);
 	scene->addItem(q4);
+	scene->addItem(health);
 	
 	/** Game Events, or connections */
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));

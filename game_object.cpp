@@ -47,6 +47,13 @@ int GameObject::getRot()
 	return rot;
 }
 
+void GameObject::setWidth(int w)
+{
+	width = w;
+	setRect(x, y, w, height);
+	draw();
+}
+
 void GameObject::face(int sx, int sy)
 {
 	double dx = abs(x+width/2 - sx);

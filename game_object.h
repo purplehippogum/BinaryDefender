@@ -12,6 +12,7 @@ class GameObject : public QGraphicsRectItem
     void setVelX(int vx);
     void setVelY(int vy);
     void setRot(int r);
+    void setWidth(int w);
     int getX();
     int getY();
     int getWidth();

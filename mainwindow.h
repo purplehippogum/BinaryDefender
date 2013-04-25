@@ -16,6 +16,7 @@
 #include "enemy.h"
 #include "play_area.h"
 #include "game_object.h"
+#include "health_bar.h"
 
 #define WINDOW_MAX_X 640
 #define WINDOW_MAX_Y 480
@@ -54,6 +55,8 @@ private:
 	QTimer *timer;
 	/** Main Player object */
 	Player *player;
+	/** Player health */
+	HealthBar *health;
 	
 	/** Enemy letter objects */
 	Enemy *enemy;

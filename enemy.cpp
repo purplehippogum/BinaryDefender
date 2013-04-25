@@ -21,3 +21,13 @@ void Enemy::move(int vx, int vy)// player's coordinates will be passed in
 	if(y < vy)
 		moveDown(1);
 }
+
+void Enemy::setDamage(int d)
+{
+	damage = d;
+}
+
+int Enemy::getDamage()
+{
+	return damage;
+} 
