@@ -3,14 +3,14 @@
 
 #define PI atan(1)*4
 
-AbstractObject::AbstractObject(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp)
+AbstractObject::AbstractObject(QPixmap *pm, double nx, double ny, double w, double h, int hp)
 {
 	x = nx;
 	y = ny;
 	width = w;
 	height = h;
-	velX = vx;
-	velY = vy;
+//	velX = vx;
+//	velY = vy;
 	health = hp;
 	setPos(x, y);
 	setTransformOriginPoint(x + width/2.0, y + height/2.0);

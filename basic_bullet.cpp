@@ -3,7 +3,7 @@
 #include <cmath>
 
 BasicBullet::BasicBullet(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp, int d)
-	: AbstractObject(pm, nx, ny, w, h, vx, vy, hp)
+	: AbstractObject(pm, nx, ny, w, h, hp)
 {
 	initX = nx;
 	initY = ny;
@@ -27,16 +27,16 @@ void BasicBullet::move(double vx, double vy)// double vx, double vy
 //	std::cout << "\nbullet x " << x << std::endl;
 //	std::cout << "fin x " << finX << std::endl;
 
-	if(vx < 0)
-		moveLeft(abs(vx));
+	if(vx > 0)
+		moveRight(1);
 
-	else if(vx > 0)
-		moveRight(vx);
+	else if(vx < 0)
+		moveLeft(1);
 /*
 */
 	if(vy < 0)
-		moveUp(abs(vy));
+		moveUp(1);
 
 	else if(vy > 0)
-		moveDown(vy);
+		moveDown(1);
 }

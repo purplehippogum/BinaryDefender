@@ -8,7 +8,7 @@
 class AbstractObject : public QGraphicsPixmapItem
 {
 	public:
-		AbstractObject(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp);
+		AbstractObject(QPixmap *pm, double nx, double ny, double w, double h, int hp);
     virtual void setX(int x);
     virtual void setY(int y);
     virtual void setVelX(int vx);

@@ -61,6 +61,7 @@ private:
 	Player *player;
 	/** Player health */
 	HealthBar *health;
+	GameObject *healthOutline;
 	
 	/** Enemy letter objects */
 	Enemy *enemy;

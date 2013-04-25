@@ -100,7 +100,14 @@ void MainWindow::handleTimer()
 	}
 	/** Check for enemy collison with player */
 	for(unsigned int i = 0; i < enemies.size(); i++){
-		if(enemies[i]->collidesWithItem(player, Qt::IntersectsItemShape)){
+		if(enemies[i]->collidesWithItem(q1, Qt::IntersectsItemShape) ||
+		enemies[i]->collidesWithItem(q2, Qt::IntersectsItemShape) || 
+		enemies[i]->collidesWithItem(q3, Qt::IntersectsItemShape) ||
+		enemies[i]->collidesWithItem(q4, Qt::IntersectsItemShape) ){
+			delete enemies[i];
+			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
+		}
+		else if(enemies[i]->collidesWithItem(player, Qt::IntersectsItemShape) ){
 			delete enemies[i];
 			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
 			player->setHealth(player->getHealth() - enemies[i]->getDamage());
@@ -109,9 +116,10 @@ void MainWindow::handleTimer()
 	}
 	/** Check for bullet exiting the scene and collision with an enemy */
 	for(unsigned int i = 0; i < bullets.size(); i++){
-		if(bullets[i] && (bullets[i]->getX() <= -40 || bullets[i]->getX() > WINDOW_MAX_X ||
-		bullets[i]->getY() > 900 || bullets[i]->getY() < -40) ){
+		if(bullets[i] && (bullets[i]->getX() <= -25 || bullets[i]->getX() > WINDOW_MAX_X +10||
+		bullets[i]->getY() > WINDOW_MAX_Y+10 || bullets[i]->getY() < -25) ){
 //			delete bullets[i];
+		bullets[i]->setPos(-200, -200);
 			bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 		}
 		for(unsigned int j = 0; j < enemies.size(); j++){
@@ -173,27 +181,30 @@ void MainWindow::handleTimer()
 
 void MainWindow::shoot()
 {
+  p = QWidget::mapFromGlobal(p);
+  valid = QWidget::mapFromGlobal(valid);
 	p = QCursor::pos();
 	if(bullets.size() < 2){
-		if( ( p.y() < 305 && (p.x() > 380 && p.x() < 460 ) ) ){// up alley
+		if( ( p.y() < 380 && (p.x() > 360 && p.x() < 480 ) ) ){// up alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if(	( p.y() > 380 && (p.x() > 380 && p.x() < 460 ) ) ){// down alley
+
+		else if(	( p.y() > 380 && (p.x() > 360 && p.x() < 480 ) ) ){// down alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( (p.x() < 380 && ( p.y() < 380 && p.y() > 305 ) ) ){// left alley
+		else if( (p.x() < 380 && ( p.y() < 450 && p.y() > 100 ) ) ){// left alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( ( p.x() > 460 && ( p.y() < 380 && p.y() > 305 ) ) ){// right alley
+		else if( ( p.x() > 460 && ( p.y() < 450 && p.y() > 100 ) ) ){// right alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
@@ -213,19 +224,19 @@ void MainWindow::toggleTimer(){
 void MainWindow::SMASH()
 {
 	p = QCursor::pos();
-	if( ( p.y() < 305 && (p.x() > 380 && p.x() < 460 ) ) ){// up alley
+	if( ( p.y() < 305 && (p.x() > 360 && p.x() < 480 ) ) ){// up alley
 		q1->setRight(true);
 		q3->setLeft(true);
 	}
-	else if(	( p.y() > 380 && (p.x() > 380 && p.x() < 460 ) ) ){// down alley
+	else if(	( p.y() > 380 && (p.x() > 360 && p.x() < 480 ) ) ){// down alley
 		q2->setRight(true);
 		q4->setLeft(true);
 	}
-	else if( (p.x() < 380 && ( p.y() < 380 && p.y() > 305 ) ) ){// left alley
+	else if( (p.x() < 380 && ( p.y() < 450 && p.y() > 305 ) ) ){// left alley
 		q1->setDown(true);
 		q2->setUp(true);
 	}
-	else if( ( p.x() > 460 && ( p.y() < 380 && p.y() > 305 ) ) ){// right alley
+	else if( ( p.x() > 460 && ( p.y() < 450 && p.y() > 305 ) ) ){// right alley
 		q3->setDown(true);
 		q4->setUp(true);
 	}
@@ -238,7 +249,7 @@ MainWindow::MainWindow()  {
 	QBrush red(Qt::red);
 	
 	/** Initialize view and scene */
-	scene = new QGraphicsScene(0, 0, WINDOW_MAX_X, WINDOW_MAX_Y, this);
+	scene = new QGraphicsScene(0, -40, WINDOW_MAX_X, WINDOW_MAX_Y, this);
 	view = new QGraphicsView(scene);
 	
 	/** Configure view settings */
@@ -250,7 +261,8 @@ MainWindow::MainWindow()  {
   valid = QWidget::mapFromGlobal(valid);
   
 	/** Initizlize and set up the play area dummy rectangle that registers clicks */
-	area = new PlayArea(-0.05*WINDOW_MAX_X, -0.05*WINDOW_MAX_Y, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1, this);
+	area = new PlayArea(-0.05*WINDOW_MAX_X, -0.05*WINDOW_MAX_Y, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.2, this);
+	// -0.05, -0.08
 //	area->setPen(Qt::NoPen);
 
 	/** Sets up SMASH power */
@@ -274,12 +286,14 @@ MainWindow::MainWindow()  {
 
 	/** Initialize a pixmap for the player and a test AbstractObject */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
-	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 64, 64, 0, 0, 100);
+	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 64, 64, 100);
 	
 	/** Initialize the health bar */
-	health = new HealthBar(0, 0, 125, 16, 0, 0, player->getHealth());
+	health = new HealthBar(-25, -42, 140, 16, 0, 0, player->getHealth());
 	health->setBrush(red);
 	health->setPen(Qt::NoPen);
+	healthOutline = new GameObject(health->getX(), health->getY(), health->getWidth(), 16, 0, 0);
+	healthOutline->setBrush(Qt::NoBrush);
 	
 	/** Initialize and set up the enemies */
 	enemyIMG = new QPixmap("enemy_0.png", "png", Qt::AutoColor);
@@ -304,6 +318,7 @@ MainWindow::MainWindow()  {
 	scene->addItem(q3);
 	scene->addItem(q4);
 	scene->addItem(health);
+	scene->addItem(healthOutline);
 	
 	/** Game Events, or connections */
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));

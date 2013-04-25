@@ -1,6 +1,7 @@
 #ifndef HEALTH_BAR_H
 #define HEALTH_BAR_H
 
+#include <QString>
 #include "game_object.h"
 
 class HealthBar : public GameObject
@@ -13,6 +14,10 @@ class HealthBar : public GameObject
 		
 	private:
 		int val;
+    /** Stores num in QString form */
+    QString txt;
+    /** Used to actually display text on tile */
+    QGraphicsSimpleTextItem *item;
 };
 
 #endif

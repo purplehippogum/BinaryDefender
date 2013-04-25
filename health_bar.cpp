@@ -4,6 +4,10 @@ HealthBar::HealthBar(double nx, double ny, double w, double h, int vx, int vy, i
 	: GameObject(nx, ny, w, h, vx, vy)
 {
 	val = v;
-	outline = new GameObject(nx, ny, w, h, vx, vy);
+  txt = "Health";
+  item = new QGraphicsSimpleTextItem(this);
+  item->setText(txt);
+  item->setPos(x, y - 15);
+  item->show();
 }
 
