@@ -48,6 +48,8 @@ private:
 	int seconds;
 	/** Keeps track of how many SMASH powers the player has */
 	int SMASHcount;
+	/** Score */
+	int score;
 	/** Rectangle that the enemies will travel on */
 	GameObject *q1;
 	GameObject *q2;
@@ -68,8 +70,12 @@ private:
 	QPixmap *enemyIMG;
 	std::vector<Enemy*> enemies;
 	int enemyCounter;
+	/** Keeps track of rounds */
 	int rounds;
-	int enemyDelay;
+	/** Displays round count */
+	QString rString;
+	QGraphicsSimpleTextItem *ROUND;
+	QGraphicsSimpleTextItem *rNum;
 	
 	/** A simple bullet object */
 	BasicBullet *bullet;
@@ -83,10 +89,6 @@ private:
 	QPixmap *playerIMG;
 	QPixmap *bbIMG;
 	
-	
-  QString txt;
-  QGraphicsSimpleTextItem *item;
-
 public slots:
 	/** Handles object movement when timer gets set off */
 	void handleTimer();
