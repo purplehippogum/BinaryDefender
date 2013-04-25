@@ -3,83 +3,73 @@
 #include <ctime>
 #include <iostream>
 
+using namespace std;
+
 void MainWindow::handleTimer()
 {
 	++gameTimer;
 	if(gameTimer == 200){
 		++seconds;
 	}
-	if(bullet){
-//		if( valid.x() < 408 && ( valid.y() < 380 && valid.y() > 305 ) ){
-			for(unsigned int i = 0; i < bullets.size(); i++){
-				if(bullets[i]->getX() < player->getX()){
-					bullets[i]->move(-1.2, 0);
-				}
-				else if(bullets[i]->getX() > player->getX()){
-					bullets[i]->move(1.2, 0);
-				}
-				else if(bullets[i]->getY() < player->getY()){
-					bullets[i]->move(0, -1.2);
-				}
-				else if(bullets[i]->getY() > player->getY()){
-					bullets[i]->move(0, 1.2);
-				}
-			}
-		/*}
-		else if(valid.x() > 456 && ( valid.y() < 380 && valid.y() > 305 ) ){
-			for(unsigned int i = 0; i < bullets.size(); i++){
-				if(bullets[i]->getX() > player->getX()){
-					bullets[i]->move(1.2, 0);
-				}
-			}
+	for(unsigned int i = 0; i < bullets.size(); i++){
+		if(bullets[i]->getX() < player->getX()){
+			bullets[i]->move(-1.2, 0);
 		}
-		else if(valid.y() < 305 && (valid.x() > 408 && valid.x() < 456 ) ){
-			for(unsigned int i = 0; i < bullets.size(); i++){
-				if(bullets[i]->getY() < player->getY()){
-					bullets[i]->move(0, -1.2);
-				}
-			}
+		else if(bullets[i]->getX() > player->getX()){
+			bullets[i]->move(1.2, 0);
 		}
-		else if(valid.y() > 380 && (valid.x() > 408 && valid.x() < 456 ) ){
-			for(unsigned int i = 0; i < bullets.size(); i++){
-				if(bullets[i]->getY() > player->getY()){
-					bullets[i]->move(0, 1.2);
-				}
-			}
-		}*/
-		if(bullet->getX() <= -50 || bullet->getX() > WINDOW_MAX_X){
-			inScene = false;
+		else if(bullets[i]->getY() < player->getY()){
+			bullets[i]->move(0, -1.2);
 		}
-		if(bullet->getY() <= -30 || bullet->getY() > WINDOW_MAX_Y - 20){
-			inScene = false;
+		else if(bullets[i]->getY() > player->getY()){
+			bullets[i]->move(0, 1.2);
 		}
 	}
+	for(unsigned int i = 0; i < bullets.size(); i++){
+		if(bullets[i] && (bullets[i]->getX() <= -40 || bullets[i]->getX() > WINDOW_MAX_X ||
+		bullets[i]->getY() > 900 || bullets[i]->getY() < -40) ){
+//			delete bullets[i];
+			bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
+		}
+		for(unsigned int j = 0; j < enemies.size(); j++){
+			if(bullets[i]->collidesWithItem(enemies[j], Qt::IntersectsItemShape)){
+				enemies[j]->setHealth(enemies[j]->getHealth() - bullets[i]->getDamage());
+				bullets[i]->setPos(-200, -200);
+//				delete bullets[i];
+				bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
+				if(enemies[j]->getHealth() <= 0){
+						delete enemies[j];
+					enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[j]));
+				}
+			}
+		}
+	}
+// collidesWithItem ( const QGraphicsItem * other, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape )
 	if(gameTimer%400 == 0){
 		srand(p.x());
-		int dir = rand()%3;
+		int dir = rand()%4;
 		switch(dir){
-			case 0: { enemy = new Enemy(enemyIMG, player->getX()+WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 2);
-								enemies.push_back(enemy);
-								scene->addItem(enemy);
-								break;
-							}
-			case 1: { enemy = new Enemy(enemyIMG, player->getX()-WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 2);
-								enemies.push_back(enemy);
-								scene->addItem(enemy);
-								break;
-							}
-			case 2: { enemy = new Enemy(enemyIMG, player->getX(), player->getY()+WINDOW_MAX_Y/2, 32, 32, 0, 0, 2);
-								enemies.push_back(enemy);
-								scene->addItem(enemy);
-								break;
-							}
-			case 3: { enemy = new Enemy(enemyIMG, player->getX()+WINDOW_MAX_X/2, player->getY()-WINDOW_MAX_Y/2, 32, 32, 0, 0, 2);
-								enemies.push_back(enemy);
-								scene->addItem(enemy);
-								break;
-							}
+			case 0: { enemy = new Enemy(enemyIMG, player->getX()+WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 32);
+							enemies.push_back(enemy);
+							scene->addItem(enemy);
+							break;
+						}
+			case 1: { enemy = new Enemy(enemyIMG, player->getX()-WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 32);
+							enemies.push_back(enemy);
+							scene->addItem(enemy);
+							break;
+						}
+			case 2: { enemy = new Enemy(enemyIMG, player->getX(), player->getY()+WINDOW_MAX_Y/2, 32, 32, 0, 0, 32);
+							enemies.push_back(enemy);
+							scene->addItem(enemy);
+							break;
+						}
+			case 3: { enemy = new Enemy(enemyIMG, player->getX(), player->getY()-WINDOW_MAX_Y/2, 32, 32, 0, 0, 32);
+							enemies.push_back(enemy);
+							scene->addItem(enemy);
+							break;
+						}
 		}
-		
 	}
 	if(enemy && gameTimer%5 == 0){
 //		std::cout << "Movee" << std::endl;
@@ -97,36 +87,32 @@ void MainWindow::handleTimer()
 void MainWindow::shoot()
 {
 	p = QCursor::pos();
-//	if(!inScene){
+	if(bullets.size() < 2){
 		if(	( p.y() > 380 && (p.x() > 418 && p.x() < 448 ) ) ){
 			valid = p;
-			inScene = true;
-			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1);
+			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
 		else if( (p.x() < 418 && ( p.y() < 380 && p.y() > 305 ) ) ){
 			valid = p;
-			inScene = true;
-			bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1);
+			bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
 		else if( ( p.x() > 448 && ( p.y() < 380 && p.y() > 305 ) ) ){
 			valid = p;
-			inScene = true;
-			bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1);
+			bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
 		else if( ( p.y() < 305 && (p.x() > 418 && p.x() < 448 ) ) ){
 			valid = p;
-			inScene = true;
-			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1);
+			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-//	}
+	}
 //	std:: cout << "p.x " << p.x() << std::endl;
 //	std:: cout << "p.y " << p.y() << std::endl;
 }
@@ -183,7 +169,6 @@ MainWindow::MainWindow()  {
 	/** Create an image for the BasicBullet */
 	bbIMG = new QPixmap("basic_bullet.png", "png", Qt::AutoColor);
 	bullet = NULL;
-	inScene = false;
 	
 	/** This text item is used for testing/debugging purposes */
   item = new QGraphicsSimpleTextItem;

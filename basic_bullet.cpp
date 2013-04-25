@@ -2,13 +2,24 @@
 #include <iostream>
 #include <cmath>
 
-BasicBullet::BasicBullet(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp)
+BasicBullet::BasicBullet(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp, int d)
 	: AbstractObject(pm, nx, ny, w, h, vx, vy, hp)
 {
 	initX = nx;
 	initY = ny;
 	finX = vx;
 	finY = vy;
+	damage = d;
+}
+
+BasicBullet::~BasicBullet()
+{
+
+}
+
+int BasicBullet::getDamage()
+{
+	return damage;
 }
 
 void BasicBullet::move(double vx, double vy)// double vx, double vy

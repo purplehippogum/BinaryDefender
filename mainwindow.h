@@ -65,7 +65,6 @@ private:
 	
 	/** A simple bullet object */
 	BasicBullet *bullet;
-	bool inScene;
 	std::vector<BasicBullet*>	bullets;
 	
 	/** Stores the mouse position */
