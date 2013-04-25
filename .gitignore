@@ -16,5 +16,8 @@
 *.pro
 game_vegaperk
 
-# Temporary file
+# Temporary files
 *~
+
+# Image files
+*.png
