@@ -12,4 +12,7 @@ void PlayArea::mousePressEvent(QGraphicsSceneMouseEvent *clicked)
 	if(clicked->button() == Qt::LeftButton){
 		main->shoot();
 	}
+	else if(clicked->button() == Qt::RightButton){
+		main->SMASH();
+	}
 }

@@ -33,6 +33,8 @@ public:
 	void show();
 	/** Handles shooting after the player clicks */
 	void shoot();
+	/** Smashes two walls together, destroying all of the enemies in the way */
+	void SMASH();
     
 private:
 	/** Stores the view */
@@ -44,6 +46,8 @@ private:
 	/** Keepts track of game time */
 	int gameTimer;
 	int seconds;
+	/** Keeps track of how many SMASH powers the player has */
+	int SMASHcount;
 	/** Rectangle that the enemies will travel on */
 	GameObject *q1;
 	GameObject *q2;

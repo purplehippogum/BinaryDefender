@@ -7,10 +7,83 @@ using namespace std;
 
 void MainWindow::handleTimer()
 {
+	/** Keeps track of general timekeeping for round advancing purposes */
 	++gameTimer;
 	if(gameTimer == 200){
 		++seconds;
 	}
+	/** SMASH the walls! */
+// SMASH the top two walls	
+	if(q1->getRight() && ( q1->getX() < (WINDOW_MAX_X/2 - q1->getWidth() - 10) ) ){
+		q1->moveRight();
+	}
+	else q1->setRight(false);
+	
+	if(q3->getLeft() && q3->getX() > ( WINDOW_MAX_X/2 + 10 )){
+		q3->moveLeft();
+	}
+	else q3->setLeft(false);
+// SMASH the bottom two walls	
+	if(q2->getRight() && ( q2->getX() < (WINDOW_MAX_X/2 - q2->getWidth() - 10) ) ){
+		q2->moveRight();
+	}
+	else q2->setRight(false);
+	
+	if(q4->getLeft() && q4->getX() > ( WINDOW_MAX_X/2 + 10 )){
+		q4->moveLeft();
+	}
+	else q4->setLeft(false);
+// SMASH left two walls
+	if(q1->getDown() && ( q1->getY() < (WINDOW_MAX_Y/2 - q1->getHeight() - 15) ) ){
+		q1->moveDown();
+	}
+	else q1->setDown(false);
+	
+	if(q2->getUp() && q2->getY() > WINDOW_MAX_Y/2 + 15){
+		q2->moveUp();
+	}
+	else q2->setUp(false);
+// SMASH the right two walls
+	if(q3->getDown() && ( q3->getY() < WINDOW_MAX_Y/2 - 241) ){
+		q3->moveDown();
+	}
+	else q3->setDown(false);
+
+	if(q4->getUp() && q4->getY() > ( WINDOW_MAX_Y/2 + 15 )){
+		q4->moveUp();
+	}
+	else q4->setUp(false);
+	/** Now bring em back after they collide */
+// reset the top two walls
+	if(!q1->getRight() && ( q1->getX() > -31 ) ){
+			q1->moveLeft();
+	}
+	if(!q3->getLeft() && ( q3->getX() < 350 ) ){
+			q3->moveRight();
+	}
+// reset the bottom 2 walls
+	if(!q2->getRight() && ( q2->getX() > -31 ) ){
+			q2->moveLeft();
+	}
+	if(!q4->getLeft() && ( q4->getX() < 350 ) ){
+			q4->moveRight();
+	}
+// reset the left two walls
+	if(!q1->getDown() && ( q1->getY() > -23 ) ){
+			q1->moveUp();
+	}
+	if(!q2->getUp() && ( q2->getY() < 272 ) ){
+			q2->moveDown();
+	}
+// reset the right two walls
+// reset the left two walls
+	if(!q3->getDown() && ( q3->getY() > -23 ) ){
+			q3->moveUp();
+	}
+	if(!q4->getUp() && ( q4->getY() < 272 ) ){
+			q4->moveDown();
+	}
+	/** Checks which bullets should be moving */
 	for(unsigned int i = 0; i < bullets.size(); i++){
 		if(bullets[i]->getX() < player->getX()){
 			bullets[i]->move(-1.2, 0);
@@ -25,6 +98,7 @@ void MainWindow::handleTimer()
 			bullets[i]->move(0, 1.2);
 		}
 	}
+	/** Check for enemy collison with player */
 	for(unsigned int i = 0; i < enemies.size(); i++){
 		if(enemies[i]->collidesWithItem(player, Qt::IntersectsItemShape)){
 			delete enemies[i];
@@ -33,6 +107,7 @@ void MainWindow::handleTimer()
 			health->setWidth(player->getHealth()*1.2);
 		}
 	}
+	/** Check for bullet exiting the scene and collision with an enemy */
 	for(unsigned int i = 0; i < bullets.size(); i++){
 		if(bullets[i] && (bullets[i]->getX() <= -40 || bullets[i]->getX() > WINDOW_MAX_X ||
 		bullets[i]->getY() > 900 || bullets[i]->getY() < -40) ){
@@ -100,27 +175,27 @@ void MainWindow::shoot()
 {
 	p = QCursor::pos();
 	if(bullets.size() < 2){
-		if(	( p.y() > 380 && (p.x() > 380 && p.x() < 460 ) ) ){
+		if( ( p.y() < 305 && (p.x() > 380 && p.x() < 460 ) ) ){// up alley
+			valid = p;
+			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
+			scene->addItem(bullet);
+			bullets.push_back(bullet);
+		}
+		else if(	( p.y() > 380 && (p.x() > 380 && p.x() < 460 ) ) ){// down alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( (p.x() < 380 && ( p.y() < 380 && p.y() > 305 ) ) ){
+		else if( (p.x() < 380 && ( p.y() < 380 && p.y() > 305 ) ) ){// left alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( ( p.x() > 460 && ( p.y() < 380 && p.y() > 305 ) ) ){
+		else if( ( p.x() > 460 && ( p.y() < 380 && p.y() > 305 ) ) ){// right alley
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
-			scene->addItem(bullet);
-			bullets.push_back(bullet);
-		}
-		else if( ( p.y() < 305 && (p.x() > 380 && p.x() < 460 ) ) ){
-			valid = p;
-			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
@@ -133,6 +208,27 @@ void MainWindow::toggleTimer(){
 	if(timer->isActive()) timer->stop();
 
 	else timer->start();
+}
+
+void MainWindow::SMASH()
+{
+	p = QCursor::pos();
+	if( ( p.y() < 305 && (p.x() > 380 && p.x() < 460 ) ) ){// up alley
+		q1->setRight(true);
+		q3->setLeft(true);
+	}
+	else if(	( p.y() > 380 && (p.x() > 380 && p.x() < 460 ) ) ){// down alley
+		q2->setRight(true);
+		q4->setLeft(true);
+	}
+	else if( (p.x() < 380 && ( p.y() < 380 && p.y() > 305 ) ) ){// left alley
+		q1->setDown(true);
+		q2->setUp(true);
+	}
+	else if( ( p.x() > 460 && ( p.y() < 380 && p.y() > 305 ) ) ){// right alley
+		q3->setDown(true);
+		q4->setUp(true);
+	}
 }
 
 MainWindow::MainWindow()  {
@@ -156,6 +252,9 @@ MainWindow::MainWindow()  {
 	/** Initizlize and set up the play area dummy rectangle that registers clicks */
 	area = new PlayArea(-0.05*WINDOW_MAX_X, -0.05*WINDOW_MAX_Y, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1, this);
 //	area->setPen(Qt::NoPen);
+
+	/** Sets up SMASH power */
+	SMASHcount = 5;
 
 	/** Set up the paths the enemies will traverse */
 	// double nx, double ny, double w, double h, int vx, int vy

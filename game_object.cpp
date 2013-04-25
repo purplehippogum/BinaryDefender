@@ -13,6 +13,10 @@ GameObject::GameObject(double nx, double ny, double w, double h, int vx, int vy)
 	velX = vx;
 	velY = vy;
 	setTransformOriginPoint (x + width/2.0, y + height/2.0);
+	transRight = false;
+	transLeft = false;
+	transUp = false;
+	transDown = false;
 }
 
 int GameObject::getVelX()
@@ -52,6 +56,38 @@ void GameObject::setWidth(int w)
 	width = w;
 	setRect(x, y, w, height);
 	draw();
+}
+
+void GameObject::setRight(bool b){
+	transRight = b;
+}
+
+bool GameObject::getRight(){
+	return transRight;
+}
+
+void GameObject::setLeft(bool b){
+	transLeft = b;
+}
+
+bool GameObject::getLeft(){
+	return transLeft;
+}
+
+void GameObject::setUp(bool b){
+	transUp = b;
+}
+
+bool GameObject::getUp(){
+	return transUp;
+}
+
+void GameObject::setDown(bool b){
+	transDown = b;
+}
+
+bool GameObject::getDown(){
+	return transDown;
 }
 
 void GameObject::face(int sx, int sy)

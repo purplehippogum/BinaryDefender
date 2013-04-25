@@ -13,12 +13,20 @@ class GameObject : public QGraphicsRectItem
     void setVelY(int vy);
     void setRot(int r);
     void setWidth(int w);
+    void setRight(bool b);
+    void setLeft(bool b);
+    void setUp(bool b);
+    void setDown(bool b);
     int getX();
     int getY();
     int getWidth();
     int getHeight();
     int getVelX();
     int getVelY();
+    bool getRight();
+    bool getLeft();
+    bool getUp();
+    bool getDown();
     int getRot();
     /** Object will rotate towards @param x, @param y */
     void face(int sx, int sy);
@@ -36,6 +44,10 @@ class GameObject : public QGraphicsRectItem
     int height;
     int velX;
     int velY;
+    bool transRight;
+    bool transLeft;
+    bool transUp;
+    bool transDown;
     /** Stores the rotation */
     int rot;
 };
