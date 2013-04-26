@@ -15,6 +15,7 @@
 #include "basic_bullet.h"
 #include "enemy.h"
 #include "play_area.h"
+#include "gameplay.h"
 #include "game_object.h"
 #include "health_bar.h"
 
@@ -41,6 +42,8 @@ private:
 	QGraphicsScene *scene;
 	/** Displays all of the game object */
 	QGraphicsView *view;
+	/** Handles key presses */
+	Gameplay *gameplay;
 	/** Designates a play area to detect mouse presses */
 	PlayArea *area;
 	/** Keepts track of game time */
@@ -73,6 +76,9 @@ private:
 	int killCount;
 	/** This is how many enemies must be killed to advance the round */
 	int enemyLimit;
+	/** Controls the speed at which the enemies move */
+	double enemySpeed;
+	double enemySpawnRate;
 	/** Keeps track of rounds */
 	int rounds;
 	/** Displays round count */

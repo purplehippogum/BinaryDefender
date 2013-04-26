@@ -261,7 +261,8 @@ MainWindow::MainWindow()
 	
 	/** Initialize view and scene */
 	scene = new QGraphicsScene(0, -40, WINDOW_MAX_X, WINDOW_MAX_Y, this);
-	view = new QGraphicsView(scene);
+//	view = new QGraphicsView(scene);
+	gameplay = new Gameplay(scene);
 	
 	/** Configure view settings */
   view->setFixedSize(WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1);

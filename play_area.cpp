@@ -16,3 +16,10 @@ void PlayArea::mousePressEvent(QGraphicsSceneMouseEvent *clicked)
 		main->SMASH();
 	}
 }
+
+void PlayArea::keyPressEvent(QKeyEvent *k)
+{
+	if(k->key() == Qt::Key_W){
+		std::cout <<  "hey girl" << std::endl;
+  }
+}
