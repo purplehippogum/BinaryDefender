@@ -10,9 +10,12 @@ class Enemy : public AbstractObject
 		void move(int vx, int vy);
 		void setDamage(int d);
 		int getDamage();
+		bool getHunt();
+		void setHunt(bool h);
 	private:
 		int damage;
-		int dir;
+		/** If true, the enemy will go after the player */
+		bool hunt;
 };
 
 #endif

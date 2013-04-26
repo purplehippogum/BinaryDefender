@@ -3,6 +3,7 @@
 Enemy::Enemy(QPixmap *pm, double nx, double ny, double w, double h, int hp) :
 	AbstractObject(pm, nx, ny, w, h, hp)
 {
+	hunt = false;
 }
 
 void Enemy::move(int vx, int vy)// player's coordinates will be passed in
@@ -30,3 +31,13 @@ int Enemy::getDamage()
 {
 	return damage;
 } 
+
+bool Enemy::getHunt()
+{
+	return hunt;
+}
+
+void Enemy::setHunt(bool h)
+{
+	hunt = h;
+}

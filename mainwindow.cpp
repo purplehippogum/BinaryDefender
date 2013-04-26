@@ -14,16 +14,16 @@ void MainWindow::handleTimer()
 //		cout << "Time: " << seconds << " seconds" << endl;
 	}
 	/** Handle player movement */
-	if(player->getDir() == 0  && (player->getY() > -15) && ( player->getX() > 290 && player->getX() < 320 ) ){
+	if(player->getDir() == 0  && (player->getY() > -15) && ( player->getX() > 285 && player->getX() < 325 ) ){
 		player->moveUp(1);
 	}
-	else if(player->getDir() == 1  && (player->getY() < WINDOW_MAX_Y-45) && ( player->getX() > 290 && player->getX() < 320 )){
+	else if(player->getDir() == 1  && (player->getY() < WINDOW_MAX_Y-45) && ( player->getX() > 285 && player->getX() < 325 )){
 		player->moveDown(1);
 	}
-	else if(player->getDir() == 2  && (player->getX() > -30) && ( player->getY() > 210 && player->getY() < WINDOW_MAX_Y/2 )){
+	else if(player->getDir() == 2  && (player->getX() > -30) && ( player->getY() > 205 && player->getY() < WINDOW_MAX_Y/2 + 10 )){
 		player->moveLeft(1);
 	}
-	else if(player->getDir() == 3  && (player->getX()  < WINDOW_MAX_X) && ( player->getY() > 210 && player->getY() < WINDOW_MAX_Y/2 )){
+	else if(player->getDir() == 3  && (player->getX()  < WINDOW_MAX_X) && ( player->getY() > 210 && player->getY() < WINDOW_MAX_Y/2 + 10 )){
 		player->moveRight(1);
 	}
 	/** SMASH the walls! */
@@ -138,6 +138,13 @@ void MainWindow::handleTimer()
 		bullets[i]->setPos(-200, -200);
 			bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 		}
+		if( bullets[i]->collidesWithItem(q1, Qt::IntersectsItemShape) ||
+		bullets[i]->collidesWithItem(q2, Qt::IntersectsItemShape) || 
+		bullets[i]->collidesWithItem(q3, Qt::IntersectsItemShape) ||
+		bullets[i]->collidesWithItem(q4, Qt::IntersectsItemShape) ){
+			bullets[i]->setPos(-200, -200);
+			bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
+		}
 		for(unsigned int j = 0; j < enemies.size(); j++){
 			if(bullets[i]->collidesWithItem(enemies[j], Qt::IntersectsItemShape)){
 				enemies[j]->setHealth(enemies[j]->getHealth() - bullets[i]->getDamage());
@@ -154,20 +161,19 @@ void MainWindow::handleTimer()
 	}
 /** This if statement handles enemy spawning */
 	if(gameTimer%300 == 0){// 
-		srand(p.x());
 		int dir = rand()%4;
 		cout << "Enemy counter " << killCount << endl;
 		cout << "Enemy limit " << enemyLimit << endl;
 		switch(dir){
 		// right side
-			case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X+40, WINDOW_MAX_Y/2, 32, 32, 32);
+			case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
 		// left side
-			case 1: { enemy = new Enemy(enemyIMG, -40, WINDOW_MAX_Y/2, 32, 32, 32);
+			case 1: { enemy = new Enemy(enemyIMG, 0, WINDOW_MAX_Y/2-20, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
@@ -181,7 +187,7 @@ void MainWindow::handleTimer()
 							break;
 						}
 		// top
-			case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, -40, 32, 32, 32);
+			case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, -20, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
@@ -193,7 +199,14 @@ void MainWindow::handleTimer()
 	if(enemy && gameTimer%5 == 0){
 //		std::cout << "Movee" << std::endl;
 		for(unsigned int i = 0; i < enemies.size(); i++){
-			enemies[i]->move(player->getX(), player->getY());
+			if(!enemies[i]->getHunt())
+				enemies[i]->move(WINDOW_MAX_X/2-15, WINDOW_MAX_Y/2-15);
+			if(enemies[i]->getX() == WINDOW_MAX_X/2-15 && enemies[i]->getY() == WINDOW_MAX_Y/2-15){
+				enemies[i]->setHunt(true);
+			}
+			if(enemies[i]->getHunt()){
+				enemies[i]->move(player->getX(), player->getY());
+			}
 		}
 	}
 	if(killCount >= enemyLimit){// beginning of a new round
@@ -279,6 +292,7 @@ MainWindow::MainWindow()
 	QBrush black(Qt::black);
 	QBrush white(Qt::white);
 	QBrush red(Qt::red);
+	srand(p.x());
 	
 	/** Initialize gameplay and scene */
 	scene = new QGraphicsScene(0, -40, WINDOW_MAX_X, WINDOW_MAX_Y, this);
