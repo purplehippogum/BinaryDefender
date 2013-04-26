@@ -13,6 +13,17 @@ void MainWindow::handleTimer()
 		++seconds;
 //		cout << "Time: " << seconds << " seconds" << endl;
 	}
+	if(killCount >= enemyLimit){// beginning of a new round
+		if(seconds != 0) {
+			enemyLimit = ( ((rounds * 11)/seconds) - ( 100 - player->getHealth() ) );
+			killCount = 0;
+			seconds = 0;
+			rounds++;
+			rString.setNum(rounds);
+			rNum->setText(rString);
+			cout << "Enemy limit " << enemyLimit << endl;
+		}
+	}
 	/** Handle player movement */
 	if(player->getDir() == 0  && (player->getY() > -15) && ( player->getX() > 285 && player->getX() < 325 ) ){
 		player->moveUp(1);
@@ -121,6 +132,9 @@ void MainWindow::handleTimer()
 			delete enemies[i];
 			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
 			killCount++;
+			score += enemies[i]->getPoints();
+			sString.setNum(score);
+			pointDisplay->setText(sString);
 		}
 		else if(enemies[i]->collidesWithItem(player, Qt::IntersectsItemShape) ){
 			delete enemies[i];
@@ -155,6 +169,9 @@ void MainWindow::handleTimer()
 					delete enemies[j];
 					enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[j]));
 					killCount++;
+					score += enemies[j]->getPoints();
+					sString.setNum(score);
+					pointDisplay->setText(sString);
 				}
 			}
 		}
@@ -163,31 +180,30 @@ void MainWindow::handleTimer()
 	if(gameTimer%300 == 0){// 
 		int dir = rand()%4;
 		cout << "Enemy counter " << killCount << endl;
-		cout << "Enemy limit " << enemyLimit << endl;
 		switch(dir){
 		// right side
-			case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32);
+			case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
 		// left side
-			case 1: { enemy = new Enemy(enemyIMG, 0, WINDOW_MAX_Y/2-20, 32, 32, 32);
+			case 1: { enemy = new Enemy(enemyIMG, 0, WINDOW_MAX_Y/2-20, 32, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
 		// bottom
-			case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y+40, 32, 32, 32);
+			case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y+40, 32, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
 		// top
-			case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, -20, 32, 32, 32);
+			case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, -20, 32, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
@@ -208,14 +224,6 @@ void MainWindow::handleTimer()
 				enemies[i]->move(player->getX(), player->getY());
 			}
 		}
-	}
-	if(killCount >= enemyLimit){// beginning of a new round
-		if(seconds != 0) enemyLimit = ( ((rounds * 50)/seconds) - ( 100 - player->getHealth() ) );
-		killCount = 0;
-		seconds = 0;
-		rounds++;
-		rString.setNum(rounds);
-		rNum->setText(rString);
 	}
 }
 
@@ -327,7 +335,16 @@ MainWindow::MainWindow()
 	
 	/** Set up score */
 	score = 0;
-
+	sString = "Score";
+	scoreDisplay = new QGraphicsSimpleTextItem;
+	scoreDisplay->setText(sString);
+	scoreDisplay->setPos(WINDOW_MAX_X/2+170, -40);
+	/** Use the string to store the actual score value */
+	sString.setNum(score);
+	pointDisplay = new QGraphicsSimpleTextItem;
+	pointDisplay->setText(sString);
+	pointDisplay->setPos(WINDOW_MAX_X/2 + 220, -40);
+	
 	/** Set up the paths the enemies will traverse */
 	// double nx, double ny, double w, double h, int vx, int vy
 	q1 = new GameObject(-31, -23, 320, 230, 0, 0);
@@ -342,7 +359,7 @@ MainWindow::MainWindow()
 	/** Initialize timer that will keep the time of the scene */
 	timer = new QTimer(this);
 	timer->setInterval(5);
-	seconds = 0;
+	seconds = 1;
 
 	/** Initialize a pixmap for the player and a test AbstractObject */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
@@ -378,6 +395,8 @@ MainWindow::MainWindow()
 	scene->addItem(healthOutline);
 	scene->addItem(ROUND);
 	scene->addItem(rNum);
+	scene->addItem(pointDisplay);
+	scene->addItem(scoreDisplay);
 	
 	/** Game Events, or connections */
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));

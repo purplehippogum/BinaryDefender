@@ -1,9 +1,10 @@
 #include "enemy.h"
 
-Enemy::Enemy(QPixmap *pm, double nx, double ny, double w, double h, int hp) :
+Enemy::Enemy(QPixmap *pm, double nx, double ny, double w, double h, int hp, int p) :
 	AbstractObject(pm, nx, ny, w, h, hp)
 {
 	hunt = false;
+	points = p;
 }
 
 void Enemy::move(int vx, int vy)// player's coordinates will be passed in
@@ -41,3 +42,14 @@ void Enemy::setHunt(bool h)
 {
 	hunt = h;
 }
+
+int Enemy::getPoints()
+{
+	return points;
+}
+
+void Enemy::setPoints(int p)
+{
+	points = p;
+}
+

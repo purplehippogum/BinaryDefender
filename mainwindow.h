@@ -55,8 +55,12 @@ private:
 	int seconds;
 	/** Keeps track of how many SMASH powers the player has */
 	int SMASHcount;
-	/** Score */
+	/** Score members */
 	int score;
+	QString sString;
+	QGraphicsSimpleTextItem *scoreDisplay;
+	QGraphicsSimpleTextItem *pointDisplay;
+	
 	/** Rectangle that the enemies will travel on */
 	GameObject *q1;
 	GameObject *q2;
