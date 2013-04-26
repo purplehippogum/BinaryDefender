@@ -38,6 +38,11 @@ The object of the game is to survive oncoming waves of enemies for as long as po
   * Left-click on a digit in the score display to gain the corresponding ability
   * Right-click in a lane to use SMASH ability
   * Mouse wheel changes projectile type
+#### WASD Keys used for up, down, left, and right movement
+  * W is up
+  * S is down
+  * A is left
+  * D is right
 
 ----
 
