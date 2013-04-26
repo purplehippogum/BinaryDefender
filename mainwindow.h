@@ -40,6 +40,9 @@ public:
 	void SMASH();
 	/** Moves the player */
 	void movePlayer(std::string dir);
+	/** Converts the score to binary */
+//	int toBinary(int num);
+	QString toBinary(int num, bool rev = false);
     
 private:
 	/** Stores the view */

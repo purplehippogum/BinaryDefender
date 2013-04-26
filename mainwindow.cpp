@@ -133,7 +133,8 @@ void MainWindow::handleTimer()
 			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
 			killCount++;
 			score += enemies[i]->getPoints();
-			sString.setNum(score);
+			bool b = false;
+			sString = toBinary(score, b);
 			pointDisplay->setText(sString);
 		}
 		else if(enemies[i]->collidesWithItem(player, Qt::IntersectsItemShape) ){
@@ -159,6 +160,7 @@ void MainWindow::handleTimer()
 			bullets[i]->setPos(-200, -200);
 			bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 		}
+/** Check for bullet collision with enemy */
 		for(unsigned int j = 0; j < enemies.size(); j++){
 			if(bullets[i]->collidesWithItem(enemies[j], Qt::IntersectsItemShape)){
 				enemies[j]->setHealth(enemies[j]->getHealth() - bullets[i]->getDamage());
@@ -169,8 +171,9 @@ void MainWindow::handleTimer()
 					delete enemies[j];
 					enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[j]));
 					killCount++;
-					score += enemies[j]->getPoints();
-					sString.setNum(score);
+					score += enemies[i]->getPoints();
+					bool b = false;
+					sString = toBinary(score, b);
 					pointDisplay->setText(sString);
 				}
 			}
@@ -416,6 +419,36 @@ void MainWindow::movePlayer(std::string dir)
 		player->setDir(-1);
 }
 
+QString MainWindow::toBinary(int num, bool rev)
+{
+    QString s;  
+    while(num != 0)
+    {
+       s += (num & 1) ? '1' : '0';
+       num >>= 1;
+    }
+
+    if(!rev)        
+        std::reverse(s.begin(),s.end());
+
+    return s;
+}
+
+/*
+int MainWindow::toBinary(int num)
+{
+	int r = 0;
+	
+	if(num <= 1){
+		cout << "binary: " << num << endl;
+		return num;
+	}
+	
+	r = num % 2;
+	toBinary(num >> 1);
+	return r;
+}
+*/
 void MainWindow::show() {
 	timer->start();
 	gameplay->show();
