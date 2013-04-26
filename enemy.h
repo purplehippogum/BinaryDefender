@@ -6,12 +6,13 @@
 class Enemy : public AbstractObject
 {
 	public:
-		Enemy(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp);
+		Enemy(QPixmap *pm, double nx, double ny, double w, double h, int hp);
 		void move(int vx, int vy);
 		void setDamage(int d);
 		int getDamage();
 	private:
 		int damage;
+		int dir;
 };
 
 #endif

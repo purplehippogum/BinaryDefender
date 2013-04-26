@@ -15,6 +15,8 @@ class AbstractObject : public QGraphicsPixmapItem
     virtual void setVelY(int vy);
     virtual void setHealth(int h);
     virtual void setRot(int r);
+   	virtual void setDir(int d);
+		int getDir();
     int getX();
     int getY();
     int getWidth();
@@ -39,6 +41,7 @@ class AbstractObject : public QGraphicsPixmapItem
     int velX;
     int velY;
     int health;
+    int dir;
     /** Stores the rotation */
     int rot;
     QPixmap *pixMap;

@@ -13,6 +13,19 @@ void MainWindow::handleTimer()
 		++seconds;
 //		cout << "Time: " << seconds << " seconds" << endl;
 	}
+	/** Handle player movement */
+	if(player->getDir() == 0  && (player->getY() > -15) && ( player->getX() > 290 && player->getX() < 320 ) ){
+		player->moveUp(1);
+	}
+	else if(player->getDir() == 1  && (player->getY() < WINDOW_MAX_Y-45) && ( player->getX() > 290 && player->getX() < 320 )){
+		player->moveDown(1);
+	}
+	else if(player->getDir() == 2  && (player->getX() > -30) && ( player->getY() > 210 && player->getY() < WINDOW_MAX_Y/2 )){
+		player->moveLeft(1);
+	}
+	else if(player->getDir() == 3  && (player->getX()  < WINDOW_MAX_X) && ( player->getY() > 210 && player->getY() < WINDOW_MAX_Y/2 )){
+		player->moveRight(1);
+	}
 	/** SMASH the walls! */
 // SMASH the top two walls	
 	if(q1->getRight() && ( q1->getX() < (WINDOW_MAX_X/2 - q1->getWidth() - 10) ) ){
@@ -86,16 +99,16 @@ void MainWindow::handleTimer()
 	}
 	/** Checks which bullets should be moving */
 	for(unsigned int i = 0; i < bullets.size(); i++){
-		if(bullets[i]->getX() < player->getX()){
+		if(bullets[i]->getDir() == 2){// move left
 			bullets[i]->move(-1.2, 0);
 		}
-		else if(bullets[i]->getX() > player->getX()){
+		else if(bullets[i]->getDir() == 3){// move right
 			bullets[i]->move(1.2, 0);
 		}
-		else if(bullets[i]->getY() < player->getY()){
+		else if(bullets[i]->getDir() == 0){// move up
 			bullets[i]->move(0, -1.2);
 		}
-		else if(bullets[i]->getY() > player->getY()){
+		else if(bullets[i]->getDir() == 1){// move down
 			bullets[i]->move(0, 1.2);
 		}
 	}
@@ -146,25 +159,29 @@ void MainWindow::handleTimer()
 		cout << "Enemy counter " << killCount << endl;
 		cout << "Enemy limit " << enemyLimit << endl;
 		switch(dir){
-			case 0: { enemy = new Enemy(enemyIMG, player->getX()+WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 32);
+		// right side
+			case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X+40, WINDOW_MAX_Y/2, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
-			case 1: { enemy = new Enemy(enemyIMG, player->getX()-WINDOW_MAX_X/2, player->getY(), 32, 32, 0, 0, 32);
+		// left side
+			case 1: { enemy = new Enemy(enemyIMG, -40, WINDOW_MAX_Y/2, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
-			case 2: { enemy = new Enemy(enemyIMG, player->getX(), player->getY()+WINDOW_MAX_Y/2, 32, 32, 0, 0, 32);
+		// bottom
+			case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y+40, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
-			case 3: { enemy = new Enemy(enemyIMG, player->getX(), player->getY()-WINDOW_MAX_Y/2, 32, 32, 0, 0, 32);
+		// top
+			case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, -40, 32, 32, 32);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
@@ -180,7 +197,7 @@ void MainWindow::handleTimer()
 		}
 	}
 	if(killCount >= enemyLimit){// beginning of a new round
-		enemyLimit = ( ((rounds * 50)/seconds) - ( 100 - player->getHealth() ) );
+		if(seconds != 0) enemyLimit = ( ((rounds * 50)/seconds) - ( 100 - player->getHealth() ) );
 		killCount = 0;
 		seconds = 0;
 		rounds++;
@@ -191,34 +208,38 @@ void MainWindow::handleTimer()
 
 void MainWindow::shoot()
 {
-  valid = view->mapFromGlobal(valid);
-	p = view->mapFromGlobal(QCursor::pos());
+  valid = gameplay->mapFromGlobal(valid);
+	p = gameplay->mapFromGlobal(QCursor::pos());
 // y offset: 90, x: 55
 	double sx = abs(player->getX()+50 - p.x());
 	double sy = abs(player->getY()+80 - p.y());
 	if(bullets.size() < 2){
-		if( sy > sx && ( p.y() < player->getY()+80)){
+		if( sy > sx && ( p.y() < player->getY()+80)){// shoot up
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
+			bullet->setDir(0);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
 
-		else if( sy > sx &&	( p.y() > player->getY()+80 ) ){
+		else if( sy > sx &&	( p.y() > player->getY()+80 ) ){// shoot down
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
+			bullet->setDir(1);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( sx > sy && (p.x() < player->getX()+55 ) ){
+		else if( sx > sy && (p.x() < player->getX()+55 ) ){// shoot left
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
+			bullet->setDir(2);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
-		else if( sx > sy && ( p.x() > player->getX()+55) ){
+		else if( sx > sy && ( p.x() > player->getX()+55) ){// shoot right
 			valid = p;
 			bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
+			bullet->setDir(3);
 			scene->addItem(bullet);
 			bullets.push_back(bullet);
 		}
@@ -233,7 +254,7 @@ void MainWindow::toggleTimer(){
 /** This power may be activated about once a round to effectively clear a lane of enemies */
 void MainWindow::SMASH()
 {
-	p = view->mapFromGlobal(QCursor::pos());
+	p = gameplay->mapFromGlobal(QCursor::pos());
 	if( ( p.y() <=  273) && (p.x() > 320 && p.x() < 384 ) ){// up alley
 		q1->setRight(true);
 		q3->setLeft(true);
@@ -259,14 +280,14 @@ MainWindow::MainWindow()
 	QBrush white(Qt::white);
 	QBrush red(Qt::red);
 	
-	/** Initialize view and scene */
+	/** Initialize gameplay and scene */
 	scene = new QGraphicsScene(0, -40, WINDOW_MAX_X, WINDOW_MAX_Y, this);
-//	view = new QGraphicsView(scene);
-	gameplay = new Gameplay(scene);
+//	scene->setSceneRect(0, 0, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1);
+	gameplay = new Gameplay(scene, this);
 	
-	/** Configure view settings */
-  view->setFixedSize(WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1);
-  view->setWindowTitle("Binary Defender");
+	/** Configure gameplay settings */
+  gameplay->setFixedSize(WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1);
+  gameplay->setWindowTitle("Binary Defender");
   
   /** Configure Cursor */
   p = QWidget::mapFromGlobal(p);
@@ -311,9 +332,9 @@ MainWindow::MainWindow()
 
 	/** Initialize a pixmap for the player and a test AbstractObject */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
-	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 64, 64, 100);
+	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 100);
 	player->setTransformOriginPoint(player->getX()+40, player->getY() + 45);
-	view->mapFromGlobal(player->pos().toPoint());
+	gameplay->mapFromGlobal(player->pos().toPoint());
 	
 	/** Initialize the health bar */
 	health = new HealthBar(-25, -42, 140, 16, 0, 0, player->getHealth());
@@ -348,9 +369,23 @@ MainWindow::MainWindow()
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));
 }
 
+void MainWindow::movePlayer(std::string dir)
+{
+	if(dir == "up")
+		player->setDir(0);
+	else if(dir == "down")
+		player->setDir(1);
+	else if(dir == "left")
+		player->setDir(2);
+	else if(dir == "right")
+		player->setDir(3);
+	else
+		player->setDir(-1);
+}
+
 void MainWindow::show() {
 	timer->start();
-	view->show();
+	gameplay->show();
 }
 
 MainWindow::~MainWindow()

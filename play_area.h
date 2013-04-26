@@ -4,6 +4,7 @@
 #include <QKeyEvent>
 #include <QGraphicsRectItem>
 #include <QGraphicsSceneMouseEvent>
+#include "mainwindow.h"
 
 class MainWindow;
 
@@ -13,7 +14,6 @@ class PlayArea : public QGraphicsRectItem
 		PlayArea(int nx, int ny, int w, int h, MainWindow *window);
 		/** Handles the left and right click events */
 		void mousePressEvent(QGraphicsSceneMouseEvent *clicked);
-		void keyPressEvent(QKeyEvent *k);
 	private:
 		MainWindow *main;
 };

@@ -5,12 +5,16 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 
+class MainWindow;
+
 class Gameplay : public QGraphicsView
 {
 	public:
-		Gameplay(QGraphicsScene *scene);
+		Gameplay(QGraphicsScene *scene, MainWindow *main);
 		void keyPressEvent(QKeyEvent *k);
+		void keyReleaseEvent(QKeyEvent *k);
 	private:
+		MainWindow *window;
 		
 };
 

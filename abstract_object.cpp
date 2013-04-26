@@ -61,6 +61,16 @@ int AbstractObject::getHealth()
 	return health;
 }
 
+void AbstractObject::setDir(int d)
+{
+	dir = d;
+}
+
+int AbstractObject::getDir()
+{
+	return dir;
+}
+
 void AbstractObject::face(int sx, int sy)
 {
 	double dx = abs(x+width/2 - sx);

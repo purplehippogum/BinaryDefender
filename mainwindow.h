@@ -10,6 +10,7 @@
 #include <QGraphicsPixmapItem>
 #include <QKeyEvent>
 #include <vector>
+#include <string>
 
 #include "player.h"
 #include "basic_bullet.h"
@@ -23,6 +24,7 @@
 #define WINDOW_MAX_Y 480
 
 class PlayArea;
+class Gameplay;
 
 class MainWindow : public QWidget {
     Q_OBJECT
@@ -36,6 +38,8 @@ public:
 	void shoot();
 	/** Smashes two walls together, destroying all of the enemies in the way */
 	void SMASH();
+	/** Moves the player */
+	void movePlayer(std::string dir);
     
 private:
 	/** Stores the view */

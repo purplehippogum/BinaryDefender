@@ -1,24 +1,23 @@
 #include "enemy.h"
 
-Enemy::Enemy(QPixmap *pm, double nx, double ny, double w, double h, int vx, int vy, int hp) :
+Enemy::Enemy(QPixmap *pm, double nx, double ny, double w, double h, int hp) :
 	AbstractObject(pm, nx, ny, w, h, hp)
 {
-
 }
 
 void Enemy::move(int vx, int vy)// player's coordinates will be passed in
 {
-	if(x > vx)
+	if(x > vx)// && abs(vy - y) < 5)
 		moveLeft(1);
 
-	if(x < vx)
+	else if(x < vx)// && abs(vy - y) < 5)
 		moveRight(1);
 /*
 */
-	if(y > vy)
+	else if(y > vy)// && abs(vx - x) < 5 )
 		moveUp(1);
 		
-	if(y < vy)
+	else if(y < vy)// && abs(vx - x) < 5)
 		moveDown(1);
 }
 

@@ -6,7 +6,11 @@
 class Player : public AbstractObject
 {
 	public:
-	Player(QPixmap *pm, double nx, double ny, double w, double h, int hp);
+		Player(QPixmap *pm, double nx, double ny, double w, double h, int hp);
+		void setDir(int d);
+		int getDir();
+	private:
+		int dir;
 };
 
 #endif
