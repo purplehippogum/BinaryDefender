@@ -1,3 +1,4 @@
+#include "play_area.h"
 #include "player.h"
 
 Player::Player(QPixmap *pm, double nx, double ny, double w, double h, int hp)
@@ -12,4 +13,28 @@ void Player::setDir(int d)
 int Player::getDir()
 {
 	return dir;
+}
+
+void Player::incPierce()
+{
+	pierce++;
+}
+void Player::incBombs(){
+	bombs++;
+}
+void Player::decPierce(){
+	pierce--;
+}
+void Player::decBomb(){
+	bombs--;
+}
+void Player::cycleAmmo(){
+	ammoType++;
+	if(ammoType%2 == 0){
+		ammoType = 0;
+	}
+}
+
+int Player::getAmmo(){
+	return ammoType;
 }

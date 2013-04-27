@@ -10,12 +10,23 @@ class BasicBullet : public AbstractObject
 		~BasicBullet();
 		void move(double vx, double vy);// double vx, double vy
 		int getDamage();
+		/** Used to change the image to @param img */
+		void setImage();
+		/** @return the type of projectile */
+		int getType();
+		/** Set the type of projectile */
+		void setType(int t);
+		
 	private:
 		double initX;
 		double initY;
 		int finX;
 		int finY;
 		int damage;
+		QPixmap *basic;
+		QPixmap *bomb;
+		QPixmap *arrow;
+		int ammoType;
 };
 
 #endif

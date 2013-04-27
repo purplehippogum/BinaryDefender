@@ -133,7 +133,12 @@ void MainWindow::handleTimer()
 			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
 			killCount++;
 			score->addPoints(enemies[i]->getPoints());
+			GameObject *cover = new GameObject(score->getX()+250, score->getY()-30, 150, 30, 0, 0);
+			QBrush white(Qt::white);
+			cover->setBrush(white);
+			scene->addItem(cover);
 			score->updateScore();
+			delete cover;
 		}
 		else if(enemies[i]->collidesWithItem(player, Qt::IntersectsItemShape) ){
 			delete enemies[i];
@@ -170,6 +175,8 @@ void MainWindow::handleTimer()
 					enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[j]));
 					killCount++;
 					score->addPoints(enemies[i]->getPoints());
+					GameObject *cover = new GameObject(0, 0, 150, 30, 0, 0);
+					scene->addItem(cover);
 					score->updateScore();
 				}
 			}
@@ -299,6 +306,7 @@ MainWindow::MainWindow()
 	QBrush black(Qt::black);
 	QBrush white(Qt::white);
 	QBrush red(Qt::red);
+	QBrush green(Qt::green);
 	srand(p.x());
 	
 	/** Initialize gameplay and scene */
@@ -315,7 +323,7 @@ MainWindow::MainWindow()
   valid = QWidget::mapFromGlobal(valid);
   
 	/** Initizlize and set up the play area dummy rectangle that registers clicks */
-	area = new PlayArea(-0.05*WINDOW_MAX_X, -0.05*WINDOW_MAX_Y, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.8, this);
+	area = new PlayArea(-0.05*WINDOW_MAX_X, -0.05*WINDOW_MAX_Y, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.8, this, player);
 	// -0.05, -0.08
 //	area->setPen(Qt::NoPen);
 
@@ -333,8 +341,10 @@ MainWindow::MainWindow()
 	rNum->setPos(WINDOW_MAX_X/2, -45);
 	
 	/** Set up score */
-	score = new Score(WINDOW_MAX_X/2-200, WINDOW_MAX_Y/3-20, this, scene);// WINDOW_MAX_X/2 - 70, -30, this
+	// WINDOW_MAX_X/2-200, WINDOW_MAX_Y/3-20, this, scene
+	score = new Score(WINDOW_MAX_X/2 - 70, -30, this, scene);
 	score->updateScore();
+	score->setBrush(green);
 	
 	/** Set up the paths the enemies will traverse */
 	// double nx, double ny, double w, double h, int vx, int vy

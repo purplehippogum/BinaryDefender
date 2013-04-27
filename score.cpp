@@ -1,22 +1,18 @@
 #include "score.h"
 #include "mainwindow.h"
+#include "game_object.h"
 
 Score::Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc) : QGraphicsRectItem(nx, ny, 150, 30)
 {
 	window = main;
 	scene = sc;
-//	digits[0] = NULL;
-//	digit = NULL;
-	this->setBrush(Qt::NoBrush);
 	width = 150;
 	height = 30;
 	x = nx;
 	y = ny;
 	this->setTransformOriginPoint (x + width/2.0, y + height/2.0);
 	zeroIMG = new QPixmap("zero.png", "png", Qt::AutoColor);
-//	zero->setPixmap(*zeroIMG);
 	oneIMG = new QPixmap("one.png", "png", Qt::AutoColor);
-//	one->setPixmap(*oneIMG);
 	this->setPos(nx, ny);
 	points = 0;
 	s = "Score";
@@ -37,36 +33,37 @@ void Score::updateScore()
 	s.setNum(points);
 	binary();
 	pointDisplay->setText(s);
-
+	
 	for(unsigned int i = 0; i < digits.size(); i++){
 		if(digits[i] != NULL){
+			scene->removeItem(digits[i]);
 			delete digits[i];
 			digits.erase(std::find(digits.begin(), digits.end(), digits[i]));
 		}
 	}
 	
 	for(int i = 0; i < s.length(); i++){
-		if(s[i] == '1'){
-			digit = new AbstractObject(oneIMG, i*12 + x+116, y+145, 16, 16, -1);
-			digit->show();
+		if(s[i] == '0'){
+			digit = new AbstractObject(zeroIMG, i*12 + x + 250, y-22, 16, 16, -1);
+			scene->addItem(digit);
+			digit->setBin(false);
+			digits.push_back(digit);
+		}
+		else{
+			digit = new AbstractObject(oneIMG, i*12 + x + 250, y -22, 16, 16, -1);
 			scene->addItem(digit);
 			digit->setBin(true);
 			digits.push_back(digit);
 		}
-		else{
-			digit = new AbstractObject(zeroIMG, i*12 + x+116, y+145, 16, 16, -1);
-			digit->setBin(false);
-			digit->show();
-			scene->addItem(digit);
-			digits.push_back(digit);
-		}
 	}
-	for(unsigned int i = 0; i < digits.size(); i++){
-		if(digits[i] != NULL){
-			delete digits[i];
-			digits.erase(std::find(digits.begin(), digits.end(), digits[i]));
-		}
-	}
+}
+
+void Score::draw()
+{
+	QPointF p(x, y);
+	QRectF r(rect());
+	r.moveTo(p);
+	setRect(r);
 }
 
 QString Score::toBinary(int num, bool rev)
@@ -103,4 +100,14 @@ void Score::addPoints(int p)
 int Score::getPoints()
 {
 	return points;
+}
+
+int Score::getX()
+{
+	return x;
+}
+
+int Score::getY()
+{
+	return y;
 }

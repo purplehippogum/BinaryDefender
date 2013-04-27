@@ -5,7 +5,6 @@
 #include <QGraphicsSimpleTextItem>
 #include <vector>
 #include <QGraphicsRectItem>
-//#include <QGraphicsPixmapItem>
 #include "abstract_object.h"
 
 class MainWindow;
@@ -14,12 +13,15 @@ class Score : public QGraphicsRectItem
 {
 	public:
 		Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc);
-		QRect boundingRect();
+		int getX();
+		int getY();
 		void setPoints(int p);
 		void addPoints(int p);
 		int getPoints();
 		void updateScore();
 		void binary();
+		void draw();
+		
 		
 	private:
 		MainWindow *window;
