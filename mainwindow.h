@@ -16,6 +16,7 @@
 #include "basic_bullet.h"
 #include "enemy.h"
 #include "play_area.h"
+#include "score.h"
 #include "gameplay.h"
 #include "game_object.h"
 #include "health_bar.h"
@@ -25,6 +26,7 @@
 
 class PlayArea;
 class Gameplay;
+class Score;
 
 class MainWindow : public QWidget {
     Q_OBJECT
@@ -40,9 +42,6 @@ public:
 	void SMASH();
 	/** Moves the player */
 	void movePlayer(std::string dir);
-	/** Converts the score to binary */
-//	int toBinary(int num);
-	QString toBinary(int num, bool rev = false);
     
 private:
 	/** Stores the view */
@@ -59,10 +58,7 @@ private:
 	/** Keeps track of how many SMASH powers the player has */
 	int SMASHcount;
 	/** Score members */
-	int score;
-	QString sString;
-	QGraphicsSimpleTextItem *scoreDisplay;
-	QGraphicsSimpleTextItem *pointDisplay;
+	Score *score;
 	
 	/** Rectangle that the enemies will travel on */
 	GameObject *q1;

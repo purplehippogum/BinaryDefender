@@ -132,10 +132,8 @@ void MainWindow::handleTimer()
 			delete enemies[i];
 			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
 			killCount++;
-			score += enemies[i]->getPoints();
-			bool b = false;
-			sString = toBinary(score, b);
-			pointDisplay->setText(sString);
+			score->addPoints(enemies[i]->getPoints());
+			score->updateScore();
 		}
 		else if(enemies[i]->collidesWithItem(player, Qt::IntersectsItemShape) ){
 			delete enemies[i];
@@ -171,10 +169,8 @@ void MainWindow::handleTimer()
 					delete enemies[j];
 					enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[j]));
 					killCount++;
-					score += enemies[i]->getPoints();
-					bool b = false;
-					sString = toBinary(score, b);
-					pointDisplay->setText(sString);
+					score->addPoints(enemies[i]->getPoints());
+					score->updateScore();
 				}
 			}
 		}
@@ -337,16 +333,8 @@ MainWindow::MainWindow()
 	rNum->setPos(WINDOW_MAX_X/2, -45);
 	
 	/** Set up score */
-	score = 0;
-	sString = "Score";
-	scoreDisplay = new QGraphicsSimpleTextItem;
-	scoreDisplay->setText(sString);
-	scoreDisplay->setPos(WINDOW_MAX_X/2+170, -40);
-	/** Use the string to store the actual score value */
-	sString.setNum(score);
-	pointDisplay = new QGraphicsSimpleTextItem;
-	pointDisplay->setText(sString);
-	pointDisplay->setPos(WINDOW_MAX_X/2 + 220, -40);
+	score = new Score(WINDOW_MAX_X/2-200, WINDOW_MAX_Y/3-20, this, scene);// WINDOW_MAX_X/2 - 70, -30, this
+	score->updateScore();
 	
 	/** Set up the paths the enemies will traverse */
 	// double nx, double ny, double w, double h, int vx, int vy
@@ -390,16 +378,15 @@ MainWindow::MainWindow()
 	/** Add items to the scene */
 	scene->addItem(area);
 	scene->addItem(player); objects.push_back(player);
-	scene->addItem(q1);
+/*	scene->addItem(q1);
 	scene->addItem(q2);
 	scene->addItem(q3);
-	scene->addItem(q4);
+	scene->addItem(q4);*/
 	scene->addItem(health);
 	scene->addItem(healthOutline);
 	scene->addItem(ROUND);
 	scene->addItem(rNum);
-	scene->addItem(pointDisplay);
-	scene->addItem(scoreDisplay);
+	scene->addItem(score);
 	
 	/** Game Events, or connections */
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));
@@ -419,36 +406,6 @@ void MainWindow::movePlayer(std::string dir)
 		player->setDir(-1);
 }
 
-QString MainWindow::toBinary(int num, bool rev)
-{
-    QString s;  
-    while(num != 0)
-    {
-       s += (num & 1) ? '1' : '0';
-       num >>= 1;
-    }
-
-    if(!rev)        
-        std::reverse(s.begin(),s.end());
-
-    return s;
-}
-
-/*
-int MainWindow::toBinary(int num)
-{
-	int r = 0;
-	
-	if(num <= 1){
-		cout << "binary: " << num << endl;
-		return num;
-	}
-	
-	r = num % 2;
-	toBinary(num >> 1);
-	return r;
-}
-*/
 void MainWindow::show() {
 	timer->start();
 	gameplay->show();

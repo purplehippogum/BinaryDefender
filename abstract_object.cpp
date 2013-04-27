@@ -30,6 +30,16 @@ int AbstractObject::getVelY()
 	return velY;
 }
 
+void AbstractObject::setBin(bool b)
+{
+	bin = b;
+}
+
+bool AbstractObject::getBin()
+{
+	return bin;
+}
+
 void AbstractObject::setVelX(int vx)
 {
 	velX = vx;

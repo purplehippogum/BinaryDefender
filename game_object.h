@@ -44,6 +44,7 @@ class GameObject : public QGraphicsRectItem
     int height;
     int velX;
     int velY;
+    /** These 4 boolean variables tell if the object is in motion or not */
     bool transRight;
     bool transLeft;
     bool transUp;

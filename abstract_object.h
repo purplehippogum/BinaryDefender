@@ -23,6 +23,8 @@ class AbstractObject : public QGraphicsPixmapItem
     int getHeight();
     int getVelX();
     int getVelY();
+    virtual void setBin(bool b);
+    bool getBin();
     int getHealth();
     int getRot();
     /** Object will rotate towards @param x, @param y */
@@ -42,6 +44,8 @@ class AbstractObject : public QGraphicsPixmapItem
     int velY;
     int health;
     int dir;
+    /** For displaying a binary number */
+    bool bin;
     /** Stores the rotation */
     int rot;
     QPixmap *pixMap;
