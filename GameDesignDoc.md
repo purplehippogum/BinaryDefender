@@ -3,7 +3,7 @@
 
 ## Gameplay Overview
 
-The object of the game is to survive oncoming waves of enemies for as long as possible. Points are earned for each enemy killed. Players control a stationary character that can turn in any direction and ward off foes with a basic shooting attack. Enhancing the player's basic attack are the numbers in the **binary** scoring display. The player can choose either 1 or 0 **from the score display** to enhance his/her basic attack. Taking a digit from the score display decreases the score by that amount. The player loses health upon colliding with an enemy. The enemy is destroyed in the process. Once the player's health has been depleted, the game is over and the (non-binary) score will be displayed.
+The object of the game is to survive oncoming waves of enemies for as long as possible. Points are earned for each enemy killed, and an enemy wave (or round) ends when a certain number of enemies have been killed. Players control a ~~stationary~~ character that can move in ~~any direction~~ four directions and ward off foes with a basic shooting attack. Enhancing the player's basic attack are the numbers in the **binary** scoring display. The player can choose either 1 or 0 **from the score display** to enhance his/her basic attack. Taking a digit from the score display decreases the score as if that digit was removed. Once a round, the player may use a SMASH ability that destroys all enemies in a lane. The player loses health upon colliding with an enemy. The enemy is destroyed in the process. Once the player's health has been depleted, the game is over and the (non-binary) score will be displayed.
 
 ## Mock-Up Screenshots
    ![Main Menu](http://www-scf.usc.edu/~vegaperk/main%20menu%20screen.jpg "Main Menu")
@@ -31,12 +31,18 @@ The object of the game is to survive oncoming waves of enemies for as long as po
 ----
 
 ## Controls
-#### Mouse is used for all control
+#### Mouse is used for all shooting control
   * Player faces the direction of the mouse
   * Left-click anywhere outside of the HUD and score display to shoot in that direction
+  * What is shot depends on what type of projectile is selected
   * Left-click on a digit in the score display to gain the corresponding ability
-  * Right-click to use special weapon
+  * Right-click in a lane to use SMASH ability
   * Mouse wheel changes projectile type
+#### WASD Keys used for up, down, left, and right movement
+  * W is up
+  * S is down
+  * A is left
+  * D is right
 
 ----
 
@@ -44,7 +50,7 @@ The object of the game is to survive oncoming waves of enemies for as long as po
 ####  1. Player
   * Takes the form of a triangle (like the spaceship in Asteroids)
   * Remains stationary at the center of the screen.
-  * Can turn 360 degrees.
+  * ~~Can turn 360 degrees.~~ Moves and shoots in four directions: up, down, left, right
 
 ####  2. Basic Player Projectile
   * Simple projectile that does minimal damage to enemies
