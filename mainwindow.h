@@ -15,6 +15,7 @@
 #include "player.h"
 #include "basic_bullet.h"
 #include "arrow_bullet.h"
+#include "bomb.h"
 #include "enemy.h"
 #include "play_area.h"
 #include "score.h"
@@ -94,9 +95,10 @@ private:
 	QGraphicsSimpleTextItem *ROUND;
 	QGraphicsSimpleTextItem *rNum;
 	
-	/** A simple bullet object */
+	/** The three different bullet objects */
 	BasicBullet *bullet;
 	ArrowBullet *arrow;
+	Bomb *bomb;
 	std::vector<BasicBullet*>	bullets;
 	
 	/** Stores the mouse position */
@@ -107,6 +109,7 @@ private:
 	QPixmap *playerIMG;
 	QPixmap *bbIMG;
 	QPixmap *arrowIMG;
+	QPixmap *bombIMG;
 	
 public slots:
 	/** Handles object movement when timer gets set off */

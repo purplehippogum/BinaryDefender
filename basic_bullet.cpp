@@ -60,3 +60,10 @@ int BasicBullet::getStrike()
 {
 	return strikeCount;
 }
+
+void BasicBullet::setBomb(bool b){
+	bomb = b;
+}
+bool BasicBullet::getBomb(){
+	return bomb;
+}

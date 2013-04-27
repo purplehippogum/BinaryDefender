@@ -168,7 +168,16 @@ void MainWindow::handleTimer()
 			if(bullets[i]->collidesWithItem(enemies[j], Qt::IntersectsItemShape)){
 				bullets[i]->setInEnemy(true);
 				enemies[j]->setHealth(enemies[j]->getHealth() - bullets[i]->getDamage());
-				if(bullets[i]->getStrike() <= 0){
+				if(bullets[i]->getBomb() &&
+					( abs(bullets[i]->getY() - enemies[j]->getY()) <= 50 &&
+					abs(bullets[i]->getX() - enemies[j]->getX()) <= 50) ){
+					enemies[j]->setHealth(0);
+				}
+				if(bullets[i]->getStrike() <= 0 && !bullets[i]->getBomb()){
+					bullets[i]->setPos(-200, -200);
+					bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
+				}
+				else if(bullets[i]->getBomb()){
 					bullets[i]->setPos(-200, -200);
 					bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 				}
@@ -266,6 +275,14 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
+			else if(player->getAmmo() == 2){
+				valid = p;
+				bomb = new Bomb(bombIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 12);
+				player->getAmmo();
+				bomb->setDir(0);
+				scene->addItem(bomb);
+				bullets.push_back(bomb);
+			}
 		}
 
 		else if( sy > sx &&	( p.y() > player->getY()+80 ) ){// shoot down
@@ -283,6 +300,13 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
+			else if(player->getAmmo() == 2){
+				valid = p;
+				bomb = new Bomb(bombIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 12);
+				bomb->setDir(1);
+				scene->addItem(bomb);
+				bullets.push_back(bomb);
+			}
 		}
 		else if( sx > sy && (p.x() < player->getX()+55 ) ){// shoot left
 			if(player->getAmmo() == 0){
@@ -299,6 +323,13 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
+			else if(player->getAmmo() == 2){
+				valid = p;
+				bomb = new Bomb(bombIMG, player->getX()-1, player->getY()-15, 16, 16, p.x(), p.y(), 1, 12);
+				bomb->setDir(2);
+				scene->addItem(bomb);
+				bullets.push_back(bomb);
+			}
 		}
 		else if( sx > sy && ( p.x() > player->getX()+55) ){// shoot right
 			valid = p;
@@ -313,6 +344,12 @@ void MainWindow::shoot()
 				arrow->setDir(3);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
+			}
+			else if(player->getAmmo() == 2){// && player->getArrows() > 0){
+				bomb = new Bomb(bombIMG, player->getX()+1, player->getY()-15, 16, 16, p.x(), p.y(), 1, 12);
+				bomb->setDir(3);
+				scene->addItem(bomb);
+				bullets.push_back(bomb);
 			}
 		}
 	}
@@ -432,6 +469,8 @@ MainWindow::MainWindow()
 	/** Set up arrow object */
 	arrowIMG = new QPixmap("arrow.png", "png", Qt::AutoColor);
 	arrow = NULL;
+	/** Set up bomb */
+	bombIMG = new QPixmap("bomb.png", "png", Qt::AutoColor);
 	
 	/** Add items to the scene */
 	scene->addItem(area);

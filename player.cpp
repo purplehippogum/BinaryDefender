@@ -31,7 +31,7 @@ void Player::decBomb(){
 }
 void Player::cycleAmmo(){
 	ammoType++;
-	if(ammoType == 2){
+	if(ammoType == 3){
 		ammoType = 0;
 	}
 }

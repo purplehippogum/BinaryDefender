@@ -15,6 +15,8 @@ class BasicBullet : public AbstractObject
 		/** Subtracts 1 from strikeCount */
 		void decStrike();
 		int getStrike();
+		void setBomb(bool b);
+		bool getBomb();
 		
 	protected:
 		/** How many enemies the bullet has gone through */
@@ -26,6 +28,7 @@ class BasicBullet : public AbstractObject
 		int finX;
 		int finY;
 		int damage;
+		bool bomb;
 };
 
 #endif
