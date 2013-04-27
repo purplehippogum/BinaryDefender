@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QApplication>
+#include <QAction>
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -28,6 +29,7 @@
 
 #define WINDOW_MAX_X 640
 #define WINDOW_MAX_Y 480
+#define EXIT_CODE_REBOOT -123456789
 
 class PlayArea;
 class Gameplay;
@@ -49,6 +51,8 @@ public:
 	void movePlayer(std::string dir);
     
 private:
+	/** Action to handle restartGame() slot */
+	QAction *actionReboot;
 	/** Stores the scene */
 	QGraphicsScene *scene;
 	/** Displays all of the game objects */
@@ -58,6 +62,7 @@ private:
 	/** Pauses the game */
 	QPushButton *pause;
 	QPushButton *resume;
+	QPushButton *restart;
 	QPushButton *quit;
 	/** Designates a play area to detect mouse presses */
 	PlayArea *area;
@@ -127,6 +132,8 @@ public slots:
 	void pauseGame();
 	/** Resumes the game */
 	void resumeGame();
+	/** Restarts the game */
+	void restartGame();
 };
 
 #endif // MAINWINDOW_H

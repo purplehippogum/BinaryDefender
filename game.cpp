@@ -3,10 +3,15 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication game(argc, argv);
-    MainWindow w;
+	int currentExitCode = 0;
+	
+	do{
+		QApplication game(argc, argv);
+		MainWindow w;
+		w.show();
+		currentExitCode = game.exec();
+		
+	}while(currentExitCode == EXIT_CODE_REBOOT);
 
-    w.show();
-
-    return game.exec();
+	return currentExitCode;
 }

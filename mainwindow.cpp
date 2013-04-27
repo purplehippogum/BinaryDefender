@@ -355,12 +355,18 @@ void MainWindow::shoot()
 	}
 }
 
+void MainWindow::restartGame()
+{
+	qApp->exit(EXIT_CODE_REBOOT);
+}
+
 void MainWindow::pauseGame(){
 	if(timer->isActive()){
 		QMessageBox *msgBox = new QMessageBox;
 		msgBox->move(WINDOW_MAX_X/2, WINDOW_MAX_Y/2+50);
 		msgBox->setText("Game Paused");
 		msgBox->addButton(resume, QMessageBox::YesRole);
+		msgBox->addButton(restart, QMessageBox::NoRole);
 		msgBox->addButton(quit, QMessageBox::DestructiveRole);
 		msgBox->show();
 		timer->stop();
@@ -407,6 +413,11 @@ MainWindow::MainWindow()
 	QBrush green(Qt::green);
 	srand(p.x());
 	
+	/** Set up the reboot QAction */
+	actionReboot = new QAction(this);
+	actionReboot->setText(tr("Restart"));
+	connect( actionReboot, SIGNAL( triggered() ),this, SLOT( gameRestart() ) );
+	
 	/** Initialize gameplay and scene */
 	scene = new QGraphicsScene(0, -40, WINDOW_MAX_X, WINDOW_MAX_Y, this);
 //	scene->setSceneRect(0, 0, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1);
@@ -427,6 +438,8 @@ MainWindow::MainWindow()
   quit = new QPushButton("Quit Game");
   /** Set up resume pause menu button */
   resume = new QPushButton("Resume Game");
+  /** Set up restart button */
+  restart = new QPushButton("Restart Game");
   
 	/** Initialize a pixmap for the player */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
@@ -514,6 +527,7 @@ MainWindow::MainWindow()
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));
 	connect(pause, SIGNAL(clicked()), this, SLOT(pauseGame()));
 	connect(resume, SIGNAL(clicked()), this, SLOT(resumeGame()));
+	connect(restart, SIGNAL(clicked()), this, SLOT(restartGame()));
 	connect(quit, SIGNAL(clicked()), qApp, SLOT(quit()));
 }
 
