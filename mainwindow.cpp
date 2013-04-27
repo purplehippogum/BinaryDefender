@@ -168,19 +168,19 @@ void MainWindow::handleTimer()
 			if(bullets[i]->collidesWithItem(enemies[j], Qt::IntersectsItemShape)){
 				bullets[i]->setInEnemy(true);
 				enemies[j]->setHealth(enemies[j]->getHealth() - bullets[i]->getDamage());
-				if(bullets[i]->getBomb() &&
+/*				if(bullets[i]->getBomb() &&
 					( abs(bullets[i]->getY() - enemies[j]->getY()) <= 50 &&
 					abs(bullets[i]->getX() - enemies[j]->getX()) <= 50) ){
 					enemies[j]->setHealth(0);
-				}
-				if(bullets[i]->getStrike() <= 0 && !bullets[i]->getBomb()){
+				}*/
+				if(bullets[i]->getStrike() <= 0){
 					bullets[i]->setPos(-200, -200);
 					bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 				}
-				else if(bullets[i]->getBomb()){
+/*				else if(bullets[i]->getBomb()){
 					bullets[i]->setPos(-200, -200);
 					bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
-				}
+				}*/
 //				delete bullets[i];
 				if(enemies[j]->getHealth() <= 0){
 					delete enemies[j];
@@ -257,7 +257,7 @@ void MainWindow::shoot()
 	double sx = abs(player->getX()+50 - p.x());
 	double sy = abs(player->getY()+80 - p.y());
 	
-	if(bullets.size() < 2){
+	if(bullets.size() < 2 && timer->isActive() ){
 		if( sy > sx && ( p.y() < player->getY()+80)){// shoot up
 			if(player->getAmmo() == 0){
 				valid = p;
@@ -275,14 +275,14 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
-			else if(player->getAmmo() == 2){
+/*			else if(player->getAmmo() == 2){
 				valid = p;
 				bomb = new Bomb(bombIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 12);
 				player->getAmmo();
 				bomb->setDir(0);
 				scene->addItem(bomb);
 				bullets.push_back(bomb);
-			}
+			}*/
 		}
 
 		else if( sy > sx &&	( p.y() > player->getY()+80 ) ){// shoot down
@@ -300,13 +300,13 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
-			else if(player->getAmmo() == 2){
+/*			else if(player->getAmmo() == 2){
 				valid = p;
 				bomb = new Bomb(bombIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 12);
 				bomb->setDir(1);
 				scene->addItem(bomb);
 				bullets.push_back(bomb);
-			}
+			}*/
 		}
 		else if( sx > sy && (p.x() < player->getX()+55 ) ){// shoot left
 			if(player->getAmmo() == 0){
@@ -323,13 +323,13 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
-			else if(player->getAmmo() == 2){
+/*			else if(player->getAmmo() == 2){
 				valid = p;
 				bomb = new Bomb(bombIMG, player->getX()-1, player->getY()-15, 16, 16, p.x(), p.y(), 1, 12);
 				bomb->setDir(2);
 				scene->addItem(bomb);
 				bullets.push_back(bomb);
-			}
+			}*/
 		}
 		else if( sx > sy && ( p.x() > player->getX()+55) ){// shoot right
 			valid = p;
@@ -345,40 +345,56 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
-			else if(player->getAmmo() == 2){// && player->getArrows() > 0){
+/*			else if(player->getAmmo() == 2){// && player->getArrows() > 0){
 				bomb = new Bomb(bombIMG, player->getX()+1, player->getY()-15, 16, 16, p.x(), p.y(), 1, 12);
 				bomb->setDir(3);
 				scene->addItem(bomb);
 				bullets.push_back(bomb);
-			}
+			}*/
 		}
 	}
 }
 
-void MainWindow::toggleTimer(){
-	if(timer->isActive()) timer->stop();
-
-	else timer->start();
+void MainWindow::pauseGame(){
+	if(timer->isActive()){
+		QMessageBox *msgBox = new QMessageBox;
+		msgBox->move(WINDOW_MAX_X/2, WINDOW_MAX_Y/2+50);
+		msgBox->setText("Game Paused");
+		msgBox->addButton(resume, QMessageBox::YesRole);
+		msgBox->addButton(quit, QMessageBox::DestructiveRole);
+		msgBox->show();
+		timer->stop();
+	}
 }
+
+void MainWindow::resumeGame()
+{
+	if(!timer->isActive()){
+		timer->start();
+	}
+}
+
 /** This power may be activated about once a round to effectively clear a lane of enemies */
 void MainWindow::SMASH()
 {
 	p = gameplay->mapFromGlobal(QCursor::pos());
-	if( ( p.y() <=  273) && (p.x() > 320 && p.x() < 384 ) ){// up alley
-		q1->setRight(true);
-		q3->setLeft(true);
-	}
-	else if(	( p.y() > 338 && (p.x() > 320 && p.x() < 384 ) ) ){// down alley
-		q2->setRight(true);
-		q4->setLeft(true);
-	}
-	else if( (p.x() < 321 && ( p.y() < 340 && p.y() > 270 ) ) ){// left alley
-		q1->setDown(true);
-		q2->setUp(true);
-	}
-	else if( ( p.x() > 380 && ( p.y() < 340 && p.y() > 270 ) ) ){// right alley
-		q3->setDown(true);
-		q4->setUp(true);
+	if(timer->isActive()){
+		if( ( p.y() <=  273) && (p.x() > 320 && p.x() < 384 ) ){// up alley
+			q1->setRight(true);
+			q3->setLeft(true);
+		}
+		else if(	( p.y() > 338 && (p.x() > 320 && p.x() < 384 ) ) ){// down alley
+			q2->setRight(true);
+			q4->setLeft(true);
+		}
+		else if( (p.x() < 321 && ( p.y() < 340 && p.y() > 270 ) ) ){// left alley
+			q1->setDown(true);
+			q2->setUp(true);
+		}
+		else if( ( p.x() > 380 && ( p.y() < 340 && p.y() > 270 ) ) ){// right alley
+			q3->setDown(true);
+			q4->setUp(true);
+		}
 	}
 }
 
@@ -403,6 +419,14 @@ MainWindow::MainWindow()
   /** Configure Cursor */
   p = QWidget::mapFromGlobal(p);
   valid = QWidget::mapFromGlobal(valid);
+  
+  /** Set up pause button */
+  pause = new QPushButton("Pause Game");
+  pause->move(WINDOW_MAX_X/2-150, -55);
+  /** Set up quit pause menu button */
+  quit = new QPushButton("Quit Game");
+  /** Set up resume pause menu button */
+  resume = new QPushButton("Resume Game");
   
 	/** Initialize a pixmap for the player */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
@@ -437,13 +461,13 @@ MainWindow::MainWindow()
 	/** Set up the paths the enemies will traverse */
 	// double nx, double ny, double w, double h, int vx, int vy
 	q1 = new GameObject(-31, -23, 320, 230, 0, 0);
-	q1->setBrush(black);
+//	q1->setBrush(black);
 	q2 = new GameObject(-31, 272, 320, 230, 0, 0);
-	q2->setBrush(black);
+//	q2->setBrush(black);
 	q3 = new GameObject(350, -23, 320, 230, 0, 0);
-	q3->setBrush(black);
+//	q3->setBrush(black);
 	q4 = new GameObject(350, 272, 320, 230, 0, 0);
-	q4->setBrush(black);
+//	q4->setBrush(black);
 	
 	/** Initialize timer that will keep the time of the scene */
 	timer = new QTimer(this);
@@ -470,7 +494,7 @@ MainWindow::MainWindow()
 	arrowIMG = new QPixmap("arrow.png", "png", Qt::AutoColor);
 	arrow = NULL;
 	/** Set up bomb */
-	bombIMG = new QPixmap("bomb.png", "png", Qt::AutoColor);
+//	bombIMG = new QPixmap("bomb.png", "png", Qt::AutoColor);
 	
 	/** Add items to the scene */
 	scene->addItem(area);
@@ -484,9 +508,13 @@ MainWindow::MainWindow()
 	scene->addItem(ROUND);
 	scene->addItem(rNum);
 	scene->addItem(score);
+	scene->addWidget(pause);
 	
 	/** Game Events, or connections */
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));
+	connect(pause, SIGNAL(clicked()), this, SLOT(pauseGame()));
+	connect(resume, SIGNAL(clicked()), this, SLOT(resumeGame()));
+	connect(quit, SIGNAL(clicked()), qApp, SLOT(quit()));
 }
 
 void MainWindow::movePlayer(std::string dir)

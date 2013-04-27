@@ -1,9 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QApplication>
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QPushButton>
+#include <QMessageBox>
 #include <QTimer>
 #include <QString>
 #include <QGraphicsSimpleTextItem>
@@ -15,7 +18,7 @@
 #include "player.h"
 #include "basic_bullet.h"
 #include "arrow_bullet.h"
-#include "bomb.h"
+//#include "bomb.h"
 #include "enemy.h"
 #include "play_area.h"
 #include "score.h"
@@ -46,15 +49,21 @@ public:
 	void movePlayer(std::string dir);
     
 private:
-	/** Stores the view */
+	/** Stores the scene */
 	QGraphicsScene *scene;
-	/** Displays all of the game object */
+	/** Displays all of the game objects */
 	QGraphicsView *view;
 	/** Handles key presses */
 	Gameplay *gameplay;
+	/** Pauses the game */
+	QPushButton *pause;
+	QPushButton *resume;
+	QPushButton *quit;
 	/** Designates a play area to detect mouse presses */
 	PlayArea *area;
-	/** Keepts track of game time */
+	/** Button that pauses the game and brings up the menu */
+	
+	/** Keeps track of game time */
 	int gameTimer;
 	int seconds;
 	/** Keeps track of how many SMASH powers the player has */
@@ -98,7 +107,7 @@ private:
 	/** The three different bullet objects */
 	BasicBullet *bullet;
 	ArrowBullet *arrow;
-	Bomb *bomb;
+//	Bomb *bomb;
 	std::vector<BasicBullet*>	bullets;
 	
 	/** Stores the mouse position */
@@ -109,13 +118,15 @@ private:
 	QPixmap *playerIMG;
 	QPixmap *bbIMG;
 	QPixmap *arrowIMG;
-	QPixmap *bombIMG;
+//	QPixmap *bombIMG;
 	
 public slots:
 	/** Handles object movement when timer gets set off */
 	void handleTimer();
 	/** Used to pause the game */
-	void toggleTimer();
+	void pauseGame();
+	/** Resumes the game */
+	void resumeGame();
 };
 
 #endif // MAINWINDOW_H
