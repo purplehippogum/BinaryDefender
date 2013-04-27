@@ -101,7 +101,6 @@ void MainWindow::handleTimer()
 			q2->moveDown();
 	}
 // reset the right two walls
-// reset the left two walls
 	if(!q3->getDown() && ( q3->getY() > -23 ) ){
 			q3->moveUp();
 	}
@@ -152,7 +151,6 @@ void MainWindow::handleTimer()
 	for(unsigned int i = 0; i < bullets.size(); i++){
 		if(bullets[i] && (bullets[i]->getX() <= -25 || bullets[i]->getX() > WINDOW_MAX_X +10||
 		bullets[i]->getY() > WINDOW_MAX_Y+10 || bullets[i]->getY() < -25) ){
-//			delete bullets[i];
 		bullets[i]->setPos(-200, -200);
 			bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 		}
@@ -168,20 +166,10 @@ void MainWindow::handleTimer()
 			if(bullets[i]->collidesWithItem(enemies[j], Qt::IntersectsItemShape)){
 				bullets[i]->setInEnemy(true);
 				enemies[j]->setHealth(enemies[j]->getHealth() - bullets[i]->getDamage());
-/*				if(bullets[i]->getBomb() &&
-					( abs(bullets[i]->getY() - enemies[j]->getY()) <= 50 &&
-					abs(bullets[i]->getX() - enemies[j]->getX()) <= 50) ){
-					enemies[j]->setHealth(0);
-				}*/
 				if(bullets[i]->getStrike() <= 0){
 					bullets[i]->setPos(-200, -200);
 					bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 				}
-/*				else if(bullets[i]->getBomb()){
-					bullets[i]->setPos(-200, -200);
-					bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
-				}*/
-//				delete bullets[i];
 				if(enemies[j]->getHealth() <= 0){
 					delete enemies[j];
 					enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[j]));
@@ -275,14 +263,6 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
-/*			else if(player->getAmmo() == 2){
-				valid = p;
-				bomb = new Bomb(bombIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 12);
-				player->getAmmo();
-				bomb->setDir(0);
-				scene->addItem(bomb);
-				bullets.push_back(bomb);
-			}*/
 		}
 
 		else if( sy > sx &&	( p.y() > player->getY()+80 ) ){// shoot down
@@ -300,13 +280,6 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
-/*			else if(player->getAmmo() == 2){
-				valid = p;
-				bomb = new Bomb(bombIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 12);
-				bomb->setDir(1);
-				scene->addItem(bomb);
-				bullets.push_back(bomb);
-			}*/
 		}
 		else if( sx > sy && (p.x() < player->getX()+55 ) ){// shoot left
 			if(player->getAmmo() == 0){
@@ -323,13 +296,6 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
-/*			else if(player->getAmmo() == 2){
-				valid = p;
-				bomb = new Bomb(bombIMG, player->getX()-1, player->getY()-15, 16, 16, p.x(), p.y(), 1, 12);
-				bomb->setDir(2);
-				scene->addItem(bomb);
-				bullets.push_back(bomb);
-			}*/
 		}
 		else if( sx > sy && ( p.x() > player->getX()+55) ){// shoot right
 			valid = p;
@@ -345,12 +311,6 @@ void MainWindow::shoot()
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
-/*			else if(player->getAmmo() == 2){// && player->getArrows() > 0){
-				bomb = new Bomb(bombIMG, player->getX()+1, player->getY()-15, 16, 16, p.x(), p.y(), 1, 12);
-				bomb->setDir(3);
-				scene->addItem(bomb);
-				bullets.push_back(bomb);
-			}*/
 		}
 	}
 }
@@ -411,7 +371,9 @@ MainWindow::MainWindow()
 	QBrush white(Qt::white);
 	QBrush red(Qt::red);
 	QBrush green(Qt::green);
-	srand(p.x());
+	
+	/** Set up the welcome beginning window */
+	begin = new BeginWindow(WINDOW_MAX_X/2, WINDOW_MAX_Y/2);
 	
 	/** Set up the reboot QAction */
 	actionReboot = new QAction(this);
@@ -426,6 +388,10 @@ MainWindow::MainWindow()
 	/** Configure gameplay settings */
   gameplay->setFixedSize(WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1);
   gameplay->setWindowTitle("Binary Defender");
+  
+	/** Seeds random to x coordinate of mouse */
+	p = gameplay->mapFromGlobal(QCursor::pos());
+	srand(p.x());
   
   /** Configure Cursor */
   p = QWidget::mapFromGlobal(p);

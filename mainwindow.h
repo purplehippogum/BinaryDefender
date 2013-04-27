@@ -16,10 +16,10 @@
 #include <vector>
 #include <string>
 
+//#include "beginwindow.h"
 #include "player.h"
 #include "basic_bullet.h"
 #include "arrow_bullet.h"
-//#include "bomb.h"
 #include "enemy.h"
 #include "play_area.h"
 #include "score.h"
@@ -51,6 +51,8 @@ public:
 	void movePlayer(std::string dir);
     
 private:
+	/** Declare a begin window */
+//	BeginWindow *begin;
 	/** Action to handle restartGame() slot */
 	QAction *actionReboot;
 	/** Stores the scene */
