@@ -14,6 +14,7 @@
 
 #include "player.h"
 #include "basic_bullet.h"
+#include "arrow_bullet.h"
 #include "enemy.h"
 #include "play_area.h"
 #include "score.h"
@@ -95,6 +96,7 @@ private:
 	
 	/** A simple bullet object */
 	BasicBullet *bullet;
+	ArrowBullet *arrow;
 	std::vector<BasicBullet*>	bullets;
 	
 	/** Stores the mouse position */
@@ -104,6 +106,7 @@ private:
 	/** Store game object images */
 	QPixmap *playerIMG;
 	QPixmap *bbIMG;
+	QPixmap *arrowIMG;
 	
 public slots:
 	/** Handles object movement when timer gets set off */

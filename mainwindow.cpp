@@ -166,10 +166,13 @@ void MainWindow::handleTimer()
 /** Check for bullet collision with enemy */
 		for(unsigned int j = 0; j < enemies.size(); j++){
 			if(bullets[i]->collidesWithItem(enemies[j], Qt::IntersectsItemShape)){
+				bullets[i]->setInEnemy(true);
 				enemies[j]->setHealth(enemies[j]->getHealth() - bullets[i]->getDamage());
-				bullets[i]->setPos(-200, -200);
+				if(bullets[i]->getStrike() <= 0){
+					bullets[i]->setPos(-200, -200);
+					bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
+				}
 //				delete bullets[i];
-				bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 				if(enemies[j]->getHealth() <= 0){
 					delete enemies[j];
 					enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[j]));
@@ -179,6 +182,10 @@ void MainWindow::handleTimer()
 					scene->addItem(cover);
 					score->updateScore();
 				}
+				bullets[i]->decStrike();
+			}
+			else{
+				bullets[i]->setInEnemy(false);
 			}
 		}
 	}
@@ -237,38 +244,76 @@ void MainWindow::shoot()
 {
   valid = gameplay->mapFromGlobal(valid);
 	p = gameplay->mapFromGlobal(QCursor::pos());
-// y offset: 90, x: 55
+	cout << "player ammo " << player->getAmmo() << endl;
 	double sx = abs(player->getX()+50 - p.x());
 	double sy = abs(player->getY()+80 - p.y());
+	
 	if(bullets.size() < 2){
 		if( sy > sx && ( p.y() < player->getY()+80)){// shoot up
-			valid = p;
-			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
-			bullet->setDir(0);
-			scene->addItem(bullet);
-			bullets.push_back(bullet);
+			if(player->getAmmo() == 0){
+				valid = p;
+				bullet = new BasicBullet(bbIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 6);
+				player->getAmmo();
+				bullet->setDir(0);
+				scene->addItem(bullet);
+				bullets.push_back(bullet);
+			}
+			else if(player->getAmmo() == 1){
+				valid = p;
+				arrow = new ArrowBullet(arrowIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 4);
+				player->getAmmo();
+				arrow->setDir(0);
+				scene->addItem(arrow);
+				bullets.push_back(arrow);
+			}
 		}
 
 		else if( sy > sx &&	( p.y() > player->getY()+80 ) ){// shoot down
-			valid = p;
-			bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
-			bullet->setDir(1);
-			scene->addItem(bullet);
-			bullets.push_back(bullet);
+			if(player->getAmmo() == 0){
+				valid = p;
+				bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 6);
+				bullet->setDir(1);
+				scene->addItem(bullet);
+				bullets.push_back(bullet);
+			}
+			else if(player->getAmmo() == 1){
+				valid = p;
+				arrow = new ArrowBullet(arrowIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 4);
+				arrow->setDir(1);
+				scene->addItem(arrow);
+				bullets.push_back(arrow);
+			}
 		}
 		else if( sx > sy && (p.x() < player->getX()+55 ) ){// shoot left
-			valid = p;
-			bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
-			bullet->setDir(2);
-			scene->addItem(bullet);
-			bullets.push_back(bullet);
+			if(player->getAmmo() == 0){
+				valid = p;
+				bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 6);
+				bullet->setDir(2);
+				scene->addItem(bullet);
+				bullets.push_back(bullet);
+			}
+			else if(player->getAmmo() == 1){
+				valid = p;
+				arrow = new ArrowBullet(arrowIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 4);
+				arrow->setDir(2);
+				scene->addItem(arrow);
+				bullets.push_back(arrow);
+			}
 		}
 		else if( sx > sy && ( p.x() > player->getX()+55) ){// shoot right
 			valid = p;
-			bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
-			bullet->setDir(3);
-			scene->addItem(bullet);
-			bullets.push_back(bullet);
+			if(player->getAmmo() == 0){
+				bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 6);
+				bullet->setDir(3);
+				scene->addItem(bullet);
+				bullets.push_back(bullet);
+			}
+			else if(player->getAmmo() == 1){// && player->getArrows() > 0){
+				arrow = new ArrowBullet(arrowIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 4);
+				arrow->setDir(3);
+				scene->addItem(arrow);
+				bullets.push_back(arrow);
+			}
 		}
 	}
 }
@@ -322,6 +367,12 @@ MainWindow::MainWindow()
   p = QWidget::mapFromGlobal(p);
   valid = QWidget::mapFromGlobal(valid);
   
+	/** Initialize a pixmap for the player */
+	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
+	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 100);
+	player->setTransformOriginPoint(player->getX()+40, player->getY() + 45);
+	gameplay->mapFromGlobal(player->pos().toPoint());
+  
 	/** Initizlize and set up the play area dummy rectangle that registers clicks */
 	area = new PlayArea(-0.05*WINDOW_MAX_X, -0.05*WINDOW_MAX_Y, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.8, this, player);
 	// -0.05, -0.08
@@ -362,12 +413,6 @@ MainWindow::MainWindow()
 	timer->setInterval(5);
 	seconds = 1;
 
-	/** Initialize a pixmap for the player and a test AbstractObject */
-	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
-	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 100);
-	player->setTransformOriginPoint(player->getX()+40, player->getY() + 45);
-	gameplay->mapFromGlobal(player->pos().toPoint());
-	
 	/** Initialize the health bar */
 	health = new HealthBar(-25, -42, 140, 16, 0, 0, player->getHealth());
 	health->setBrush(red);
@@ -384,14 +429,17 @@ MainWindow::MainWindow()
 	/** Create an image for the BasicBullet */
 	bbIMG = new QPixmap("basic_bullet.png", "png", Qt::AutoColor);
 	bullet = NULL;
+	/** Set up arrow object */
+	arrowIMG = new QPixmap("arrow.png", "png", Qt::AutoColor);
+	arrow = NULL;
 	
 	/** Add items to the scene */
 	scene->addItem(area);
 	scene->addItem(player); objects.push_back(player);
-/*	scene->addItem(q1);
+	scene->addItem(q1);
 	scene->addItem(q2);
 	scene->addItem(q3);
-	scene->addItem(q4);*/
+	scene->addItem(q4);
 	scene->addItem(health);
 	scene->addItem(healthOutline);
 	scene->addItem(ROUND);

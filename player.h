@@ -23,6 +23,9 @@ class Player : public AbstractObject
 		void cycleAmmo();
 		/** Retrieves ammo type */
 		int getAmmo();
+		/** Retrieves amount of each ammo type */
+		int getArrows();
+		int getBombs();
 		
 	private:
 		int dir;

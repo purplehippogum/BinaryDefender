@@ -4,6 +4,7 @@
 Player::Player(QPixmap *pm, double nx, double ny, double w, double h, int hp)
 	: AbstractObject(pm, nx, ny, w, h, hp)
 {
+	ammoType = 0;
 }
 void Player::setDir(int d)
 {
@@ -30,11 +31,19 @@ void Player::decBomb(){
 }
 void Player::cycleAmmo(){
 	ammoType++;
-	if(ammoType%2 == 0){
+	if(ammoType == 2){
 		ammoType = 0;
 	}
 }
 
 int Player::getAmmo(){
 	return ammoType;
+}
+
+int Player::getArrows(){
+	return pierce;
+}
+
+int Player::getBombs(){
+	return bombs;
 }

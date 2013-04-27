@@ -10,9 +10,8 @@ BasicBullet::BasicBullet(QPixmap *pm, double nx, double ny, double w, double h, 
 	finX = vx;
 	finY = vy;
 	damage = d;
-	basic = new QPixmap("basic_bullet.png", "png", Qt::AutoColor); 
-	bomb = new QPixmap("bomb.png", "png", Qt::AutoColor);// ("player.png", "png", Qt::AutoColor)
-	arrow = new QPixmap("arrow.png", "png", Qt::AutoColor);
+	strikeCount = 1;
+	inEnemy = false;
 }
 
 BasicBullet::~BasicBullet()
@@ -44,22 +43,20 @@ void BasicBullet::move(double vx, double vy)// double vx, double vy
 		moveDown(1);
 }
 
-void BasicBullet::setImage()
+void BasicBullet::setInEnemy(bool b)
 {
-	if(ammoType == 0)
-		setPixmap(*basic);
-	if(ammoType == 1)
-		setPixmap(*arrow);
-	else if(ammoType == 2)
-		setPixmap(*bomb);
+	inEnemy = b;
+}
+bool BasicBullet::getInEnemy()
+{
+	return inEnemy;
+}
+void BasicBullet::decStrike()
+{
+	strikeCount--;
 }
 
-int BasicBullet::getType()
+int BasicBullet::getStrike()
 {
-	return ammoType;
-}
-
-void BasicBullet::setType(int t)
-{
-	ammoType = t;
+	return strikeCount;
 }
