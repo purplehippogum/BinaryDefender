@@ -16,7 +16,7 @@
 #include <vector>
 #include <string>
 
-//#include "beginwindow.h"
+#include "beginwindow.h"
 #include "player.h"
 #include "basic_bullet.h"
 #include "arrow_bullet.h"
@@ -34,6 +34,7 @@
 class PlayArea;
 class Gameplay;
 class Score;
+class BeginWindow;
 
 class MainWindow : public QWidget {
     Q_OBJECT
@@ -49,10 +50,11 @@ public:
 	void SMASH();
 	/** Moves the player */
 	void movePlayer(std::string dir);
+	void setName(QString n);
     
 private:
 	/** Declare a begin window */
-//	BeginWindow *begin;
+	BeginWindow *begin;
 	/** Action to handle restartGame() slot */
 	QAction *actionReboot;
 	/** Stores the scene */
@@ -89,6 +91,10 @@ private:
 	QTimer *timer;
 	/** Main Player object */
 	Player *player;
+	/** Stores player name */
+	QString name;
+	/** Displays the player name */
+	QGraphicsSimpleTextItem *nameDisp;
 	/** Player health */
 	HealthBar *health;
 	GameObject *healthOutline;
@@ -125,7 +131,6 @@ private:
 	QPixmap *playerIMG;
 	QPixmap *bbIMG;
 	QPixmap *arrowIMG;
-//	QPixmap *bombIMG;
 	
 public slots:
 	/** Handles object movement when timer gets set off */

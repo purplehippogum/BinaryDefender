@@ -4,6 +4,7 @@
 #include "abstract_object.h"
 
 class PlayArea;
+class GamePlay;
 
 class Player : public AbstractObject
 {

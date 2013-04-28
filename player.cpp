@@ -1,10 +1,12 @@
 #include "play_area.h"
 #include "player.h"
+#include "gameplay.h"
 
 Player::Player(QPixmap *pm, double nx, double ny, double w, double h, int hp)
 	: AbstractObject(pm, nx, ny, w, h, hp)
 {
 	ammoType = 0;
+	dir = -1;
 }
 void Player::setDir(int d)
 {

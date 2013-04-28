@@ -24,17 +24,37 @@ void MainWindow::handleTimer()
 			cout << "Enemy limit " << enemyLimit << endl;
 		}
 	}
-	/** Handle player movement */
+/** Handle player movement */
+	// up
 	if(player->getDir() == 0  && (player->getY() > -15) && ( player->getX() > 285 && player->getX() < 325 ) ){
+		nameDisp->setPos(player->getX(), player->getY()+25);
+		player->setTransformOriginPoint(12, 23);
+		nameDisp->setRotation(0);
+		player->setRotation(0);
 		player->moveUp(1);
 	}
+// down
 	else if(player->getDir() == 1  && (player->getY() < WINDOW_MAX_Y-45) && ( player->getX() > 285 && player->getX() < 325 )){
+		nameDisp->setPos(player->getX(), player->getY()-20);
+		nameDisp->setRotation(0);
+		player->setTransformOriginPoint(12, 15);
+		player->setRotation(180);
 		player->moveDown(1);
 	}
+// left
 	else if(player->getDir() == 2  && (player->getX() > -30) && ( player->getY() > 205 && player->getY() < WINDOW_MAX_Y/2 + 10 )){
+		player->setTransformOriginPoint(10, 23);
+		player->setRotation(-90);
 		player->moveLeft(1);
+		nameDisp->setPos(player->getX()+25, player->getY()+35);
+		nameDisp->setRotation(-90);
 	}
+//  right
 	else if(player->getDir() == 3  && (player->getX()  < WINDOW_MAX_X) && ( player->getY() > 210 && player->getY() < WINDOW_MAX_Y/2 + 10 )){
+		player->setTransformOriginPoint(10, 17);
+		player->setRotation(90);
+		nameDisp->setPos(player->getX(), player->getY());
+		nameDisp->setRotation(90);
 		player->moveRight(1);
 	}
 	/** SMASH the walls! */
@@ -78,7 +98,7 @@ void MainWindow::handleTimer()
 		q4->moveUp();
 	}
 	else q4->setUp(false);
-	/** Now bring em back after they collide */
+/** Now bring em back after they collide */
 // reset the top two walls
 	if(!q1->getRight() && ( q1->getX() > -31 ) ){
 			q1->moveLeft();
@@ -107,18 +127,22 @@ void MainWindow::handleTimer()
 	if(!q4->getUp() && ( q4->getY() < 272 ) ){
 			q4->moveDown();
 	}
-	/** Checks which bullets should be moving */
+/** Checks which bullets should be moving */
 	for(unsigned int i = 0; i < bullets.size(); i++){
 		if(bullets[i]->getDir() == 2){// move left
+			bullets[i]->setRotation(-90);
 			bullets[i]->move(-1.2, 0);
 		}
 		else if(bullets[i]->getDir() == 3){// move right
+			bullets[i]->setRotation(90);
 			bullets[i]->move(1.2, 0);
 		}
 		else if(bullets[i]->getDir() == 0){// move up
+//			bullets[i]->setRotation(0);
 			bullets[i]->move(0, -1.2);
 		}
 		else if(bullets[i]->getDir() == 1){// move down
+//			bullets[i]->setRotation(180);
 			bullets[i]->move(0, 1.2);
 		}
 	}
@@ -241,12 +265,9 @@ void MainWindow::shoot()
 {
   valid = gameplay->mapFromGlobal(valid);
 	p = gameplay->mapFromGlobal(QCursor::pos());
-	cout << "player ammo " << player->getAmmo() << endl;
-	double sx = abs(player->getX()+50 - p.x());
-	double sy = abs(player->getY()+80 - p.y());
 	
 	if(bullets.size() < 2 && timer->isActive() ){
-		if( sy > sx && ( p.y() < player->getY()+80)){// shoot up
+		if( player->rotation() == 0){// shoot up
 			if(player->getAmmo() == 0){
 				valid = p;
 				bullet = new BasicBullet(bbIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 6);
@@ -259,13 +280,14 @@ void MainWindow::shoot()
 				valid = p;
 				arrow = new ArrowBullet(arrowIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 4);
 				player->getAmmo();
+				arrow->setRotation(-90);
 				arrow->setDir(0);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
 		}
 
-		else if( sy > sx &&	( p.y() > player->getY()+80 ) ){// shoot down
+		else if( player->rotation() == 180 ){// shoot down
 			if(player->getAmmo() == 0){
 				valid = p;
 				bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 6);
@@ -276,15 +298,18 @@ void MainWindow::shoot()
 			else if(player->getAmmo() == 1){
 				valid = p;
 				arrow = new ArrowBullet(arrowIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 4);
+				arrow->setRotation(90);
 				arrow->setDir(1);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
 		}
-		else if( sx > sy && (p.x() < player->getX()+55 ) ){// shoot left
+		else if( player->rotation() == -90 ){// shoot left
+//		cout << "rawrr " << player->getAmmo() << endl;
 			if(player->getAmmo() == 0){
 				valid = p;
 				bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 6);
+				bullet->setTransformOriginPoint(6, 23);
 				bullet->setDir(2);
 				scene->addItem(bullet);
 				bullets.push_back(bullet);
@@ -292,15 +317,18 @@ void MainWindow::shoot()
 			else if(player->getAmmo() == 1){
 				valid = p;
 				arrow = new ArrowBullet(arrowIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 4);
+				arrow->setRotation(180);
 				arrow->setDir(2);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
 		}
-		else if( sx > sy && ( p.x() > player->getX()+55) ){// shoot right
+		else if( player->rotation() == 90 ){// shoot right
+			cout << "rawrr " << player->getAmmo() << endl;
 			valid = p;
 			if(player->getAmmo() == 0){
 				bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 6);
+				bullet->setTransformOriginPoint(10, 23);
 				bullet->setDir(3);
 				scene->addItem(bullet);
 				bullets.push_back(bullet);
@@ -308,6 +336,7 @@ void MainWindow::shoot()
 			else if(player->getAmmo() == 1){// && player->getArrows() > 0){
 				arrow = new ArrowBullet(arrowIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 4);
 				arrow->setDir(3);
+				arrow->setTransformOriginPoint(0, 0);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
@@ -323,11 +352,11 @@ void MainWindow::restartGame()
 void MainWindow::pauseGame(){
 	if(timer->isActive()){
 		QMessageBox *msgBox = new QMessageBox;
-		msgBox->move(WINDOW_MAX_X/2, WINDOW_MAX_Y/2+50);
+		msgBox->move(WINDOW_MAX_X/2-50, WINDOW_MAX_Y/2+50);
 		msgBox->setText("Game Paused");
+		msgBox->addButton(quit, QMessageBox::DestructiveRole);
 		msgBox->addButton(resume, QMessageBox::YesRole);
 		msgBox->addButton(restart, QMessageBox::NoRole);
-		msgBox->addButton(quit, QMessageBox::DestructiveRole);
 		msgBox->show();
 		timer->stop();
 	}
@@ -335,6 +364,13 @@ void MainWindow::pauseGame(){
 
 void MainWindow::resumeGame()
 {
+	/** Set up and display the player's name */
+	name = begin->getString();
+	nameDisp = new QGraphicsSimpleTextItem;
+	nameDisp->setText(name);
+	nameDisp->setPos(player->getX(), player->getY()+25);
+	scene->addItem(nameDisp);
+	
 	if(!timer->isActive()){
 		timer->start();
 	}
@@ -373,17 +409,23 @@ MainWindow::MainWindow()
 	QBrush green(Qt::green);
 	
 	/** Set up the welcome beginning window */
-	begin = new BeginWindow(WINDOW_MAX_X/2, WINDOW_MAX_Y/2);
+	begin = new BeginWindow(this, WINDOW_MAX_X/2-100, WINDOW_MAX_Y/2+100);
+//	scene->addWidget(begin);
 	
 	/** Set up the reboot QAction */
 	actionReboot = new QAction(this);
 	actionReboot->setText(tr("Restart"));
-	connect( actionReboot, SIGNAL( triggered() ),this, SLOT( gameRestart() ) );
+
+	/** Initialize a pixmap for the player */
+	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
+	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 100);
+	player->setTransformOriginPoint(10, 17);// 10, 17
+//	gameplay->mapFromGlobal(player->pos().toPoint());
 	
 	/** Initialize gameplay and scene */
 	scene = new QGraphicsScene(0, -40, WINDOW_MAX_X, WINDOW_MAX_Y, this);
 //	scene->setSceneRect(0, 0, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1);
-	gameplay = new Gameplay(scene, this);
+	gameplay = new Gameplay(scene, this, player);
 	
 	/** Configure gameplay settings */
   gameplay->setFixedSize(WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1);
@@ -407,12 +449,8 @@ MainWindow::MainWindow()
   /** Set up restart button */
   restart = new QPushButton("Restart Game");
   
-	/** Initialize a pixmap for the player */
-	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
-	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 100);
-	player->setTransformOriginPoint(player->getX()+40, player->getY() + 45);
-	gameplay->mapFromGlobal(player->pos().toPoint());
-  
+
+
 	/** Initizlize and set up the play area dummy rectangle that registers clicks */
 	area = new PlayArea(-0.05*WINDOW_MAX_X, -0.05*WINDOW_MAX_Y, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.8, this, player);
 	// -0.05, -0.08
@@ -493,8 +531,12 @@ MainWindow::MainWindow()
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));
 	connect(pause, SIGNAL(clicked()), this, SLOT(pauseGame()));
 	connect(resume, SIGNAL(clicked()), this, SLOT(resumeGame()));
+	/** */
 	connect(restart, SIGNAL(clicked()), this, SLOT(restartGame()));
+	/** Quits the application */
 	connect(quit, SIGNAL(clicked()), qApp, SLOT(quit()));
+	/** Connection to restart the application */
+	connect( actionReboot, SIGNAL( triggered() ),this, SLOT( restartGame() ) );
 }
 
 void MainWindow::movePlayer(std::string dir)
@@ -512,8 +554,9 @@ void MainWindow::movePlayer(std::string dir)
 }
 
 void MainWindow::show() {
-	timer->start();
+//	timer->start();
 	gameplay->show();
+	begin->show();
 }
 
 MainWindow::~MainWindow()

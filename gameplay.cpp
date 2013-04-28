@@ -1,10 +1,12 @@
 #include "gameplay.h"
+#include "player.h"
 #include "mainwindow.h"
 #include <iostream>
 
-Gameplay::Gameplay(QGraphicsScene *scene, MainWindow *main) : QGraphicsView(scene)
+Gameplay::Gameplay(QGraphicsScene *scene, MainWindow *main, Player *p) : QGraphicsView(scene)
 {
 	window = main;
+	player = p;
 }
 
 void Gameplay::keyPressEvent(QKeyEvent *k)
@@ -20,6 +22,10 @@ void Gameplay::keyPressEvent(QKeyEvent *k)
   }
 	if(k->key() == Qt::Key_D){
 		window->movePlayer("right");
+  }
+  if(k->key() == Qt::Key_Control){
+  	std::cout << "cycle" << std::endl;
+  	player->cycleAmmo();
   }
 }
 
