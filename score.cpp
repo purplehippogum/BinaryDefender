@@ -3,6 +3,8 @@
 #include "digit.h"
 #include "mainwindow.h"
 
+#include <iostream>
+
 #include <QFont>
 
 Score::Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc, Player *p) : QGraphicsRectItem(nx, ny, 150, 30)
@@ -50,19 +52,28 @@ void Score::updateScore()
 	}
 	
 	for(int i = 0; i < s.length(); i++){
+		digit = new Digit(i*16 + x + 242, y - 28, 14, 24, 0, 0, player, this);
+		digit->setIndex(i);
+		
 		if(s[i] == '0'){
-			digit = new Digit(i*16 + x + 242, y- 28, 14, 24, 0, 0, player, this);
-			scene->addItem(digit);
 			digit->setBin(false);
-			digits.push_back(digit);
 		}
 		else{
-			digit = new Digit(i*16 + x + 242, y - 28, 14, 24, 0, 0, player, this);
-			scene->addItem(digit);
 			digit->setBin(true);
-			digits.push_back(digit);
 		}
+		scene->addItem(digit);
+		digits.push_back(digit);
 	}
+}
+
+void Score::removeDigit(int d)
+{
+	s[d] = '0';
+	points = s.toInt();
+	std::cout << "Points " << points << std::endl;
+	points = toDecimal(points);
+	std::cout << "Points now " << points << std::endl;
+	updateScore();
 }
 
 void Score::draw()
@@ -86,6 +97,19 @@ QString Score::toBinary(int num, bool rev)
         std::reverse(s.begin(),s.end());
 
     return s;
+}
+
+int Score::toDecimal(int num)
+{
+	int sum = 0;
+
+	for(int i=0; num > 0; i++){
+		if(num % 10 == 1) {
+			sum += (1 << i);
+		}
+		num /= 10;
+	}
+	return sum;
 }
 
 void Score::binary()

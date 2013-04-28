@@ -20,11 +20,11 @@ class Score : public QGraphicsRectItem
 		void addPoints(int p);
 		int getPoints();
 		void updateScore();
-		void binary();
-		void draw();
-		
+		void removeDigit(int d);
 		
 	private:
+		void binary();
+		void draw();
 		MainWindow *window;
 		QGraphicsScene *scene;
 		/** Shows the word score */
@@ -36,6 +36,8 @@ class Score : public QGraphicsRectItem
 		QGraphicsSimpleTextItem *pointDisplay;
 		/**Converts score to binary **/
 		QString toBinary(int num, bool rev);
+		/** Convert back to decimal */
+		int toDecimal(int num);
 		/** Abstractly stores position for later reference */
 		int x;
 		int y;
