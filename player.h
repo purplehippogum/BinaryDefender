@@ -5,6 +5,8 @@
 
 class PlayArea;
 class GamePlay;
+class Score;
+class Digit;
 
 class Player : public AbstractObject
 {

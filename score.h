@@ -5,14 +5,15 @@
 #include <QGraphicsSimpleTextItem>
 #include <vector>
 #include <QGraphicsRectItem>
-#include "abstract_object.h"
 
 class MainWindow;
+class Digit;
+class Player;
 
 class Score : public QGraphicsRectItem
 {
 	public:
-		Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc);
+		Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc, Player *p);
 		int getX();
 		int getY();
 		void setPoints(int p);
@@ -44,8 +45,9 @@ class Score : public QGraphicsRectItem
 		QPixmap *zeroIMG;
 		QGraphicsPixmapItem *zero;
 		QGraphicsPixmapItem *one;
-		AbstractObject *digit;
-		std::vector<AbstractObject*> digits;
+		Digit *digit;
+		std::vector<Digit*> digits;
+		Player *player;
 };
 
 #endif

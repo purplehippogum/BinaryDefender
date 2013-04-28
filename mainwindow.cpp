@@ -15,6 +15,10 @@ bool MainWindow::checkCollision(AbstractObject *obj, int dir)
 		return true;
 	else if(obj->collidesWithItem(q4, Qt::IntersectsItemShape))
 		return true;
+	else if(obj->getY() < -20)
+		return true;
+	else if(obj->getY() > WINDOW_MAX_Y-52)
+		return true;
 	else
 		return false;
 }
@@ -83,15 +87,12 @@ void MainWindow::handleTimer()
 	}
 	else if(player->rotation() == 90 && checkCollision(player, player->getDir()) ){
 		player->moveLeft(1);
-//		player->moveDown(1);
 	}
 	
-	else if(player->getDir() == 0 && player->rotation() == 0 && checkCollision(player, player->getDir()) ){
-		player->moveLeft(1);
-	}
 	else if(player->getDir() == 3 && player->rotation() == 90 && checkCollision(player, player->getDir()) ){
 		player->moveUp(1);
 	}
+
 /** SMASH the walls! */
 // SMASH the top two walls	
 	if(q1->getRight() && ( q1->getX() < (WINDOW_MAX_X/2 - q1->getWidth() - 10) ) ){
@@ -191,12 +192,7 @@ void MainWindow::handleTimer()
 			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
 			killCount++;
 			score->addPoints(enemies[i]->getPoints());
-			GameObject *cover = new GameObject(score->getX()+250, score->getY()-30, 150, 30, 0, 0);
-			QBrush white(Qt::white);
-			cover->setBrush(white);
-			scene->addItem(cover);
 			score->updateScore();
-			delete cover;
 		}
 		else if(enemies[i]->collidesWithItem(player, Qt::IntersectsItemShape) ){
 			delete enemies[i];
@@ -234,8 +230,6 @@ void MainWindow::handleTimer()
 					enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[j]));
 					killCount++;
 					score->addPoints(enemies[i]->getPoints());
-					GameObject *cover = new GameObject(0, 0, 150, 30, 0, 0);
-					scene->addItem(cover);
 					score->updateScore();
 				}
 				bullets[i]->decStrike();
@@ -311,7 +305,7 @@ void MainWindow::shoot()
 				scene->addItem(bullet);
 				bullets.push_back(bullet);
 			}
-			else if(player->getAmmo() == 1){
+			else if(player->getAmmo() == 1 && player->getArrows() > 0){
 				valid = p;
 				arrow = new ArrowBullet(arrowIMG, player->getX()+8, player->getY()-19, 16, 16, p.x(), p.y(), 1, 4);
 				arrow->setTransformOriginPoint(16, -50);
@@ -319,10 +313,11 @@ void MainWindow::shoot()
 				arrow->setDir(0);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
+				player->decPierce();
 			}
 		}
 
-		else if( player->rotation() == 180 ){// shoot down
+		else if( player->rotation() == 180){// shoot down
 			if(player->getAmmo() == 0){
 				valid = p;
 				bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 6);
@@ -331,13 +326,14 @@ void MainWindow::shoot()
 				scene->addItem(bullet);
 				bullets.push_back(bullet);
 			}
-			else if(player->getAmmo() == 1){
+			else if(player->getAmmo() == 1 && player->getArrows() > 0){
 				valid = p;
 				arrow = new ArrowBullet(arrowIMG, player->getX()+14, player->getY()+47, 16, 16, p.x(), p.y(), 1, 4);
 				arrow->setTransformOriginPoint(0, 0);
 				arrow->setDir(1);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
+				player->decPierce();
 			}
 		}
 		else if( player->rotation() == -90 ){// shoot left
@@ -350,7 +346,7 @@ void MainWindow::shoot()
 				scene->addItem(bullet);
 				bullets.push_back(bullet);
 			}
-			else if(player->getAmmo() == 1){
+			else if(player->getAmmo() == 1 && player->getArrows() > 0){
 				valid = p;
 				arrow = new ArrowBullet(arrowIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 4);
 				arrow->setTransformOriginPoint(-5, 27);
@@ -358,6 +354,7 @@ void MainWindow::shoot()
 				arrow->setDir(2);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
+				player->decPierce();
 			}
 		}
 		else if( player->rotation() == 90 ){// shoot right
@@ -370,12 +367,13 @@ void MainWindow::shoot()
 				scene->addItem(bullet);
 				bullets.push_back(bullet);
 			}
-			else if(player->getAmmo() == 1){// && player->getArrows() > 0){
+			else if(player->getAmmo() == 1 && player->getArrows() > 0){
 				arrow = new ArrowBullet(arrowIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 4);
 				arrow->setDir(3);
 				arrow->setTransformOriginPoint(16, 31);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
+				player->decPierce();
 			}
 		}
 	}
@@ -508,7 +506,7 @@ MainWindow::MainWindow()
 	
 	/** Set up score */
 	// WINDOW_MAX_X/2-200, WINDOW_MAX_Y/3-20, this, scene
-	score = new Score(WINDOW_MAX_X/2 - 70, -30, this, scene);
+	score = new Score(WINDOW_MAX_X/2 - 70, -30, this, scene, player);
 	score->updateScore();
 	score->setBrush(green);
 	

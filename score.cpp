@@ -1,10 +1,14 @@
 #include "score.h"
+#include "player.h"
+#include "digit.h"
 #include "mainwindow.h"
-#include "game_object.h"
 
-Score::Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc) : QGraphicsRectItem(nx, ny, 150, 30)
+#include <QFont>
+
+Score::Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc, Player *p) : QGraphicsRectItem(nx, ny, 150, 30)
 {
 	window = main;
+	player = p;
 	scene = sc;
 	width = 150;
 	height = 30;
@@ -14,6 +18,7 @@ Score::Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc) : QGraphicsRe
 	zeroIMG = new QPixmap("zero.png", "png", Qt::AutoColor);
 	oneIMG = new QPixmap("one.png", "png", Qt::AutoColor);
 	this->setPos(nx, ny);
+//	setBrush(Qt::NoBrush);
 	points = 0;
 	s = "Score";
 	scoreDisplay = new QGraphicsSimpleTextItem(this);
@@ -22,9 +27,11 @@ Score::Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc) : QGraphicsRe
 	scoreDisplay->show();
 	/** Use the string to store the actual score value */
 	s.setNum(points);
+	QFont newFont("Courier", 20, QFont::Bold, true);
 	pointDisplay = new QGraphicsSimpleTextItem(this);
+	pointDisplay->setFont(newFont);
 	pointDisplay->setText(s);
-	pointDisplay->setPos(x, y-15);
+	pointDisplay->setPos(x-10, y-2);
 	pointDisplay->show();
 }
 
@@ -44,13 +51,13 @@ void Score::updateScore()
 	
 	for(int i = 0; i < s.length(); i++){
 		if(s[i] == '0'){
-			digit = new AbstractObject(zeroIMG, i*12 + x + 250, y-22, 16, 16, -1);
+			digit = new Digit(i*16 + x + 242, y- 28, 14, 24, 0, 0, player, this);
 			scene->addItem(digit);
 			digit->setBin(false);
 			digits.push_back(digit);
 		}
 		else{
-			digit = new AbstractObject(oneIMG, i*12 + x + 250, y -22, 16, 16, -1);
+			digit = new Digit(i*16 + x + 242, y - 28, 14, 24, 0, 0, player, this);
 			scene->addItem(digit);
 			digit->setBin(true);
 			digits.push_back(digit);
