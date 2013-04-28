@@ -5,6 +5,20 @@
 
 using namespace std;
 
+bool MainWindow::checkCollision(AbstractObject *obj, int dir)
+{
+	if(obj->collidesWithItem(q1, Qt::IntersectsItemShape))
+		return true;
+	else if(obj->collidesWithItem(q2, Qt::IntersectsItemShape))
+		return true;
+	else if(obj->collidesWithItem(q3, Qt::IntersectsItemShape))
+		return true;
+	else if(obj->collidesWithItem(q4, Qt::IntersectsItemShape))
+		return true;
+	else
+		return false;
+}
+
 void MainWindow::handleTimer()
 {
 	/** Keeps track of general timekeeping for round advancing purposes */
@@ -25,39 +39,60 @@ void MainWindow::handleTimer()
 		}
 	}
 /** Handle player movement */
-	// up
-	if(player->getDir() == 0  && (player->getY() > -15) && ( player->getX() > 285 && player->getX() < 325 ) ){
+// up
+	if(player->getDir() == 0 && !checkCollision(player, player->getDir()) ){
 		nameDisp->setPos(player->getX(), player->getY()+25);
-		player->setTransformOriginPoint(12, 23);
+		player->setTransformOriginPoint(0, 23);
 		nameDisp->setRotation(0);
 		player->setRotation(0);
 		player->moveUp(1);
 	}
+	else if(player->rotation() == 0 && checkCollision(player, player->getDir())){
+		player->moveDown(1);
+		nameDisp->setPos(player->getX(), player->getY()-20);
+	}
 // down
-	else if(player->getDir() == 1  && (player->getY() < WINDOW_MAX_Y-45) && ( player->getX() > 285 && player->getX() < 325 )){
+	if(player->getDir() == 1 && !checkCollision(player, player->getDir()) ){
 		nameDisp->setPos(player->getX(), player->getY()-20);
 		nameDisp->setRotation(0);
-		player->setTransformOriginPoint(12, 15);
+		player->setTransformOriginPoint(12, 18);
 		player->setRotation(180);
 		player->moveDown(1);
 	}
+	else if(player->rotation() == 180 && checkCollision(player, player->getDir())){
+		player->moveUp(1);
+	}
 // left
-	else if(player->getDir() == 2  && (player->getX() > -30) && ( player->getY() > 205 && player->getY() < WINDOW_MAX_Y/2 + 10 )){
-		player->setTransformOriginPoint(10, 23);
+	if(player->getDir() == 2 && !checkCollision(player, player->getDir()) ){
+		player->setTransformOriginPoint(10, 20);
 		player->setRotation(-90);
 		player->moveLeft(1);
 		nameDisp->setPos(player->getX()+25, player->getY()+35);
 		nameDisp->setRotation(-90);
 	}
+	else if(player->rotation() == -90 && checkCollision(player, player->getDir())){
+		player->moveRight(1);
+	}
 //  right
-	else if(player->getDir() == 3  && (player->getX()  < WINDOW_MAX_X) && ( player->getY() > 210 && player->getY() < WINDOW_MAX_Y/2 + 10 )){
-		player->setTransformOriginPoint(10, 17);
+	if(player->getDir() == 3 && !checkCollision(player, player->getDir())){
+		player->setTransformOriginPoint(10, 15);
 		player->setRotation(90);
 		nameDisp->setPos(player->getX(), player->getY());
 		nameDisp->setRotation(90);
 		player->moveRight(1);
 	}
-	/** SMASH the walls! */
+	else if(player->rotation() == 90 && checkCollision(player, player->getDir()) ){
+		player->moveLeft(1);
+//		player->moveDown(1);
+	}
+	
+	else if(player->getDir() == 0 && player->rotation() == 0 && checkCollision(player, player->getDir()) ){
+		player->moveLeft(1);
+	}
+	else if(player->getDir() == 3 && player->rotation() == 90 && checkCollision(player, player->getDir()) ){
+		player->moveUp(1);
+	}
+/** SMASH the walls! */
 // SMASH the top two walls	
 	if(q1->getRight() && ( q1->getX() < (WINDOW_MAX_X/2 - q1->getWidth() - 10) ) ){
 		q1->moveRight();
@@ -291,6 +326,7 @@ void MainWindow::shoot()
 			if(player->getAmmo() == 0){
 				valid = p;
 				bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 6);
+				bullet->setTransformOriginPoint(9, 21);
 				bullet->setDir(1);
 				scene->addItem(bullet);
 				bullets.push_back(bullet);

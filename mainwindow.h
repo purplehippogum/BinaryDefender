@@ -53,6 +53,9 @@ public:
 	void setName(QString n);
     
 private:
+	/** Checks for @param obj collision with walls */
+	bool checkCollision(AbstractObject *obj, int dir);
+
 	/** Declare a begin window */
 	BeginWindow *begin;
 	/** Action to handle restartGame() slot */
