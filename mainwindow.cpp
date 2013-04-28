@@ -142,7 +142,7 @@ void MainWindow::handleTimer()
 			bullets[i]->move(0, -1.2);
 		}
 		else if(bullets[i]->getDir() == 1){// move down
-//			bullets[i]->setRotation(180);
+			bullets[i]->setRotation(180);
 			bullets[i]->move(0, 1.2);
 		}
 	}
@@ -278,9 +278,9 @@ void MainWindow::shoot()
 			}
 			else if(player->getAmmo() == 1){
 				valid = p;
-				arrow = new ArrowBullet(arrowIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 4);
+				arrow = new ArrowBullet(arrowIMG, player->getX()+8, player->getY()-19, 16, 16, p.x(), p.y(), 1, 4);
+				arrow->setTransformOriginPoint(16, -50);
 				player->getAmmo();
-				arrow->setRotation(-90);
 				arrow->setDir(0);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
@@ -297,8 +297,8 @@ void MainWindow::shoot()
 			}
 			else if(player->getAmmo() == 1){
 				valid = p;
-				arrow = new ArrowBullet(arrowIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 4);
-				arrow->setRotation(90);
+				arrow = new ArrowBullet(arrowIMG, player->getX()+14, player->getY()+47, 16, 16, p.x(), p.y(), 1, 4);
+				arrow->setTransformOriginPoint(0, 0);
 				arrow->setDir(1);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
@@ -317,6 +317,7 @@ void MainWindow::shoot()
 			else if(player->getAmmo() == 1){
 				valid = p;
 				arrow = new ArrowBullet(arrowIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 4);
+				arrow->setTransformOriginPoint(-5, 27);
 				arrow->setRotation(180);
 				arrow->setDir(2);
 				scene->addItem(arrow);
@@ -336,7 +337,7 @@ void MainWindow::shoot()
 			else if(player->getAmmo() == 1){// && player->getArrows() > 0){
 				arrow = new ArrowBullet(arrowIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 4);
 				arrow->setDir(3);
-				arrow->setTransformOriginPoint(0, 0);
+				arrow->setTransformOriginPoint(16, 31);
 				scene->addItem(arrow);
 				bullets.push_back(arrow);
 			}
