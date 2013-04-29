@@ -56,7 +56,9 @@ public:
     
 private:
 	/** Checks for @param obj collision with walls */
-	bool checkCollision(AbstractObject *obj, int dir);
+	bool checkCollision(AbstractObject *obj);
+	/** Pushes @param obj out of object */
+	void pushOut(AbstractObject *obj, int dir);
 
 	/** Declare a begin window */
 	BeginWindow *begin;
@@ -156,6 +158,11 @@ public slots:
 	void resumeGame();
 	/** Restarts the game */
 	void restartGame();
+	/** Triggered on player death */
+	void handleDeath();
+	
+signals:
+	void death();
 };
 
 #endif // MAINWINDOW_H

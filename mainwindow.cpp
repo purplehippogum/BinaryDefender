@@ -5,7 +5,7 @@
 
 using namespace std;
 
-bool MainWindow::checkCollision(AbstractObject *obj, int dir)
+bool MainWindow::checkCollision(AbstractObject *obj)
 {
 	if(obj->collidesWithItem(q1, Qt::IntersectsItemShape))
 		return true;
@@ -23,6 +23,10 @@ bool MainWindow::checkCollision(AbstractObject *obj, int dir)
 		return false;
 }
 
+void MainWindow::pushOut(AbstractObject *obj, int dir)
+{
+}
+
 void MainWindow::handleTimer()
 {
 	/** Display the arrow icon */
@@ -35,22 +39,21 @@ void MainWindow::handleTimer()
 	
 	/** Ends game if player's health is zero */
 	if(player->getHealth() == 0){
-		
+		emit death();
 	}
 
 	/** Keeps track of general timekeeping for round advancing purposes */
-	++gameTimer;
-	if(fmod(gameTimer, 200.0) == 0.0){
+	gameTimer += 0.5;
+	if(fmod(gameTimer, 20.0) == 0.0){
 		++seconds;
-//		cout << "Time: " << seconds << " seconds" << endl;
 	}
 	if(killCount >= enemyLimit){// beginning of a new round
-//		if(seconds != 0) {
-			cout << "Seconds for round " << seconds << endl;
+//			cout << "Seconds for round " << seconds << endl;
 			enemyLimit += rounds*1.5;
-			if(enemySpeed < 3)
-				enemySpeed += 1;
-			enemySpawnRate += 50;
+			if(enemySpeed < 2.25)
+				enemySpeed += 0.75;
+			if(enemySpawnRate < 200)
+				enemySpawnRate += 50;
 			killCount = 0;
 			seconds = 1;
 			SMASHcount++;
@@ -58,57 +61,56 @@ void MainWindow::handleTimer()
 			rounds++;
 			rString.setNum(rounds);
 			rNum->setText(rString);
-			cout << "Enemy limit " << enemyLimit << endl;
-//		}
+//			cout << "Enemy limit " << enemyLimit << endl;
 	}
 /** Handle player movement */
 // up
-	if(player->getDir() == 0 && !checkCollision(player, player->getDir()) ){
+	if(player->getDir() == 0 && !checkCollision(player) ){
 		nameDisp->setPos(player->getX(), player->getY()+25);
 		player->setTransformOriginPoint(0, 23);
 		nameDisp->setRotation(0);
 		player->setRotation(0);
 		player->moveUp(1);
 	}
-	else if(player->rotation() == 0 && checkCollision(player, player->getDir())){
+	else if(player->rotation() == 0 && checkCollision(player)){
 		player->moveDown(1);
 		nameDisp->setPos(player->getX(), player->getY()-20);
 	}
 // down
-	if(player->getDir() == 1 && !checkCollision(player, player->getDir()) ){
-		nameDisp->setPos(player->getX(), player->getY()-20);
+	if(player->getDir() == 1 && !checkCollision(player) ){
+		nameDisp->setPos(player->getX(), player->getY()-9);
 		nameDisp->setRotation(0);
 		player->setTransformOriginPoint(14, 18);
 		player->setRotation(180);
 		player->moveDown(1);
 	}
-	else if(player->rotation() == 180 && checkCollision(player, player->getDir())){
+	else if(player->rotation() == 180 && checkCollision(player)){
 		player->moveUp(1);
 	}
 // left
-	if(player->getDir() == 2 && !checkCollision(player, player->getDir()) ){
+	if(player->getDir() == 2 && !checkCollision(player) ){
 		player->setTransformOriginPoint(10, 20);
 		player->setRotation(-90);
 		player->moveLeft(1);
-		nameDisp->setPos(player->getX()+25, player->getY()+35);
+		nameDisp->setPos(player->getX()+20, player->getY()+35);
 		nameDisp->setRotation(-90);
 	}
-	else if(player->rotation() == -90 && checkCollision(player, player->getDir())){
+	else if(player->rotation() == -90 && checkCollision(player)){
 		player->moveRight(1);
 	}
 //  right
-	if(player->getDir() == 3 && !checkCollision(player, player->getDir())){
+	if(player->getDir() == 3 && !checkCollision(player)){
 		player->setTransformOriginPoint(10, 15);
 		player->setRotation(90);
 		nameDisp->setPos(player->getX(), player->getY());
 		nameDisp->setRotation(90);
 		player->moveRight(1);
 	}
-	else if(player->rotation() == 90 && checkCollision(player, player->getDir()) ){
+	else if(player->rotation() == 90 && checkCollision(player) ){
 		player->moveLeft(1);
 	}
 	
-	else if(player->getDir() == 3 && player->rotation() == 90 && checkCollision(player, player->getDir()) ){
+	else if(player->getDir() == 3 && player->rotation() == 90 && checkCollision(player) ){
 		player->moveUp(1);
 	}
 
@@ -259,33 +261,32 @@ void MainWindow::handleTimer()
 		}
 	}
 /** This if statement handles enemy spawning */
-	if(fmod( gameTimer, (300.0) ) == 0){// - enemySpawnRate
+	if(fmod( gameTimer, (300.0- enemySpawnRate) ) == 0){
 		int dir = rand()%4;
-		cout << "Enemies killed " << killCount << endl;
 		switch(dir){
 		// right side
-			case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 32);
+			case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 48);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
 		// left side
-			case 1: { enemy = new Enemy(enemyIMG, 0, WINDOW_MAX_Y/2-20, 32, 32, 32, 32);
+			case 1: { enemy = new Enemy(enemyIMG, 0, WINDOW_MAX_Y/2-20, 32, 32, 32, 48);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
 		// bottom
-			case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y+40, 32, 32, 32, 32);
+			case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y+40, 32, 32, 32, 48);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
 							break;
 						}
 		// top
-			case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, -20, 32, 32, 32, 32);
+			case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, -20, 32, 32, 32, 48);
 							enemy->setDamage(5);
 							enemies.push_back(enemy);
 							scene->addItem(enemy);
@@ -295,7 +296,7 @@ void MainWindow::handleTimer()
 	}
 
 /** Handles enemy movement. Speed, etc */
-	if(enemy && fmod( gameTimer,(5.0) ) == 0){//  - enemySpeed
+	if(enemy && fmod( gameTimer,(3.0 - enemySpeed) ) == 0){
 		for(unsigned int i = 0; i < enemies.size(); i++){
 			if(!enemies[i]->getHunt())
 				enemies[i]->move(WINDOW_MAX_X/2-15, WINDOW_MAX_Y/2-15);
@@ -318,7 +319,7 @@ void MainWindow::shoot()
 		if( player->rotation() == 0){// shoot up
 			if(player->getAmmo() == 0){
 				valid = p;
-				bullet = new BasicBullet(bbIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
+				bullet = new BasicBullet(bbIMG, player->getX()+5, player->getY()-3, 16, 16, p.x(), p.y(), 1, 8);
 				player->getAmmo();
 				bullet->setDir(0);
 				scene->addItem(bullet);
@@ -339,7 +340,7 @@ void MainWindow::shoot()
 		else if( player->rotation() == 180){// shoot down
 			if(player->getAmmo() == 0){
 				valid = p;
-				bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
+				bullet = new BasicBullet(bbIMG, player->getX()+4, player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(9, 21);
 				bullet->setDir(1);
 				scene->addItem(bullet);
@@ -358,7 +359,7 @@ void MainWindow::shoot()
 		else if( player->rotation() == -90 ){// shoot left
 			if(player->getAmmo() == 0){
 				valid = p;
-				bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
+				bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY()-4, 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(6, 23);
 				bullet->setDir(2);
 				scene->addItem(bullet);
@@ -378,7 +379,7 @@ void MainWindow::shoot()
 		else if( player->rotation() == 90 ){// shoot right
 			valid = p;
 			if(player->getAmmo() == 0){
-				bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
+				bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY()-3, 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(10, 23);
 				bullet->setDir(3);
 				scene->addItem(bullet);
@@ -414,6 +415,21 @@ void MainWindow::pauseGame(){
 	}
 }
 
+void MainWindow::handleDeath()
+{
+//		delete player;
+		player->setPos(-200, -200);
+		QMessageBox *msgBox = new QMessageBox;
+		msgBox->move(WINDOW_MAX_X/2-50, WINDOW_MAX_Y/2+50);
+		msgBox->setText("Game Over");
+		msgBox->addButton(quit, QMessageBox::DestructiveRole);
+		msgBox->addButton(restart, QMessageBox::NoRole);
+		msgBox->show();
+		timer->stop();
+		score->decimal();
+		score->setPos(WINDOW_MAX_X/2-280, WINDOW_MAX_Y/2+40);
+}
+
 void MainWindow::resumeGame()
 {
 	/** Set up and display the player's name */
@@ -434,7 +450,8 @@ void MainWindow::SMASHWalls()
 	p = gameplay->mapFromGlobal(QCursor::pos());
 	if(timer->isActive() && SMASHcount > 0){
 		SMASHcount--;
-		SMASH->setPixmap(*blank);
+		if(SMASHcount == 0)
+			SMASH->setPixmap(*blank);
 		
 		if( ( p.y() <=  273) && (p.x() > 320 && p.x() < 384 ) ){// up alley
 			q1->setRight(true);
@@ -580,6 +597,7 @@ MainWindow::MainWindow()
 	enemyLimit = 5;
 	enemySpawnRate = 0.0;
 	enemySpeed = 0.0;
+	gameTimer = 0;
 	
 	/** Create an image for the BasicBullet */
 	bbIMG = new QPixmap("basic_bullet.png", "png", Qt::AutoColor);
@@ -623,6 +641,8 @@ MainWindow::MainWindow()
 	connect(quit, SIGNAL(clicked()), qApp, SLOT(quit()));
 	/** Connection to restart the application */
 	connect( actionReboot, SIGNAL( triggered() ),this, SLOT( restartGame() ) );
+	/** Connects death signal and slot */
+	connect(this, SIGNAL(death()), this, SLOT(handleDeath()));
 }
 
 void MainWindow::movePlayer(std::string dir)

@@ -103,6 +103,14 @@ QString Score::toBinary(int num, bool rev)
     return s;
 }
 
+void Score::decimal()
+{
+	points = s.toInt();
+	points = toDecimal(points);
+	s.setNum(points);
+	pointDisplay->setText(s);
+}
+
 int Score::toDecimal(int num)
 {
 	int sum = 0;

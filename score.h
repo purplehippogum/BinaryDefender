@@ -21,6 +21,7 @@ class Score : public QGraphicsRectItem
 		int getPoints();
 		void updateScore();
 		void removeDigit(int d);
+		void decimal();
 		
 	private:
 		void binary();
