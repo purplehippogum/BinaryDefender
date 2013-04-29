@@ -16,6 +16,8 @@
 The grader should use the following procedure to compile and run the code:
 ```shell
 #Compile Instructions
+echo "qmake -project"
+echo "qmake"
 echo "make"
 #Doxygen Instructions
 echo "doxygen -g config.txt"
