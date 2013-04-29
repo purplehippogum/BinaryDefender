@@ -1,25 +1,25 @@
 # Game - Programming Assignments Private Repository
 ### Student Information
-  + Name: Tommy Trojan
-  + USC Email: ttrojan@usc.edu
-  + USC ID: 0123456789
+  + Name: Zachary Vega-Perkins
+  + USC Email: vegaperk@usc.edu
+  + USC ID: 5292489073
 
 ### Game Information
-  + Game Name: myAwsomeGame
-  + Game Description: One sentence game description
+  + Game Name: Binary Defender
+  + Game Description: Fight the evil swarms of the letter A with an arsenal of numbers
   + [Game Design Doc](GameDesignDoc.md)
+  + Known bugs: collision detection is finicky around corners of blocks. Just restart the game if it happens.
+  + For some reason restarting the application resets the GUI appearance to a Windows 95 kind of interface. The main game still functions fine despite this.
 
 
 ### Compile & Run Instructions
 The grader should use the following procedure to compile and run the code:
 ```shell
 #Compile Instructions
-echo "Write command here"
+echo "make"
 #Doxygen Instructions
-echo "Write command here"
+echo "doxygen -g config.txt"
+echo "doxygen config.txt"
 #Command to run
-echo "Write command here"
+echo "./game_vegaperk"
 ```
-
-### Screenshots -- [Optional]
-You can either remove this section or add screenshots if you wish.
