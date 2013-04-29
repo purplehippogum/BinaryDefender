@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QApplication>
+#include <QFont>
 #include <QAction>
 #include <QMainWindow>
 #include <QGraphicsScene>
@@ -26,6 +27,7 @@
 #include "gameplay.h"
 #include "game_object.h"
 #include "health_bar.h"
+#include "arrowcount.h"
 
 #define WINDOW_MAX_X 640
 #define WINDOW_MAX_Y 480
@@ -47,7 +49,7 @@ public:
 	/** Handles shooting after the player clicks */
 	void shoot();
 	/** Smashes two walls together, destroying all of the enemies in the way */
-	void SMASH();
+	void SMASHWalls();
 	/** Moves the player */
 	void movePlayer(std::string dir);
 	void setName(QString n);
@@ -76,11 +78,15 @@ private:
 	/** Button that pauses the game and brings up the menu */
 	
 	/** Keeps track of game time */
-	int gameTimer;
+	double gameTimer;
 	int seconds;
 	/** Keeps track of how many SMASH powers the player has */
 	int SMASHcount;
-	/** Score members */
+	/** Displays the SMASH image */
+	QGraphicsPixmapItem *SMASH;
+	QPixmap *SMASHIMG;
+	QPixmap *blank;
+	/** Score object */
 	Score *score;
 	
 	/** Rectangle that the enemies will travel on */
@@ -101,6 +107,12 @@ private:
 	/** Player health */
 	HealthBar *health;
 	GameObject *healthOutline;
+	
+	/** Numerical Arrow count display */
+	QString arrowStr;
+	QGraphicsSimpleTextItem *arrowText;
+	/** Gaphical Arrow count display */
+	ArrowCount *arrowCount;
 	
 	/** Enemy letter objects */
 	Enemy *enemy;

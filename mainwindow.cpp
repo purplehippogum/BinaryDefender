@@ -32,23 +32,34 @@ void MainWindow::handleTimer()
 		arrowCount->setSelected();
 	else
 		arrowCount->deSelect();
+	
+	/** Ends game if player's health is zero */
+	if(player->getHealth() == 0){
+		
+	}
 
 	/** Keeps track of general timekeeping for round advancing purposes */
 	++gameTimer;
-	if(gameTimer%200 == 0){
+	if(fmod(gameTimer, 200.0) == 0.0){
 		++seconds;
 //		cout << "Time: " << seconds << " seconds" << endl;
 	}
 	if(killCount >= enemyLimit){// beginning of a new round
-		if(seconds != 0) {
-			enemyLimit = ( ((rounds * 11)/seconds) - ( 100 - player->getHealth() ) );
+//		if(seconds != 0) {
+			cout << "Seconds for round " << seconds << endl;
+			enemyLimit += rounds*1.5;
+			if(enemySpeed < 3)
+				enemySpeed += 1;
+			enemySpawnRate += 50;
 			killCount = 0;
-			seconds = 0;
+			seconds = 1;
+			SMASHcount++;
+			SMASH->setPixmap(*SMASHIMG);
 			rounds++;
 			rString.setNum(rounds);
 			rNum->setText(rString);
 			cout << "Enemy limit " << enemyLimit << endl;
-		}
+//		}
 	}
 /** Handle player movement */
 // up
@@ -248,9 +259,9 @@ void MainWindow::handleTimer()
 		}
 	}
 /** This if statement handles enemy spawning */
-	if(gameTimer%300 == 0){// 
+	if(fmod( gameTimer, (300.0) ) == 0){// - enemySpawnRate
 		int dir = rand()%4;
-		cout << "Enemy counter " << killCount << endl;
+		cout << "Enemies killed " << killCount << endl;
 		switch(dir){
 		// right side
 			case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 32);
@@ -282,9 +293,9 @@ void MainWindow::handleTimer()
 						}
 		}
 	}
+
 /** Handles enemy movement. Speed, etc */
-	if(enemy && gameTimer%5 == 0){
-//		std::cout << "Movee" << std::endl;
+	if(enemy && fmod( gameTimer,(5.0) ) == 0){//  - enemySpeed
 		for(unsigned int i = 0; i < enemies.size(); i++){
 			if(!enemies[i]->getHunt())
 				enemies[i]->move(WINDOW_MAX_X/2-15, WINDOW_MAX_Y/2-15);
@@ -345,7 +356,6 @@ void MainWindow::shoot()
 			}
 		}
 		else if( player->rotation() == -90 ){// shoot left
-//		cout << "rawrr " << player->getAmmo() << endl;
 			if(player->getAmmo() == 0){
 				valid = p;
 				bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
@@ -366,7 +376,6 @@ void MainWindow::shoot()
 			}
 		}
 		else if( player->rotation() == 90 ){// shoot right
-			cout << "rawrr " << player->getAmmo() << endl;
 			valid = p;
 			if(player->getAmmo() == 0){
 				bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
@@ -420,10 +429,13 @@ void MainWindow::resumeGame()
 }
 
 /** This power may be activated about once a round to effectively clear a lane of enemies */
-void MainWindow::SMASH()
+void MainWindow::SMASHWalls()
 {
 	p = gameplay->mapFromGlobal(QCursor::pos());
-	if(timer->isActive()){
+	if(timer->isActive() && SMASHcount > 0){
+		SMASHcount--;
+		SMASH->setPixmap(*blank);
+		
 		if( ( p.y() <=  273) && (p.x() > 320 && p.x() < 384 ) ){// up alley
 			q1->setRight(true);
 			q3->setLeft(true);
@@ -478,6 +490,14 @@ MainWindow::MainWindow()
   gameplay->setFixedSize(WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1);
   gameplay->setWindowTitle("Binary Defender");
   
+  /** Set up SMASH Display */
+  SMASHIMG = new QPixmap("SMASH.png", "png", Qt::AutoColor);
+  blank = new QPixmap("blank.PNG", "png", Qt::AutoColor);
+  SMASH = new QGraphicsPixmapItem();
+  SMASH->setPos(WINDOW_MAX_X/2+30, -55);
+  SMASH->setPixmap(*SMASHIMG);
+  
+  
 	/** Seeds random to x coordinate of mouse */
 	p = gameplay->mapFromGlobal(QCursor::pos());
 	srand(p.x());
@@ -504,7 +524,7 @@ MainWindow::MainWindow()
 //	area->setPen(Qt::NoPen);
 
 	/** Sets up SMASH power */
-	SMASHcount = 5;
+	SMASHcount = 1;
 	/** Set up rounds */
 	rounds = 1;
 	rString = "Round";
@@ -527,7 +547,7 @@ MainWindow::MainWindow()
 	arrowStr.setNum(player->getArrows());
 	arrowText = new QGraphicsSimpleTextItem;
 	arrowText->setText(arrowStr);
-	arrowText->setPos(WINDOW_MAX_X/2+85, -43);
+	arrowText->setPos(125, -43);
 	
 	
 	/** Set up the paths the enemies will traverse */
@@ -558,6 +578,8 @@ MainWindow::MainWindow()
 	enemy = NULL;
 	killCount = 0;
 	enemyLimit = 5;
+	enemySpawnRate = 0.0;
+	enemySpeed = 0.0;
 	
 	/** Create an image for the BasicBullet */
 	bbIMG = new QPixmap("basic_bullet.png", "png", Qt::AutoColor);
@@ -566,7 +588,7 @@ MainWindow::MainWindow()
 	arrowIMG = new QPixmap("arrow.png", "png", Qt::AutoColor);
 	arrow = NULL;
 	
-	arrowCount = new ArrowCount(arrowIMG, WINDOW_MAX_X/2+72, -56, scene);
+	arrowCount = new ArrowCount(arrowIMG, 140, -56, scene);
 	
 	/** Set the arrow Icon
 	arrowIcon = new QGraphicsPixmapItem;
@@ -588,6 +610,7 @@ MainWindow::MainWindow()
 	scene->addItem(ROUND);
 	scene->addItem(rNum);
 	scene->addItem(score);
+	scene->addItem(SMASH);
 	scene->addWidget(pause);
 	
 	/** Game Events, or connections */

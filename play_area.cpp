@@ -13,7 +13,7 @@ void PlayArea::mousePressEvent(QGraphicsSceneMouseEvent *clicked)
 		main->shoot();
 	}
 	else if(clicked->button() == Qt::RightButton){
-		main->SMASH();
+		main->SMASHWalls();
 	}
 	else if(clicked->button() == Qt::MidButton){
 		player->cycleAmmo();

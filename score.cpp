@@ -76,9 +76,7 @@ void Score::removeDigit(int d)
 {
 	s[d] = '0';
 	points = s.toInt();
-	std::cout << "Points " << points << std::endl;
 	points = toDecimal(points);
-	std::cout << "Points now " << points << std::endl;
 	updateScore();
 }
 
