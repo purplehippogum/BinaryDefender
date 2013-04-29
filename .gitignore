@@ -16,6 +16,10 @@
 *.pro
 game_vegaperk
 moc_mainwindow.cpp
+config.txt
+config.txt.bak
+html/
+latex/
 
 # Temporary files
 *~
