@@ -9,6 +9,10 @@
 #include <QPushButton>
 #include <QString>
 
+/**
+* This class represents a welcome window that displays when the game first starts up.
+*/
+
 class MainWindow;
 
 class BeginWindow : public QWidget

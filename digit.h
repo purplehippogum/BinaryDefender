@@ -5,6 +5,11 @@
 
 #include "game_object.h"
 
+/*
+* Each invisible digit object hides behind the visible score digits.
+* It is this object that detects a mouse click and alters the score.
+*/
+
 class Score;
 class Player;
 

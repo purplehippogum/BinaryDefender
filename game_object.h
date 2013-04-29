@@ -3,6 +3,11 @@
 
 #include <QGraphicsRectItem>
 
+/**
+* Unlike AbstractObject, this class inherits a QGraphicsRectItem and 
+* is used for click detection since it is more reliable.
+*/
+
 class GameObject : public QGraphicsRectItem
 {
 	public:

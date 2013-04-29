@@ -5,6 +5,10 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 
+/*
+* This object is not visible but registers all of the key presses necessary for player movement.
+*/
+
 class MainWindow;
 class Player;
 

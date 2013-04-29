@@ -3,6 +3,10 @@
 
 #include "abstract_object.h"
 
+/** 
+* The player always may shoot this bullet. Only two may appear on the screen at a time.
+*/
+
 class BasicBullet : public AbstractObject
 {
 	public:

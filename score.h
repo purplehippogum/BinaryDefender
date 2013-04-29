@@ -10,6 +10,11 @@ class MainWindow;
 class Digit;
 class Player;
 
+/**
+* Houses the score label as well as the physical score display. Is also responsible for
+* converting the score between decimal and binary.
+*/
+
 class Score : public QGraphicsRectItem
 {
 	public:

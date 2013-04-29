@@ -4,6 +4,10 @@
 #include <QString>
 #include "game_object.h"
 
+/**
+* Simple colored rectangle that updates its width with the player's health.
+*/
+
 class HealthBar : public GameObject
 {
 	public:

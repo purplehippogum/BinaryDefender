@@ -23,10 +23,6 @@ bool MainWindow::checkCollision(AbstractObject *obj)
 		return false;
 }
 
-void MainWindow::pushOut(AbstractObject *obj, int dir)
-{
-}
-
 void MainWindow::handleTimer()
 {
 	/** Display the arrow icon */
@@ -496,11 +492,9 @@ MainWindow::MainWindow()
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
 	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 100);
 	player->setTransformOriginPoint(10, 17);// 10, 17
-//	gameplay->mapFromGlobal(player->pos().toPoint());
 	
 	/** Initialize gameplay and scene */
-	scene = new QGraphicsScene(0, -40, WINDOW_MAX_X, WINDOW_MAX_Y, this);
-//	scene->setSceneRect(0, 0, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.1);
+	scene = new QGraphicsScene(0, -40, WINDOW_MAX_X, WINDOW_MAX_Y, this);//
 	gameplay = new Gameplay(scene, this, player);
 	
 	/** Configure gameplay settings */
@@ -532,8 +526,6 @@ MainWindow::MainWindow()
   resume = new QPushButton("Resume Game");
   /** Set up restart button */
   restart = new QPushButton("Restart Game");
-  
-
 
 	/** Initizlize and set up the play area dummy rectangle that registers clicks */
 	area = new PlayArea(-0.05*WINDOW_MAX_X, -0.05*WINDOW_MAX_Y, WINDOW_MAX_X*1.1, WINDOW_MAX_Y*1.8, this, player);
@@ -570,13 +562,13 @@ MainWindow::MainWindow()
 	/** Set up the paths the enemies will traverse */
 	// double nx, double ny, double w, double h, int vx, int vy
 	q1 = new GameObject(-31, -23, 320, 230, 0, 0);
-//	q1->setBrush(black);
+	q1->setBrush(black);
 	q2 = new GameObject(-31, 272, 320, 230, 0, 0);
-//	q2->setBrush(black);
+	q2->setBrush(black);
 	q3 = new GameObject(350, -23, 320, 230, 0, 0);
-//	q3->setBrush(black);
+	q3->setBrush(black);
 	q4 = new GameObject(350, 272, 320, 230, 0, 0);
-//	q4->setBrush(black);
+	q4->setBrush(black);
 	
 	/** Initialize timer that will keep the time of the scene */
 	timer = new QTimer(this);
@@ -608,12 +600,6 @@ MainWindow::MainWindow()
 	
 	arrowCount = new ArrowCount(arrowIMG, 140, -56, scene);
 	
-	/** Set the arrow Icon
-	arrowIcon = new QGraphicsPixmapItem;
-	arrowIcon->setPixmap(*arrowIMG);
-	arrowIcon->setPos(WINDOW_MAX_X/2+100, -55);
-	*/
-	
 	/** Add items to the scene */
 	scene->addItem(area);
 	scene->addItem(player); objects.push_back(player);
@@ -623,7 +609,6 @@ MainWindow::MainWindow()
 	scene->addItem(q4);
 	scene->addItem(health);
 	scene->addItem(arrowText);
-//	scene->addItem(arrowIcon);
 	scene->addItem(healthOutline);
 	scene->addItem(ROUND);
 	scene->addItem(rNum);
@@ -661,6 +646,7 @@ void MainWindow::movePlayer(std::string dir)
 
 void MainWindow::show() {
 //	timer->start();
+//	view->show();
 	gameplay->show();
 	begin->show();
 }

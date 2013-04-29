@@ -3,6 +3,10 @@
 
 #include "abstract_object.h"
 
+/*
+* Basic enemy that spawns randomly and seeks out the player
+*/
+
 class Enemy : public AbstractObject
 {
 	public:

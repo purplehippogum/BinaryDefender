@@ -8,6 +8,10 @@ class GamePlay;
 class Score;
 class Digit;
 
+/**
+* Player object that the user controls with the arrow keys
+*/
+
 class Player : public AbstractObject
 {
 	public:

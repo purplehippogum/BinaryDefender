@@ -5,6 +5,10 @@
 #include <QGraphicsScene>
 #include <vector>
 
+/** 
+* This class displays the arrow icon and counter in the MainWindow HUD
+*/
+
 class ArrowCount
 {
 	public:

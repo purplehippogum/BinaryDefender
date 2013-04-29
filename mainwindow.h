@@ -16,6 +16,7 @@
 #include <QKeyEvent>
 #include <vector>
 #include <string>
+#include <QBoxLayout>
 
 #include "beginwindow.h"
 #include "player.h"
@@ -32,6 +33,10 @@
 #define WINDOW_MAX_X 640
 #define WINDOW_MAX_Y 480
 #define EXIT_CODE_REBOOT -123456789
+
+/** 
+* Houses all main gameplay and events.
+*/
 
 class PlayArea;
 class Gameplay;
@@ -59,6 +64,8 @@ private:
 	bool checkCollision(AbstractObject *obj);
 	/** Pushes @param obj out of object */
 	void pushOut(AbstractObject *obj, int dir);
+	
+	QVBoxLayout *layout;
 
 	/** Declare a begin window */
 	BeginWindow *begin;
@@ -67,7 +74,7 @@ private:
 	/** Stores the scene */
 	QGraphicsScene *scene;
 	/** Displays all of the game objects */
-	QGraphicsView *view;
+	QGraphicsView *_view;
 	/** Handles key presses */
 	Gameplay *gameplay;
 	/** Pauses the game */
