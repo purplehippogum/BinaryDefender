@@ -10,7 +10,7 @@ BasicBullet::BasicBullet(QPixmap *pm, double nx, double ny, double w, double h, 
 	finX = vx;
 	finY = vy;
 	damage = d;
-	strikeCount = 1;
+	strikeCount = 0;
 	inEnemy = false;
 }
 

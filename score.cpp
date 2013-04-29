@@ -20,12 +20,11 @@ Score::Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc, Player *p) : 
 	zeroIMG = new QPixmap("zero.png", "png", Qt::AutoColor);
 	oneIMG = new QPixmap("one.png", "png", Qt::AutoColor);
 	this->setPos(nx, ny);
-//	setBrush(Qt::NoBrush);
 	points = 0;
 	s = "Score";
 	scoreDisplay = new QGraphicsSimpleTextItem(this);
 	scoreDisplay->setText(s);
-	scoreDisplay->setPos(x-50, y+5);
+	scoreDisplay->setPos(x-63, y+5);
 	scoreDisplay->show();
 	/** Use the string to store the actual score value */
 	s.setNum(points);
@@ -51,8 +50,15 @@ void Score::updateScore()
 		}
 	}
 	
+	if(points == 0){
+		s[0] = '0';
+		pointDisplay->setText(s);
+		return;
+	}
+	
 	for(int i = 0; i < s.length(); i++){
 		digit = new Digit(i*16 + x + 242, y - 28, 14, 24, 0, 0, player, this);
+		digit->setPen(Qt::NoPen);
 		digit->setIndex(i);
 		
 		if(s[i] == '0'){

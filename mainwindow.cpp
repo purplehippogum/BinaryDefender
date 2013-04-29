@@ -25,6 +25,14 @@ bool MainWindow::checkCollision(AbstractObject *obj, int dir)
 
 void MainWindow::handleTimer()
 {
+	/** Display the arrow icon */
+	arrowStr.setNum(player->getArrows());
+	arrowText->setText(arrowStr);
+	if(player->getAmmo() == 1)
+		arrowCount->setSelected();
+	else
+		arrowCount->deSelect();
+
 	/** Keeps track of general timekeeping for round advancing purposes */
 	++gameTimer;
 	if(gameTimer%200 == 0){
@@ -59,7 +67,7 @@ void MainWindow::handleTimer()
 	if(player->getDir() == 1 && !checkCollision(player, player->getDir()) ){
 		nameDisp->setPos(player->getX(), player->getY()-20);
 		nameDisp->setRotation(0);
-		player->setTransformOriginPoint(12, 18);
+		player->setTransformOriginPoint(14, 18);
 		player->setRotation(180);
 		player->moveDown(1);
 	}
@@ -299,7 +307,7 @@ void MainWindow::shoot()
 		if( player->rotation() == 0){// shoot up
 			if(player->getAmmo() == 0){
 				valid = p;
-				bullet = new BasicBullet(bbIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 6);
+				bullet = new BasicBullet(bbIMG, player->getX()+3, player->getY()-1, 16, 16, p.x(), p.y(), 1, 8);
 				player->getAmmo();
 				bullet->setDir(0);
 				scene->addItem(bullet);
@@ -307,7 +315,7 @@ void MainWindow::shoot()
 			}
 			else if(player->getAmmo() == 1 && player->getArrows() > 0){
 				valid = p;
-				arrow = new ArrowBullet(arrowIMG, player->getX()+8, player->getY()-19, 16, 16, p.x(), p.y(), 1, 4);
+				arrow = new ArrowBullet(arrowIMG, player->getX()+8, player->getY()-19, 16, 16, p.x(), p.y(), 1, 5);
 				arrow->setTransformOriginPoint(16, -50);
 				player->getAmmo();
 				arrow->setDir(0);
@@ -320,7 +328,7 @@ void MainWindow::shoot()
 		else if( player->rotation() == 180){// shoot down
 			if(player->getAmmo() == 0){
 				valid = p;
-				bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 6);
+				bullet = new BasicBullet(bbIMG, player->getX(), player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(9, 21);
 				bullet->setDir(1);
 				scene->addItem(bullet);
@@ -328,7 +336,7 @@ void MainWindow::shoot()
 			}
 			else if(player->getAmmo() == 1 && player->getArrows() > 0){
 				valid = p;
-				arrow = new ArrowBullet(arrowIMG, player->getX()+14, player->getY()+47, 16, 16, p.x(), p.y(), 1, 4);
+				arrow = new ArrowBullet(arrowIMG, player->getX()+14, player->getY()+47, 16, 16, p.x(), p.y(), 1, 5);
 				arrow->setTransformOriginPoint(0, 0);
 				arrow->setDir(1);
 				scene->addItem(arrow);
@@ -340,7 +348,7 @@ void MainWindow::shoot()
 //		cout << "rawrr " << player->getAmmo() << endl;
 			if(player->getAmmo() == 0){
 				valid = p;
-				bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 6);
+				bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(6, 23);
 				bullet->setDir(2);
 				scene->addItem(bullet);
@@ -348,7 +356,7 @@ void MainWindow::shoot()
 			}
 			else if(player->getAmmo() == 1 && player->getArrows() > 0){
 				valid = p;
-				arrow = new ArrowBullet(arrowIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 4);
+				arrow = new ArrowBullet(arrowIMG, player->getX()-1, player->getY(), 16, 16, p.x(), p.y(), 1, 5);
 				arrow->setTransformOriginPoint(-5, 27);
 				arrow->setRotation(180);
 				arrow->setDir(2);
@@ -361,14 +369,14 @@ void MainWindow::shoot()
 			cout << "rawrr " << player->getAmmo() << endl;
 			valid = p;
 			if(player->getAmmo() == 0){
-				bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 6);
+				bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(10, 23);
 				bullet->setDir(3);
 				scene->addItem(bullet);
 				bullets.push_back(bullet);
 			}
 			else if(player->getAmmo() == 1 && player->getArrows() > 0){
-				arrow = new ArrowBullet(arrowIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 4);
+				arrow = new ArrowBullet(arrowIMG, player->getX()+1, player->getY(), 16, 16, p.x(), p.y(), 1, 5);
 				arrow->setDir(3);
 				arrow->setTransformOriginPoint(16, 31);
 				scene->addItem(arrow);
@@ -443,6 +451,10 @@ MainWindow::MainWindow()
 	QBrush red(Qt::red);
 	QBrush green(Qt::green);
 	
+	/** Set a new default font */
+	QFont newFont("Courier", 12, QFont::Bold, true);
+	QApplication::setFont(newFont);
+	
 	/** Set up the welcome beginning window */
 	begin = new BeginWindow(this, WINDOW_MAX_X/2-100, WINDOW_MAX_Y/2+100);
 //	scene->addWidget(begin);
@@ -508,7 +520,15 @@ MainWindow::MainWindow()
 	// WINDOW_MAX_X/2-200, WINDOW_MAX_Y/3-20, this, scene
 	score = new Score(WINDOW_MAX_X/2 - 70, -30, this, scene, player);
 	score->updateScore();
-	score->setBrush(green);
+	score->setBrush(Qt::NoBrush);
+	score->setPen(Qt::NoPen);
+	
+	/** Set up the arrow count display */
+	arrowStr.setNum(player->getArrows());
+	arrowText = new QGraphicsSimpleTextItem;
+	arrowText->setText(arrowStr);
+	arrowText->setPos(WINDOW_MAX_X/2+85, -43);
+	
 	
 	/** Set up the paths the enemies will traverse */
 	// double nx, double ny, double w, double h, int vx, int vy
@@ -545,8 +565,14 @@ MainWindow::MainWindow()
 	/** Set up arrow object */
 	arrowIMG = new QPixmap("arrow.png", "png", Qt::AutoColor);
 	arrow = NULL;
-	/** Set up bomb */
-//	bombIMG = new QPixmap("bomb.png", "png", Qt::AutoColor);
+	
+	arrowCount = new ArrowCount(arrowIMG, WINDOW_MAX_X/2+72, -56, scene);
+	
+	/** Set the arrow Icon
+	arrowIcon = new QGraphicsPixmapItem;
+	arrowIcon->setPixmap(*arrowIMG);
+	arrowIcon->setPos(WINDOW_MAX_X/2+100, -55);
+	*/
 	
 	/** Add items to the scene */
 	scene->addItem(area);
@@ -556,6 +582,8 @@ MainWindow::MainWindow()
 	scene->addItem(q3);
 	scene->addItem(q4);
 	scene->addItem(health);
+	scene->addItem(arrowText);
+//	scene->addItem(arrowIcon);
 	scene->addItem(healthOutline);
 	scene->addItem(ROUND);
 	scene->addItem(rNum);
@@ -566,7 +594,7 @@ MainWindow::MainWindow()
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));
 	connect(pause, SIGNAL(clicked()), this, SLOT(pauseGame()));
 	connect(resume, SIGNAL(clicked()), this, SLOT(resumeGame()));
-	/** */
+	/** For restarting the game */
 	connect(restart, SIGNAL(clicked()), this, SLOT(restartGame()));
 	/** Quits the application */
 	connect(quit, SIGNAL(clicked()), qApp, SLOT(quit()));
