@@ -25,11 +25,13 @@ HighScoreTable::HighScoreTable(MainWindow *window, int x, int y, std::vector<int
   for(unsigned int i = 0; i < names.size(); i++){
 		name = new QLabel;//(nameColumn);
 		nameRow = new QHBoxLayout;
-		name->setText(names[i]);
+		QString tmp;
+		tmp.setNum(i+1);
+		tmp.append(". ");
+		tmp.append(names[i]);
+		name->setText(tmp);
 		nameRow->addWidget(name);
 		nameColumn->addLayout(nameRow);
-		
-		qDebug() << "name " << names[i] << endl;
   }
   for(unsigned int i = 0; i < scores.size(); i++){
   	score = new QLabel;
@@ -37,8 +39,6 @@ HighScoreTable::HighScoreTable(MainWindow *window, int x, int y, std::vector<int
   	score->setNum(scores[i]);
   	scoreRow->addWidget(score);
   	scoreColumn->addLayout(scoreRow);
-  	
-  	qDebug() << "qscore " << scores[i] << endl;
   }
 
 	table->addLayout(nameColumn);

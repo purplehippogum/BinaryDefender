@@ -418,17 +418,47 @@ void MainWindow::handleDeath()
 		QMessageBox *msgBox = new QMessageBox;
 		msgBox->move(WINDOW_MAX_X/2-50, WINDOW_MAX_Y/2+50);
 		msgBox->setText("Game Over");
-		for(unsigned int i = 0; i < highScores.size(); i++){
-			if(score->getPoints() > highScores[i]){
-			msgBox->setText("Game Over - New High Score!");
-			}
-		}
 		msgBox->addButton(quit, QMessageBox::DestructiveRole);
 		msgBox->addButton(restart, QMessageBox::NoRole);
 		msgBox->show();
 		timer->stop();
 		score->decimal();
 		score->setPos(WINDOW_MAX_X/2-280, WINDOW_MAX_Y/2+40);
+		
+		/** Insert the player's score in its proper place */
+		vector<QString>::iterator sit = highScoreNames.begin();
+		vector<int>::iterator it;
+		int index = 0;
+		for(it = highScores.begin(); it != highScores.end(); ++it){
+			if(score->getPoints() >= *it){
+				cout << "points " <<  *it << endl;
+				it = highScores.insert(it, score->getPoints());
+				sit = highScoreNames.insert(sit, name);
+				break;
+			}
+			++index;
+			++sit;
+		}
+		
+		if(highScores.size() == 0){
+			cout << "Empty" << endl;
+			highScores.push_back(score->getPoints());
+			highScoreNames.push_back(name);
+		}
+		
+		/** Write the scores to the file */
+		fstream writeScores("high_scores.txt", ofstream::in | ofstream::out);
+		if(writeScores.fail())
+			cerr << "FAILURE" << endl;
+		else{
+			for(unsigned int i = 0; i < highScores.size(); i++){
+				string tmp = highScoreNames[i].toStdString();
+				
+				writeScores << tmp << " " << highScores[i] << endl;
+			}
+		}
+		highScoreTable = new HighScoreTable(this, 0, 0, highScores, highScoreNames);
+		highScoreTable->show();
 }
 
 void MainWindow::resumeGame()
@@ -507,13 +537,9 @@ MainWindow::MainWindow()
 		while(!scoreFile.eof()){
 			int s;
 			string n;
-			string tmp;
 			QString qn;
 			
 			scoreFile >> n;
-			scoreFile >> tmp;
-			n.push_back(' ');
-			n.append(tmp);
 			scoreFile >> s;
 			highScores.push_back(s);
 			qn = qn.fromStdString(n);
@@ -521,10 +547,6 @@ MainWindow::MainWindow()
 		}
 		highScores.pop_back();
 		highScoreNames.pop_back();
-//		sort(highScores.begin(), highScores.end());
-//		reverse(highScores.begin(), highScores.end());
-//		sort(highScoreNames.begin(), highScoreNames.end());
-//		reverse(highScoreNames.begin(), highScoreNames.end());
 		
 		scoreFile.close();
 	}
@@ -534,12 +556,10 @@ MainWindow::MainWindow()
 //		scoreFile << "asdsadasd";
 		scoreFile.close();
 	}
-	/** Create high score table object */
-	highScoreTable = new HighScoreTable(this, 0, 0, highScores, highScoreNames);
 
 	/** Initialize a pixmap for the player */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
-	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 100);
+	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 5);
 	player->setTransformOriginPoint(10, 17);// 10, 17
 	
 	/** Initialize gameplay and scene */
@@ -698,7 +718,6 @@ void MainWindow::show() {
 //	view->show();
 	gameplay->show();
 	begin->show();
-	highScoreTable->show();
 }
 
 MainWindow::~MainWindow()
