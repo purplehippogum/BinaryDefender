@@ -3,6 +3,7 @@
 #include <ctime>
 #include <iostream>
 
+#include <QDebug>
 using namespace std;
 
 bool MainWindow::checkCollision(AbstractObject *obj)
@@ -413,11 +414,15 @@ void MainWindow::pauseGame(){
 
 void MainWindow::handleDeath()
 {
-//		delete player;
 		player->setPos(-200, -200);
 		QMessageBox *msgBox = new QMessageBox;
 		msgBox->move(WINDOW_MAX_X/2-50, WINDOW_MAX_Y/2+50);
 		msgBox->setText("Game Over");
+		for(unsigned int i = 0; i < highScores.size(); i++){
+			if(score->getPoints() > highScores[i]){
+			msgBox->setText("Game Over - New High Score!");
+			}
+		}
 		msgBox->addButton(quit, QMessageBox::DestructiveRole);
 		msgBox->addButton(restart, QMessageBox::NoRole);
 		msgBox->show();
@@ -482,11 +487,55 @@ MainWindow::MainWindow()
 	
 	/** Set up the welcome beginning window */
 	begin = new BeginWindow(this, WINDOW_MAX_X/2-100, WINDOW_MAX_Y/2+100);
-//	scene->addWidget(begin);
 	
 	/** Set up the reboot QAction */
 	actionReboot = new QAction(this);
 	actionReboot->setText(tr("Restart"));
+
+	/** Used to read in high scores */
+	fstream scoreFile("high_scores.txt", fstream::in | fstream::out);
+	/** Check for score failure */
+	if(scoreFile.fail()){
+		QErrorMessage *noScores = new QErrorMessage(this);
+		noScores->setMinimumSize(200, 200);
+		noScores->showMessage("Unable to read high scores file! No high scores will be recorded this time.");
+	}
+	
+	if(scoreFile){
+		cout << "read" << endl;
+	/** Stores the high scores */
+		while(!scoreFile.eof()){
+			int s;
+			string n;
+			string tmp;
+			QString qn;
+			
+			scoreFile >> n;
+			scoreFile >> tmp;
+			n.push_back(' ');
+			n.append(tmp);
+			scoreFile >> s;
+			highScores.push_back(s);
+			qn = qn.fromStdString(n);
+			highScoreNames.push_back(qn);
+		}
+		highScores.pop_back();
+		highScoreNames.pop_back();
+//		sort(highScores.begin(), highScores.end());
+//		reverse(highScores.begin(), highScores.end());
+//		sort(highScoreNames.begin(), highScoreNames.end());
+//		reverse(highScoreNames.begin(), highScoreNames.end());
+		
+		scoreFile.close();
+	}
+	else{
+		cout << "create" << endl;
+		scoreFile.open("high_scores.txt", fstream::out);
+//		scoreFile << "asdsadasd";
+		scoreFile.close();
+	}
+	/** Create high score table object */
+	highScoreTable = new HighScoreTable(this, 0, 0, highScores, highScoreNames);
 
 	/** Initialize a pixmap for the player */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
@@ -649,6 +698,7 @@ void MainWindow::show() {
 //	view->show();
 	gameplay->show();
 	begin->show();
+	highScoreTable->show();
 }
 
 MainWindow::~MainWindow()

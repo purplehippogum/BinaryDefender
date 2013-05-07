@@ -15,8 +15,11 @@
 #include <QGraphicsPixmapItem>
 #include <QKeyEvent>
 #include <vector>
+#include <algorithm>
 #include <string>
+#include <fstream>
 #include <QBoxLayout>
+#include <QErrorMessage>
 
 #include "beginwindow.h"
 #include "player.h"
@@ -29,6 +32,7 @@
 #include "game_object.h"
 #include "health_bar.h"
 #include "arrowcount.h"
+#include "high_score_table.h"
 
 #define WINDOW_MAX_X 640
 #define WINDOW_MAX_Y 480
@@ -42,6 +46,7 @@ class PlayArea;
 class Gameplay;
 class Score;
 class BeginWindow;
+class HighScoreTable;
 
 class MainWindow : public QWidget {
     Q_OBJECT
@@ -66,6 +71,11 @@ private:
 	void pushOut(AbstractObject *obj, int dir);
 	
 	QVBoxLayout *layout;
+
+	/** Stores the high scores from the text file */
+	std::vector<int> highScores;
+	std::vector<QString> highScoreNames;
+	HighScoreTable *highScoreTable;
 
 	/** Declare a begin window */
 	BeginWindow *begin;
