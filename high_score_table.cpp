@@ -10,7 +10,8 @@ HighScoreTable::HighScoreTable(MainWindow *window, int x, int y, std::vector<int
 {
 	main = window;
 
-  setFixedSize(200, 300);
+//  setFixedSize(200, 300);
+	setMinimumWidth(200);
   setWindowTitle("High Scores");
   scores = s;
   names = n;

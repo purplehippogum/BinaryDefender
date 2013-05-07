@@ -69,6 +69,8 @@ private:
 	bool checkCollision(AbstractObject *obj);
 	/** Pushes @param obj out of object */
 	void pushOut(AbstractObject *obj, int dir);
+	/** Sets up the geometry for level 2 */
+	void buildLevelTwo();
 	
 	QVBoxLayout *layout;
 
@@ -99,6 +101,8 @@ private:
 	/** Keeps track of game time */
 	double gameTimer;
 	int seconds;
+	/** Keeps track of level count */
+	int level;
 	/** Keeps track of how many SMASH powers the player has */
 	int SMASHcount;
 	/** Displays the SMASH image */

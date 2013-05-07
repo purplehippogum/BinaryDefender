@@ -58,6 +58,19 @@ void GameObject::setWidth(int w)
 	draw();
 }
 
+void GameObject::setHeight(int h)
+{
+	height = h;
+	setRect(x, y, width, h);
+	draw();
+}
+
+void GameObject::setSize(int w, int h)
+{
+	setWidth(w);
+	setHeight(h);
+}
+
 void GameObject::setRight(bool b){
 	transRight = b;
 }

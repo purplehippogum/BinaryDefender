@@ -24,6 +24,16 @@ bool MainWindow::checkCollision(AbstractObject *obj)
 		return false;
 }
 
+void MainWindow::pushOut(AbstractObject *obj, int dir)
+{
+	if(checkCollision(player) && dir == 0){
+		obj->moveBy(-5,0);
+	}
+	if(checkCollision(player) && dir == 1){
+		obj->moveBy(-5,0);
+	}
+}
+
 void MainWindow::handleTimer()
 {
 	/** Display the arrow icon */
@@ -60,17 +70,23 @@ void MainWindow::handleTimer()
 			rNum->setText(rString);
 //			cout << "Enemy limit " << enemyLimit << endl;
 	}
+	/** Set up level 2 */
+	if(rounds == 5 && level == 1){
+		buildLevelTwo();
+		level++;
+	}
 /** Handle player movement */
 // up
 	if(player->getDir() == 0 && !checkCollision(player) ){
 		nameDisp->setPos(player->getX(), player->getY()+25);
-		player->setTransformOriginPoint(0, 23);
+		player->setTransformOriginPoint(0, 23);// 23
 		nameDisp->setRotation(0);
 		player->setRotation(0);
 		player->moveUp(1);
 	}
 	else if(player->rotation() == 0 && checkCollision(player)){
 		player->moveDown(1);
+		pushOut(player, 0);
 		nameDisp->setPos(player->getX(), player->getY()-20);
 	}
 // down
@@ -83,6 +99,7 @@ void MainWindow::handleTimer()
 	}
 	else if(player->rotation() == 180 && checkCollision(player)){
 		player->moveUp(1);
+		pushOut(player, 1);
 	}
 // left
 	if(player->getDir() == 2 && !checkCollision(player) ){
@@ -307,6 +324,16 @@ void MainWindow::handleTimer()
 	}
 }
 
+void MainWindow::buildLevelTwo()
+{
+	q1->setSize(200, 230);
+	q2->setSize(200, 230);
+	q3->setSize(200, 230);
+	q3->moveBy(120, 0);
+	q4->setSize(200, 230);
+	q4->moveBy(120, 0);
+}
+
 void MainWindow::shoot()
 {
   valid = gameplay->mapFromGlobal(valid);
@@ -423,7 +450,7 @@ void MainWindow::handleDeath()
 		msgBox->show();
 		timer->stop();
 		score->decimal();
-		score->setPos(WINDOW_MAX_X/2-280, WINDOW_MAX_Y/2+40);
+//		score->setPos(WINDOW_MAX_X/2-280, WINDOW_MAX_Y/2+40);
 		
 		/** Insert the player's score in its proper place */
 		vector<QString>::iterator sit = highScoreNames.begin();
@@ -532,7 +559,6 @@ MainWindow::MainWindow()
 	}
 	
 	if(scoreFile){
-		cout << "read" << endl;
 	/** Stores the high scores */
 		while(!scoreFile.eof()){
 			int s;
@@ -556,6 +582,9 @@ MainWindow::MainWindow()
 //		scoreFile << "asdsadasd";
 		scoreFile.close();
 	}
+
+	/** Initialize level count */
+	level = 1;
 
 	/** Initialize a pixmap for the player */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
@@ -604,7 +633,7 @@ MainWindow::MainWindow()
 	/** Sets up SMASH power */
 	SMASHcount = 1;
 	/** Set up rounds */
-	rounds = 1;
+	rounds = 5;
 	rString = "Round";
 	ROUND = new QGraphicsSimpleTextItem;
 	ROUND->setText(rString);
