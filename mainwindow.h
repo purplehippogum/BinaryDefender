@@ -112,11 +112,15 @@ private:
 	/** Score object */
 	Score *score;
 	
-	/** Rectangle that the enemies will travel on */
+	/** Basic level walls */
 	GameObject *q1;
 	GameObject *q2;
 	GameObject *q3;
 	GameObject *q4;
+	/** Level 2 walls */
+	GameObject *t1;
+	GameObject *b1;
+	GameObject *c1;
 	/** Stores the objects in the scene */
 	std::vector<AbstractObject*> objects;
 	/** is essentially the 'framerate' for the level */

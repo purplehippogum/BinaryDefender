@@ -277,35 +277,91 @@ void MainWindow::handleTimer()
 /** This if statement handles enemy spawning */
 	if(fmod( gameTimer, (300.0- enemySpawnRate) ) == 0){
 		int dir = rand()%4;
-		switch(dir){
-		// right side
-			case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 48);
-							enemy->setDamage(5);
-							enemies.push_back(enemy);
-							scene->addItem(enemy);
-							break;
-						}
-		// left side
-			case 1: { enemy = new Enemy(enemyIMG, 0, WINDOW_MAX_Y/2-20, 32, 32, 32, 48);
-							enemy->setDamage(5);
-							enemies.push_back(enemy);
-							scene->addItem(enemy);
-							break;
-						}
-		// bottom
-			case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y+40, 32, 32, 32, 48);
-							enemy->setDamage(5);
-							enemies.push_back(enemy);
-							scene->addItem(enemy);
-							break;
-						}
-		// top
-			case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, -20, 32, 32, 32, 48);
-							enemy->setDamage(5);
-							enemies.push_back(enemy);
-							scene->addItem(enemy);
-							break;
-						}
+		dir = 6;
+		if(level == 1){
+			switch(dir){
+			// right side
+				case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			// left side
+				case 1: { enemy = new Enemy(enemyIMG, 0, WINDOW_MAX_Y/2-20, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			// bottom
+				case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y+40, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			// top
+				case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, -25, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			}
+		}
+		else if(level == 2){
+			switch(dir){
+			// right side
+				case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			// left side
+				case 1: { enemy = new Enemy(enemyIMG, 0, WINDOW_MAX_Y/2-20, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			// bottom
+				case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y+40, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			// upper right top
+				case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2+65, -25, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			//upper left top
+				case 4: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2-120, -25, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			//lower right bottom
+				case 5: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2+65, WINDOW_MAX_Y-60, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			//lower right bottom
+				case 6: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2-120, WINDOW_MAX_Y-60, 32, 32, 32, 48);
+								enemy->setDamage(5);
+								enemies.push_back(enemy);
+								scene->addItem(enemy);
+								break;
+							}
+			}
 		}
 	}
 
@@ -326,12 +382,28 @@ void MainWindow::handleTimer()
 
 void MainWindow::buildLevelTwo()
 {
+	/** Move and scale down the existing walls to the corners */
 	q1->setSize(200, 230);
 	q2->setSize(200, 230);
 	q3->setSize(200, 230);
 	q3->moveBy(120, 0);
 	q4->setSize(200, 230);
 	q4->moveBy(120, 0);
+	
+	/** Create the new walls that will create the new maze */
+	QBrush black(Qt::black);
+	//top middle wall
+	t1 = new GameObject(WINDOW_MAX_X/2-75, -23, 150, 120, 0, 0);
+	t1->setBrush(black);
+	scene->addItem(t1);
+	//bottom middle wall
+	b1 = new GameObject(WINDOW_MAX_X/2-75, WINDOW_MAX_Y-120, 150, 120, 0, 0);
+	b1->setBrush(black);
+	scene->addItem(b1);
+	
+	c1 = new GameObject(WINDOW_MAX_X/2-75, WINDOW_MAX_Y/2-85, 150, 150, 0, 0);
+	c1->setBrush(black);
+	scene->addItem(c1);
 }
 
 void MainWindow::shoot()
