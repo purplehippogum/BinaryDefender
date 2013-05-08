@@ -18,12 +18,15 @@ class Enemy : public AbstractObject
 		void setHunt(bool h);
 		void setPoints(int p);
 		int getPoints();
+		int getPath();
+		void setPath(int p);
 		
 	private:
 		int damage;
 		/** If true, the enemy will go after the player */
 		bool hunt;
 		int points;
+		int path;
 };
 
 #endif

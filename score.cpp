@@ -46,7 +46,7 @@ void Score::updateScore()
 		if(digits[i] != NULL){
 			digits[i]->setBin(false);
 			scene->removeItem(digits[i]);
-			delete digits[i];
+//			delete digits[i];
 			digits.erase(std::find(digits.begin(), digits.end(), digits[i]));
 			digits[i] = NULL;
 		}

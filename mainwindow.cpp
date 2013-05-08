@@ -284,7 +284,7 @@ void MainWindow::handleTimer()
 	}
 	
 // reset the central and bottom walls
-	if(!c1->getDown() && ( c1->getY() > WINDOW_MAX_Y/2-85 ) ){// come back here
+	if(!c1->getDown() && ( c1->getY() > WINDOW_MAX_Y/2-85 ) ){
 			c1->moveUp();
 	}
 	if(!b1->getUp() && ( b1->getY() < WINDOW_MAX_Y-120 ) ){
@@ -337,10 +337,11 @@ void MainWindow::handleTimer()
 		bullets[i]->setPos(-200, -200);
 			bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 		}
-		if( bullets[i]->collidesWithItem(q1, Qt::IntersectsItemShape) ||
+/*		if( bullets[i]->collidesWithItem(q1, Qt::IntersectsItemShape) ||
 		bullets[i]->collidesWithItem(q2, Qt::IntersectsItemShape) || 
 		bullets[i]->collidesWithItem(q3, Qt::IntersectsItemShape) ||
-		bullets[i]->collidesWithItem(q4, Qt::IntersectsItemShape) ){
+		bullets[i]->collidesWithItem(q4, Qt::IntersectsItemShape) ){*/
+		if(checkCollision(bullets[i])){
 			bullets[i]->setPos(-200, -200);
 			bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i]));
 		}
@@ -404,6 +405,7 @@ void MainWindow::handleTimer()
 			}
 		}
 		else if(level == 2){
+		enemy->setPath(dir);
 			switch(dir){
 			// right side
 				case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 48);
@@ -452,7 +454,7 @@ void MainWindow::handleTimer()
 	}
 
 /** Handles enemy movement. Speed, etc */
-	if(enemy && fmod( gameTimer,(3.0 - enemySpeed) ) == 0){
+	if(enemy && fmod( gameTimer,(1.0 - enemySpeed) ) == 0){
 		if(level == 1){
 			for(unsigned int i = 0; i < enemies.size(); i++){
 				if(!enemies[i]->getHunt())
@@ -472,20 +474,23 @@ void MainWindow::handleTimer()
 //				scene->addItem(test);
 				int targetX = 0;
 				int targetY = 0;
-				if(enemies[i]->getX() > WINDOW_MAX_X/2)
+				targetX = player->getX();
+				targetY = player->getY();
+				if(enemies[i]->getX() > WINDOW_MAX_X/2 && enemies[i]->getY() > WINDOW_MAX_Y/2)
 				{
-					targetX = 250;
+					targetX = player->getX();
+					targetY = player->getY();
 				}
-				else{
+/*				else{
 					targetX = 425;
 				}
 				if(enemies[i]->getY() > WINDOW_MAX_Y/2){
 					targetY = 300;
 				}
 				else{
-					targetY = 150;
+					targetY = 180;
 				}
-				
+	*/			
 				QPointF d = u;
 				QPointF l = u;
 				QPointF r = u;
@@ -506,27 +511,27 @@ void MainWindow::handleTimer()
 				r.setY(r.y()+15);
 //				p.setY(enemies[i]->getY()+20);
 //				p.setX(enemies[i]->getX()+5);
-				if( !enemies[i]->getHunt() && (enemies[i]->getY() != targetY) && enemies[i]->getX() != targetX ){
+/*				if((enemies[i]->getY() != targetY) && enemies[i]->getX() != targetX ){
 				enemies[0]->setHunt(false);
 					if(enemies[i]->getY() > targetY && !checkPlace(u)){// enemy move up
 						l.setY(l.y()+15);
 						r.setY(r.y()+15);
 						if( (checkPlace(l) || checkPlace(r)) )
 							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()-50);
-//						else if( (!checkPlace(l) && !checkPlace(r)) )
-//							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()-50);
+						else if( (!checkPlace(l) && !checkPlace(r)) )
+							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()-50);
 					}
 					if(enemies[i]->getY() < targetY && !checkPlace(d) ){// enemy move down
 						l.setY(l.y()-30);
 						r.setY(r.y()-30);
 						if( checkPlace(l) || checkPlace(r) )
 							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
-//						else if( !checkPlace(l) && !checkPlace(r) )
-//							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
+						else if( !checkPlace(l) && !checkPlace(r) )
+							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
 					}
 					if(enemies[i]->getX() > targetX && !checkPlace(l)){// enemy move left
-						u.setX(u.x()+30);
-						d.setX(d.x()+30);
+						u.setX(u.x()-30);
+						d.setX(d.x()-30);
 						if((checkPlace(u) || checkPlace(d)))
 							enemies[i]->move(enemies[i]->getX()-50, enemies[i]->getY());
 						else if((!checkPlace(u) && !checkPlace(d)))
@@ -535,10 +540,10 @@ void MainWindow::handleTimer()
 					if(enemies[i]->getX() < targetX){// && !checkPlace(r)){// enemy move right
 						u.setX(u.x()-30);
 						d.setX(d.x()-30);
-						if((checkPlace(u) || checkPlace(d)))
+//						if((checkPlace(u) || checkPlace(d)))
 							enemies[i]->move(enemies[i]->getX()+50, enemies[i]->getY());
-						else if((!checkPlace(u) && !checkPlace(d)))
-							enemies[i]->move(enemies[i]->getX()+50, enemies[i]->getY());
+//						else if((!checkPlace(u) && !checkPlace(d)))
+//							enemies[i]->move(enemies[i]->getX()+50, enemies[i]->getY());
 					}
 				}
 				else{
@@ -547,7 +552,7 @@ void MainWindow::handleTimer()
 				if(enemies[i]->getHunt() == true){
 					if(enemies[i]->getX() > 300){
 					}
-				}
+				}*/
 			}
 		}
 	}
@@ -1043,4 +1048,3 @@ MainWindow::~MainWindow()
 {
 	timer->stop();
 }
-

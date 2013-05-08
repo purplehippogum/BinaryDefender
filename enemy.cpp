@@ -53,3 +53,12 @@ void Enemy::setPoints(int p)
 	points = p;
 }
 
+int Enemy::getPath()
+{
+	return path;
+}
+
+void Enemy::setPath(int p)
+{
+	path = p;
+}
