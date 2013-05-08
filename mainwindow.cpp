@@ -32,8 +32,7 @@ bool MainWindow::checkCollision(AbstractObject *obj)
 		return true;
 	else if(obj->getX() > WINDOW_MAX_X+3)
 		return true;
-	else
-		return false;
+	return false;
 }
 
 bool MainWindow::checkPlace(QPointF p)
@@ -110,8 +109,8 @@ void MainWindow::handleTimer()
 	if(killCount >= enemyLimit){// beginning of a new round
 //			cout << "Seconds for round " << seconds << endl;
 			enemyLimit += rounds*1.2;
-			if(enemySpeed < 2.25)
-				enemySpeed += 0.75;
+			if(enemySpeed < 2.5)
+				enemySpeed += 0.5;
 			if(enemySpawnRate < 200)
 				enemySpawnRate += 50;
 			killCount = 0;
@@ -223,6 +222,29 @@ void MainWindow::handleTimer()
 		q4->moveUp();
 	}
 	else q4->setUp(false);
+	
+// SMASH the central and top walls
+	if(t1->getDown() && ( t1->getY() < 0) ){
+		t1->moveDown();
+	}
+	else t1->setDown(false);
+
+	if(c1->getUp() && c1->getY() > ( 130 )){
+		c1->moveUp();
+	}
+	else c1->setUp(false);
+	
+// SMASH the central and bottom walls
+	if(c1->getDown() && ( c1->getY() < 170) ){
+		c1->moveDown();
+	}
+	else c1->setDown(false);
+
+	if(b1->getUp() && b1->getY() > ( 330 )){
+		b1->moveUp();
+	}
+	else b1->setUp(false);
+	
 /** Now bring em back after they collide */
 // reset the top two walls
 	if(!q1->getRight() && ( q1->getX() > -31 ) ){
@@ -252,6 +274,23 @@ void MainWindow::handleTimer()
 	if(!q4->getUp() && ( q4->getY() < 272 ) ){
 			q4->moveDown();
 	}
+	
+// reset the central and top walls
+	if(!t1->getDown() && ( t1->getY() > -23 ) ){
+			t1->moveUp();
+	}
+	if(!c1->getUp() && ( c1->getY() < WINDOW_MAX_Y/2-85 ) ){
+			c1->moveDown();
+	}
+	
+// reset the central and bottom walls
+	if(!c1->getDown() && ( c1->getY() > WINDOW_MAX_Y/2-85 ) ){// come back here
+			c1->moveUp();
+	}
+	if(!b1->getUp() && ( b1->getY() < WINDOW_MAX_Y-120 ) ){
+			b1->moveDown();
+	}
+	
 /** Checks which bullets should be moving */
 	for(unsigned int i = 0; i < bullets.size(); i++){
 		if(bullets[i]->getDir() == 2){// move left
@@ -329,7 +368,7 @@ void MainWindow::handleTimer()
 		}
 	}
 /** This if statement handles enemy spawning */
-	if(fmod( gameTimer, (200.0- enemySpawnRate) ) == 0){
+	if(fmod( gameTimer, (300.0- enemySpawnRate) ) == 0){
 		int dir = rand()%6;
 		dir = 0;
 		if(level == 1){
@@ -419,7 +458,6 @@ void MainWindow::handleTimer()
 				if(!enemies[i]->getHunt())
 					enemies[i]->move(WINDOW_MAX_X/2-15, WINDOW_MAX_Y/2-15);
 				if(enemies[i]->getX() == WINDOW_MAX_X/2-15 && enemies[i]->getY() == WINDOW_MAX_Y/2-15){
-					cout << "hunting" << endl;
 					enemies[i]->setHunt(true);
 				}
 				if(enemies[i]->getHunt()){
@@ -540,8 +578,9 @@ void MainWindow::buildLevelTwo()
 	c1->setBrush(black);
 	scene->addItem(c1);
 	
-	player->setPos(300, 320);
-	player->setRotation(0);
+//	player->setPos(300, 320);
+//	player->setRotation(0);
+//	player->update(300, 320, 72, 72);
 	nameDisp->setPos(player->getX(), player->getY()+100);
 }
 
@@ -718,28 +757,58 @@ void MainWindow::resumeGame()
 void MainWindow::SMASHWalls()
 {
 	p = gameplay->mapFromGlobal(QCursor::pos());
-	if(timer->isActive() && SMASHcount > 0){
-		SMASHcount--;
-		if(SMASHcount == 0)
-			SMASH->setPixmap(*blank);
-		
-		if( ( p.y() <=  273) && (p.x() > 320 && p.x() < 384 ) ){// up alley
-			q1->setRight(true);
-			q3->setLeft(true);
+//	cout << "c pos " << p.x() << ", " << p.y() << endl;
+		if(level == 1){
+			if( ( p.y() <=  273) && (p.x() > 320 && p.x() < 384 ) ){// up alley
+				SMASHcount--;
+				q1->setRight(true);
+				q3->setLeft(true);
+			}
+			else if(	( p.y() > 338 && (p.x() > 320 && p.x() < 384 ) ) ){// down alley
+				SMASHcount--;
+				q2->setRight(true);
+				q4->setLeft(true);
+			}
+			if( (p.x() < 321 && ( p.y() < 340 && p.y() > 270 ) ) ){// left alley
+				q1->setDown(true);
+				q2->setUp(true);
+				SMASHcount--;
+			}
+			else if( ( p.x() > 380 && ( p.y() < 340 && p.y() > 270 ) ) ){// right alley
+				q3->setDown(true);
+				q4->setUp(true);
+				SMASHcount--;
+			}
 		}
-		else if(	( p.y() > 338 && (p.x() > 320 && p.x() < 384 ) ) ){// down alley
-			q2->setRight(true);
-			q4->setLeft(true);
+		else{
+			if( (p.y() <= 425 && p.y() >= 370) && (p.x() >= 280 && p.x() <= 430 ) ){
+				b1->setUp(true);
+				c1->setDown(true);
+				SMASHcount--;
+			}
+			if( (p.y() >= 160 && p.y() <= 220) && (p.x() >= 280 && p.x() <= 430 ) ){
+				t1->setDown(true);
+				c1->setUp(true);
+				SMASHcount--;
+			}
+			if( (p.x() < 210 && ( p.y() < 340 && p.y() > 270 ) ) ){// left alley
+				q1->setDown(true);
+				q2->setUp(true);
+				SMASHcount--;
+			}
+			if( p.x() > 500 && ( p.y() < 340 && p.y() > 270 ) ){// right alley
+				q3->setDown(true);
+				q4->setUp(true);
+				SMASHcount--;
+			}
+/*			if( (p.x() >= 210 && p.x() <= 280) && ( p.y() <= 160 && p.y() > 0 ) ){
+				q1->setRight(true);
+				t1->setLeft(true);
+			}*/
 		}
-		else if( (p.x() < 321 && ( p.y() < 340 && p.y() > 270 ) ) ){// left alley
-			q1->setDown(true);
-			q2->setUp(true);
-		}
-		else if( ( p.x() > 380 && ( p.y() < 340 && p.y() > 270 ) ) ){// right alley
-			q3->setDown(true);
-			q4->setUp(true);
-		}
-	}
+
+	if(SMASHcount == 0)
+		SMASH->setPixmap(*blank);
 }
 
 MainWindow::MainWindow()
@@ -850,7 +919,7 @@ MainWindow::MainWindow()
 	/** Sets up SMASH power */
 	SMASHcount = 1;
 	/** Set up rounds */
-	rounds = 0;
+	rounds = 5;
 	rString = "Round";
 	ROUND = new QGraphicsSimpleTextItem;
 	ROUND->setText(rString);

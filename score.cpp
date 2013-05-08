@@ -17,8 +17,8 @@ Score::Score(int nx, int ny, MainWindow *main, QGraphicsScene *sc, Player *p) : 
 	x = nx;
 	y = ny;
 	this->setTransformOriginPoint (x + width/2.0, y + height/2.0);
-	zeroIMG = new QPixmap("zero.png", "png", Qt::AutoColor);
-	oneIMG = new QPixmap("one.png", "png", Qt::AutoColor);
+//	zeroIMG = new QPixmap("zero.png", "png", Qt::AutoColor);
+//	oneIMG = new QPixmap("one.png", "png", Qt::AutoColor);
 	this->setPos(nx, ny);
 	points = 0;
 	s = "Score";
@@ -44,9 +44,11 @@ void Score::updateScore()
 	
 	for(unsigned int i = 0; i < digits.size(); i++){
 		if(digits[i] != NULL){
+			digits[i]->setBin(false);
 			scene->removeItem(digits[i]);
 			delete digits[i];
 			digits.erase(std::find(digits.begin(), digits.end(), digits[i]));
+			digits[i] = NULL;
 		}
 	}
 	
@@ -58,7 +60,7 @@ void Score::updateScore()
 	
 	for(int i = 0; i < s.length(); i++){
 		digit = new Digit(i*16 + x + 242, y - 28, 14, 24, 0, 0, player, this);
-		digit->setPen(Qt::NoPen);
+//		digit->setPen(Qt::NoPen);
 		digit->setIndex(i);
 		
 		if(s[i] == '0'){
