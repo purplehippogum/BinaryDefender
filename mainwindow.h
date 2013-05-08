@@ -33,6 +33,7 @@
 #include "health_bar.h"
 #include "arrowcount.h"
 #include "high_score_table.h"
+#include "heart.h"
 
 #define WINDOW_MAX_X 640
 #define WINDOW_MAX_Y 480
@@ -136,6 +137,9 @@ private:
 	/** Player health */
 	HealthBar *health;
 	GameObject *healthOutline;
+	/** Heart object */
+	Heart *heart;
+	bool heartCreated;
 	
 	/** Numerical Arrow count display */
 	QString arrowStr;
@@ -175,6 +179,7 @@ private:
 	QPixmap *playerIMG;
 	QPixmap *bbIMG;
 	QPixmap *arrowIMG;
+	QPixmap *heartIMG;
 	
 public slots:
 	/** Handles object movement when timer gets set off */

@@ -16,6 +16,14 @@ bool MainWindow::checkCollision(AbstractObject *obj)
 		return true;
 	else if(obj->collidesWithItem(q4, Qt::IntersectsItemShape))
 		return true;
+	if(t1){
+		if(obj->collidesWithItem(t1, Qt::IntersectsItemShape))
+		return true;
+	else if(obj->collidesWithItem(b1, Qt::IntersectsItemShape))
+		return true;
+	else if(obj->collidesWithItem(c1, Qt::IntersectsItemShape))
+		return true;
+	}
 	else if(obj->getY() < -20)
 		return true;
 	else if(obj->getY() > WINDOW_MAX_Y-52)
@@ -63,8 +71,34 @@ void MainWindow::handleTimer()
 	else
 		arrowCount->deSelect();
 	
-	/** Ends game if player's health is zero */
-	if(player->getHealth() == 0){
+	if(rounds % 2 == 0 && !heartCreated){
+		heart = new Heart(heartIMG, 300, 320, 16, 16, 5);
+		scene->addItem(heart);
+		heartCreated = true;
+	}
+	if(heart && player->collidesWithItem(heart, Qt::IntersectsItemShape)){
+		if(player->getHealth() < 100){
+			player->setHealth(player->getHealth()+5);
+			health->setWidth(player->getHealth()*1.2);
+		}
+		scene->removeItem(heart);
+		heart = NULL;
+	}
+	if(heart && !checkCollision(heart) &&(
+	 ( abs(heart->getX() - player->getX()) ) <= 80 || ( abs(heart->getY() - player->getY()) ) <= 60) ){
+		if(heart->getX() >= player->getX())
+			heart->moveRight(1);
+		else
+			heart->moveLeft(1);
+			
+		if(heart->getY() >= player->getY())
+			heart->moveDown(1);
+		else
+			heart->moveUp(1);
+	}
+	
+	/** Ends game if player's health falls below zero */
+	if(player->getHealth() <= 0){
 		emit death();
 	}
 
@@ -75,7 +109,7 @@ void MainWindow::handleTimer()
 	}
 	if(killCount >= enemyLimit){// beginning of a new round
 //			cout << "Seconds for round " << seconds << endl;
-			enemyLimit += rounds*1.5;
+			enemyLimit += rounds*1.2;
 			if(enemySpeed < 2.25)
 				enemySpeed += 0.75;
 			if(enemySpawnRate < 200)
@@ -87,6 +121,7 @@ void MainWindow::handleTimer()
 			rounds++;
 			rString.setNum(rounds);
 			rNum->setText(rString);
+			heartCreated = false;
 //			cout << "Enemy limit " << enemyLimit << endl;
 	}
 	/** Set up level 2 */
@@ -397,6 +432,22 @@ void MainWindow::handleTimer()
 				QPointF u = enemies[i]->pos();
 //				GameObject *test = new GameObject(u.x()+16, u.y()+15, 1, 1, 0, 0);
 //				scene->addItem(test);
+				int targetX = 0;
+				int targetY = 0;
+				if(enemies[i]->getX() > WINDOW_MAX_X/2)
+				{
+					targetX = 250;
+				}
+				else{
+					targetX = 425;
+				}
+				if(enemies[i]->getY() > WINDOW_MAX_Y/2){
+					targetY = 300;
+				}
+				else{
+					targetY = 150;
+				}
+				
 				QPointF d = u;
 				QPointF l = u;
 				QPointF r = u;
@@ -417,29 +468,47 @@ void MainWindow::handleTimer()
 				r.setY(r.y()+15);
 //				p.setY(enemies[i]->getY()+20);
 //				p.setX(enemies[i]->getX()+5);
-				if(enemies[i]->getY() > player->getY() && !checkPlace(u)){// enemy move up
-					l.setY(l.y()+15);
-					r.setY(r.y()+15);
-					if( (checkPlace(l) || checkPlace(r)) )
-						enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()-50);
+				if( !enemies[i]->getHunt() && (enemies[i]->getY() != targetY) && enemies[i]->getX() != targetX ){
+				enemies[0]->setHunt(false);
+					if(enemies[i]->getY() > targetY && !checkPlace(u)){// enemy move up
+						l.setY(l.y()+15);
+						r.setY(r.y()+15);
+						if( (checkPlace(l) || checkPlace(r)) )
+							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()-50);
+//						else if( (!checkPlace(l) && !checkPlace(r)) )
+//							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()-50);
+					}
+					if(enemies[i]->getY() < targetY && !checkPlace(d) ){// enemy move down
+						l.setY(l.y()-30);
+						r.setY(r.y()-30);
+						if( checkPlace(l) || checkPlace(r) )
+							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
+//						else if( !checkPlace(l) && !checkPlace(r) )
+//							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
+					}
+					if(enemies[i]->getX() > targetX && !checkPlace(l)){// enemy move left
+						u.setX(u.x()+30);
+						d.setX(d.x()+30);
+						if((checkPlace(u) || checkPlace(d)))
+							enemies[i]->move(enemies[i]->getX()-50, enemies[i]->getY());
+						else if((!checkPlace(u) && !checkPlace(d)))
+							enemies[i]->move(enemies[i]->getX()-50, enemies[i]->getY());
+					}
+					if(enemies[i]->getX() < targetX){// && !checkPlace(r)){// enemy move right
+						u.setX(u.x()-30);
+						d.setX(d.x()-30);
+						if((checkPlace(u) || checkPlace(d)))
+							enemies[i]->move(enemies[i]->getX()+50, enemies[i]->getY());
+						else if((!checkPlace(u) && !checkPlace(d)))
+							enemies[i]->move(enemies[i]->getX()+50, enemies[i]->getY());
+					}
 				}
-				if(enemies[i]->getY() < player->getY() && !checkPlace(d) ){// enemy move down
-					l.setY(l.y()-30);
-					r.setY(r.y()-30);
-					if( checkPlace(l) || checkPlace(r) )
-						enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
+				else{
+				enemies[i]->setHunt(true);
 				}
-				if(enemies[i]->getX() > player->getX() && !checkPlace(l)){// enemy move left
-					u.setX(u.x()+30);
-					d.setX(d.x()+30);
-					if((checkPlace(u) || checkPlace(d)))
-						enemies[i]->move(enemies[i]->getX()-50, enemies[i]->getY());
-				}
-				if(enemies[i]->getX() < player->getX()){// && !checkPlace(r)){// enemy move right
-					u.setX(u.x()+30);
-					d.setX(d.x()+30);
-					if((checkPlace(u) || checkPlace(d)))
-						enemies[i]->move(enemies[i]->getX()+50, enemies[i]->getY());
+				if(enemies[i]->getHunt() == true){
+					if(enemies[i]->getX() > 300){
+					}
 				}
 			}
 		}
@@ -470,6 +539,10 @@ void MainWindow::buildLevelTwo()
 	c1 = new GameObject(WINDOW_MAX_X/2-75, WINDOW_MAX_Y/2-85, 150, 150, 0, 0);
 	c1->setBrush(black);
 	scene->addItem(c1);
+	
+	player->setPos(300, 320);
+	player->setRotation(0);
+	nameDisp->setPos(player->getX(), player->getY()+100);
 }
 
 void MainWindow::shoot()
@@ -727,8 +800,13 @@ MainWindow::MainWindow()
 
 	/** Initialize a pixmap for the player */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
-	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 500);
+	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 100);
 	player->setTransformOriginPoint(10, 17);// 10, 17
+
+	/** Initialize heart */
+	heartIMG = new QPixmap("heart.png", "png", Qt::AutoColor);
+	heart = NULL;
+	heartCreated = false;
 	
 	/** Initialize gameplay and scene */
 	scene = new QGraphicsScene(0, -40, WINDOW_MAX_X, WINDOW_MAX_Y, this);//
@@ -772,7 +850,7 @@ MainWindow::MainWindow()
 	/** Sets up SMASH power */
 	SMASHcount = 1;
 	/** Set up rounds */
-	rounds = 5;
+	rounds = 0;
 	rString = "Round";
 	ROUND = new QGraphicsSimpleTextItem;
 	ROUND->setText(rString);
@@ -852,6 +930,9 @@ MainWindow::MainWindow()
 	scene->addItem(score);
 	scene->addItem(SMASH);
 	scene->addWidget(pause);
+	
+	c1 = NULL;
+	t1 = NULL;
 	
 	/** Game Events, or connections */
 	connect(timer, SIGNAL(timeout()), this, SLOT(handleTimer()));
