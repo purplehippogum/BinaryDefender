@@ -30,7 +30,17 @@ bool MainWindow::checkCollision(AbstractObject *obj)
 
 bool MainWindow::checkPlace(QPointF p)
 {
-	
+	if(p.x() > 450 && (p.y() < 200 || p.y() > 250) )// right two blocks
+		return true;
+	if(p.x() < 180 && (p.y() < 200 || p.y() > 250) )// left two blocks
+		return true;
+		
+	if( (p.x() > 230 && p.x() < 380) && (p.y() > 340 || p.y() < 90) )// top/bottom middle block
+		return true;
+	if( (p.x() > 230 && p.x() < 380) && (p.y() > 140 && p.y() < 310) )// central block
+		return true;
+
+	return false;
 }
 
 void MainWindow::pushOut(AbstractObject *obj, int dir)
@@ -284,9 +294,9 @@ void MainWindow::handleTimer()
 		}
 	}
 /** This if statement handles enemy spawning */
-	if(fmod( gameTimer, (300.0- enemySpawnRate) ) == 0){
-		int dir = rand()%4;
-		dir = 1;
+	if(fmod( gameTimer, (200.0- enemySpawnRate) ) == 0){
+		int dir = rand()%6;
+		dir = 0;
 		if(level == 1){
 			switch(dir){
 			// right side
@@ -335,36 +345,29 @@ void MainWindow::handleTimer()
 								scene->addItem(enemy);
 								break;
 							}
-			// bottom
-				case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y+40, 32, 32, 32, 48);
-								enemy->setDamage(5);
-								enemies.push_back(enemy);
-								scene->addItem(enemy);
-								break;
-							}
 			// upper right top
-				case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2+65, -25, 32, 32, 32, 48);
+				case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2+100, -25, 32, 32, 32, 48);
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
 								break;
 							}
 			//upper left top
-				case 4: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2-120, -25, 32, 32, 32, 48);
+				case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2-120, -25, 32, 32, 32, 48);
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
 								break;
 							}
 			//lower right bottom
-				case 5: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2+65, WINDOW_MAX_Y-60, 32, 32, 32, 48);
+				case 4: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2+100, WINDOW_MAX_Y-50, 32, 32, 32, 48);
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
 								break;
 							}
-			//lower right bottom
-				case 6: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2-120, WINDOW_MAX_Y-60, 32, 32, 32, 48);
+			//lower left bottom
+				case 5: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2-120, WINDOW_MAX_Y-50, 32, 32, 32, 48);
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
@@ -391,30 +394,51 @@ void MainWindow::handleTimer()
 		}
 		else if(level == 2){
 			for(unsigned int i = 0; i < enemies.size(); i++){
-				QPointF p = enemies[i]->pos();
-				QPoint ept = p.toPoint();
-				gameplay->mapFromGlobal(ept);
-//				cout << "enmy pos " << ept.x() << ", " << ept.y() << endl;
-				if(enemies[i]->getY() < player->getY() ){// enemy is above player
-					p.setY(enemies[i]->getY()+5);
-					if( !checkPlace(ept) ){
-						enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
-					}
-				}
-				else if(enemies[i]->getY() > player->getY()){// enemy is below player
-					p.setY(enemies[i]->getY()-5);
-					if( !checkPlace(p) ){
+				QPointF u = enemies[i]->pos();
+//				GameObject *test = new GameObject(u.x()+16, u.y()+15, 1, 1, 0, 0);
+//				scene->addItem(test);
+				QPointF d = u;
+				QPointF l = u;
+				QPointF r = u;
+				u.setY(u.y()-20);
+				u.setX(u.x()+16);
+//				GameObject *utest = new GameObject(u.x(), u.y(), 1, 1, 0, 0);
+//				scene->addItem(utest);
+				
+				d.setY(d.y()+45);
+				d.setX(d.x()+16);
+				
+				l.setX(l.x()-25);
+				l.setY(l.y()+15);
+//				GameObject *ltest = new GameObject(l.x(), l.y(), 1, 1, 0, 0);
+//				scene->addItem(ltest);
+				
+				r.setX(r.x()+40);
+				r.setY(r.y()+15);
+//				p.setY(enemies[i]->getY()+20);
+//				p.setX(enemies[i]->getX()+5);
+				if(enemies[i]->getY() > player->getY() && !checkPlace(u)){// enemy move up
+					l.setY(l.y()+15);
+					r.setY(r.y()+15);
+					if( (checkPlace(l) || checkPlace(r)) )
 						enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()-50);
-					}
 				}
-				else if(enemies[i]->getX() > player->getX()){// enemy is right of player
-					p.setX(enemies[i]->getX()-16);
-//					if( !checkPlace(p) )
+				if(enemies[i]->getY() < player->getY() && !checkPlace(d) ){// enemy move down
+					l.setY(l.y()-30);
+					r.setY(r.y()-30);
+					if( checkPlace(l) || checkPlace(r) )
+						enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
+				}
+				if(enemies[i]->getX() > player->getX() && !checkPlace(l)){// enemy move left
+					u.setX(u.x()+30);
+					d.setX(d.x()+30);
+					if((checkPlace(u) || checkPlace(d)))
 						enemies[i]->move(enemies[i]->getX()-50, enemies[i]->getY());
 				}
-				else if(enemies[i]->getX() < player->getX()){// enemy is left of player
-					p.setX(enemies[i]->getX()-16);
-//					if( !checkPlace(p) )
+				if(enemies[i]->getX() < player->getX()){// && !checkPlace(r)){// enemy move right
+					u.setX(u.x()+30);
+					d.setX(d.x()+30);
+					if((checkPlace(u) || checkPlace(d)))
 						enemies[i]->move(enemies[i]->getX()+50, enemies[i]->getY());
 				}
 			}
@@ -451,7 +475,8 @@ void MainWindow::buildLevelTwo()
 void MainWindow::shoot()
 {
   valid = gameplay->mapFromGlobal(valid);
-	p = gameplay->mapFromGlobal(QCursor::pos());
+//	p = gameplay->mapFromGlobal(QCursor::pos());
+//	p = gameplay->mapFromScene(QCursor::pos());
 	
 	if(bullets.size() < 2 && timer->isActive() ){
 		if( player->rotation() == 0){// shoot up
@@ -702,7 +727,7 @@ MainWindow::MainWindow()
 
 	/** Initialize a pixmap for the player */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
-	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 5);
+	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 500);
 	player->setTransformOriginPoint(10, 17);// 10, 17
 	
 	/** Initialize gameplay and scene */
@@ -844,6 +869,7 @@ MainWindow::MainWindow()
 
 void MainWindow::movePlayer(std::string dir)
 {
+//	cout << "player pos " << player->getX() << ", " << player->getY() << endl;
 	if(dir == "up")
 		player->setDir(0);
 	else if(dir == "down")
