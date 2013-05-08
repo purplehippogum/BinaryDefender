@@ -20,8 +20,17 @@ bool MainWindow::checkCollision(AbstractObject *obj)
 		return true;
 	else if(obj->getY() > WINDOW_MAX_Y-52)
 		return true;
+	else if(obj->getX() < -20)
+		return true;
+	else if(obj->getX() > WINDOW_MAX_X+3)
+		return true;
 	else
 		return false;
+}
+
+bool MainWindow::checkPlace(QPointF p)
+{
+	
 }
 
 void MainWindow::pushOut(AbstractObject *obj, int dir)
@@ -277,7 +286,7 @@ void MainWindow::handleTimer()
 /** This if statement handles enemy spawning */
 	if(fmod( gameTimer, (300.0- enemySpawnRate) ) == 0){
 		int dir = rand()%4;
-		dir = 6;
+		dir = 1;
 		if(level == 1){
 			switch(dir){
 			// right side
@@ -367,14 +376,47 @@ void MainWindow::handleTimer()
 
 /** Handles enemy movement. Speed, etc */
 	if(enemy && fmod( gameTimer,(3.0 - enemySpeed) ) == 0){
-		for(unsigned int i = 0; i < enemies.size(); i++){
-			if(!enemies[i]->getHunt())
-				enemies[i]->move(WINDOW_MAX_X/2-15, WINDOW_MAX_Y/2-15);
-			if(enemies[i]->getX() == WINDOW_MAX_X/2-15 && enemies[i]->getY() == WINDOW_MAX_Y/2-15){
-				enemies[i]->setHunt(true);
+		if(level == 1){
+			for(unsigned int i = 0; i < enemies.size(); i++){
+				if(!enemies[i]->getHunt())
+					enemies[i]->move(WINDOW_MAX_X/2-15, WINDOW_MAX_Y/2-15);
+				if(enemies[i]->getX() == WINDOW_MAX_X/2-15 && enemies[i]->getY() == WINDOW_MAX_Y/2-15){
+					cout << "hunting" << endl;
+					enemies[i]->setHunt(true);
+				}
+				if(enemies[i]->getHunt()){
+					enemies[i]->move(player->getX(), player->getY());
+				}
 			}
-			if(enemies[i]->getHunt()){
-				enemies[i]->move(player->getX(), player->getY());
+		}
+		else if(level == 2){
+			for(unsigned int i = 0; i < enemies.size(); i++){
+				QPointF p = enemies[i]->pos();
+				QPoint ept = p.toPoint();
+				gameplay->mapFromGlobal(ept);
+//				cout << "enmy pos " << ept.x() << ", " << ept.y() << endl;
+				if(enemies[i]->getY() < player->getY() ){// enemy is above player
+					p.setY(enemies[i]->getY()+5);
+					if( !checkPlace(ept) ){
+						enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
+					}
+				}
+				else if(enemies[i]->getY() > player->getY()){// enemy is below player
+					p.setY(enemies[i]->getY()-5);
+					if( !checkPlace(p) ){
+						enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()-50);
+					}
+				}
+				else if(enemies[i]->getX() > player->getX()){// enemy is right of player
+					p.setX(enemies[i]->getX()-16);
+//					if( !checkPlace(p) )
+						enemies[i]->move(enemies[i]->getX()-50, enemies[i]->getY());
+				}
+				else if(enemies[i]->getX() < player->getX()){// enemy is left of player
+					p.setX(enemies[i]->getX()-16);
+//					if( !checkPlace(p) )
+						enemies[i]->move(enemies[i]->getX()+50, enemies[i]->getY());
+				}
 			}
 		}
 	}

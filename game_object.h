@@ -43,6 +43,7 @@ class GameObject : public QGraphicsRectItem
     void moveLeft();
     void moveRight();
     void draw();
+//    bool contains(const QPointF &point) const;
 	
 	protected:
     int x;

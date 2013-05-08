@@ -67,6 +67,8 @@ public:
 private:
 	/** Checks for @param obj collision with walls */
 	bool checkCollision(AbstractObject *obj);
+	/** @return true if @param p is in a wall */
+	bool checkPlace(QPointF p);
 	/** Pushes @param obj out of object */
 	void pushOut(AbstractObject *obj, int dir);
 	/** Sets up the geometry for level 2 */
