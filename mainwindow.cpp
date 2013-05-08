@@ -369,9 +369,9 @@ void MainWindow::handleTimer()
 		}
 	}
 /** This if statement handles enemy spawning */
-	if(fmod( gameTimer, (300.0- enemySpawnRate) ) == 0){
+	if(fmod( gameTimer, (200.0- enemySpawnRate) ) == 0){
 		int dir = rand()%6;
-		dir = 0;
+//		dir = 0;
 		if(level == 1){
 			switch(dir){
 			// right side
@@ -405,13 +405,13 @@ void MainWindow::handleTimer()
 			}
 		}
 		else if(level == 2){
-		enemy->setPath(dir);
 			switch(dir){
 			// right side
 				case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 48);
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
+								enemy->setPath(0);
 								break;
 							}
 			// left side
@@ -419,6 +419,7 @@ void MainWindow::handleTimer()
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
+								enemy->setPath(2);
 								break;
 							}
 			// upper right top
@@ -426,6 +427,7 @@ void MainWindow::handleTimer()
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
+								enemy->setPath(5);
 								break;
 							}
 			//upper left top
@@ -433,6 +435,7 @@ void MainWindow::handleTimer()
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
+								enemy->setPath(2);
 								break;
 							}
 			//lower right bottom
@@ -440,6 +443,7 @@ void MainWindow::handleTimer()
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
+								enemy->setPath(5);
 								break;
 							}
 			//lower left bottom
@@ -447,6 +451,7 @@ void MainWindow::handleTimer()
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
+								enemy->setPath(2);
 								break;
 							}
 			}
@@ -469,90 +474,76 @@ void MainWindow::handleTimer()
 		}
 		else if(level == 2){
 			for(unsigned int i = 0; i < enemies.size(); i++){
-				QPointF u = enemies[i]->pos();
-//				GameObject *test = new GameObject(u.x()+16, u.y()+15, 1, 1, 0, 0);
-//				scene->addItem(test);
-				int targetX = 0;
-				int targetY = 0;
-				targetX = player->getX();
-				targetY = player->getY();
-				if(enemies[i]->getX() > WINDOW_MAX_X/2 && enemies[i]->getY() > WINDOW_MAX_Y/2)
-				{
-					targetX = player->getX();
-					targetY = player->getY();
-				}
-/*				else{
-					targetX = 425;
-				}
-				if(enemies[i]->getY() > WINDOW_MAX_Y/2){
-					targetY = 300;
-				}
+			int dy = abs(enemies[i]->getY() - player->getY());
+			int dx = abs(enemies[i]->getX() - player->getX());
+
+			/** Move to a node */
+//				if(dx >= 8 && dy >= 8){
+					if(enemies[i]->getPath() == 0){
+						enemies[i]->move(420, WINDOW_MAX_Y/2-15);
+					}
+					if(enemies[i]->getPath() == 1){
+						enemies[i]->move(420, 110);
+					}
+					if(enemies[i]->getPath() == 2){
+						enemies[i]->move(200, 110);
+					}
+					if(enemies[i]->getPath() == 4){
+						enemies[i]->move(200, 315);
+					}
+					if(enemies[i]->getPath() == 5){
+						enemies[i]->move(420, 315);
+					}
+				/** Stop at a node and choose a direction */
+					if(enemies[i]->getX() == 420 && enemies[i]->getY() == WINDOW_MAX_Y/2-15){//reaches node 0
+						int randDir = rand()%2;
+							if(randDir == 0){
+								enemies[i]->setPath(1);
+							}
+							else{
+								enemies[i]->setPath(5);
+							}
+					}
+					if(enemies[i]->getX() == 420 && enemies[i]->getY() == 110){//reaches node 1
+						int randDir = rand()%2;
+							if(randDir == 0){
+								enemies[i]->setPath(2);
+							}
+							else{
+								enemies[i]->setPath(5);
+							}
+					}
+					if(enemies[i]->getX() == 200 && enemies[i]->getY() == 110){// reaches node 2
+						int randDir = rand()%2;
+							if(randDir == 0){
+								enemies[i]->setPath(1);
+							}
+							else{
+								enemies[i]->setPath(4);
+							}
+					}
+					if(enemies[i]->getX() == 200 && enemies[i]->getY() == 315){// reaches node 4
+						int randDir = rand()%2;
+							if(randDir == 0){
+								enemies[i]->setPath(2);
+							}
+							else{
+								enemies[i]->setPath(5);
+							}
+					}
+					if(enemies[i]->getX() == 420 && enemies[i]->getY() == 315){// reaches node 5
+						int randDir = rand()%2;
+							if(randDir == 0){
+								enemies[i]->setPath(4);
+							}
+							else{
+								enemies[i]->setPath(1);
+							}
+					}
+//				}
 				else{
-					targetY = 180;
+//					enemies[i]->move(player->getX(), player->getY());
 				}
-	*/			
-				QPointF d = u;
-				QPointF l = u;
-				QPointF r = u;
-				u.setY(u.y()-20);
-				u.setX(u.x()+16);
-//				GameObject *utest = new GameObject(u.x(), u.y(), 1, 1, 0, 0);
-//				scene->addItem(utest);
-				
-				d.setY(d.y()+45);
-				d.setX(d.x()+16);
-				
-				l.setX(l.x()-25);
-				l.setY(l.y()+15);
-//				GameObject *ltest = new GameObject(l.x(), l.y(), 1, 1, 0, 0);
-//				scene->addItem(ltest);
-				
-				r.setX(r.x()+40);
-				r.setY(r.y()+15);
-//				p.setY(enemies[i]->getY()+20);
-//				p.setX(enemies[i]->getX()+5);
-/*				if((enemies[i]->getY() != targetY) && enemies[i]->getX() != targetX ){
-				enemies[0]->setHunt(false);
-					if(enemies[i]->getY() > targetY && !checkPlace(u)){// enemy move up
-						l.setY(l.y()+15);
-						r.setY(r.y()+15);
-						if( (checkPlace(l) || checkPlace(r)) )
-							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()-50);
-						else if( (!checkPlace(l) && !checkPlace(r)) )
-							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()-50);
-					}
-					if(enemies[i]->getY() < targetY && !checkPlace(d) ){// enemy move down
-						l.setY(l.y()-30);
-						r.setY(r.y()-30);
-						if( checkPlace(l) || checkPlace(r) )
-							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
-						else if( !checkPlace(l) && !checkPlace(r) )
-							enemies[i]->move(enemies[i]->getX(), enemies[i]->getY()+50);
-					}
-					if(enemies[i]->getX() > targetX && !checkPlace(l)){// enemy move left
-						u.setX(u.x()-30);
-						d.setX(d.x()-30);
-						if((checkPlace(u) || checkPlace(d)))
-							enemies[i]->move(enemies[i]->getX()-50, enemies[i]->getY());
-						else if((!checkPlace(u) && !checkPlace(d)))
-							enemies[i]->move(enemies[i]->getX()-50, enemies[i]->getY());
-					}
-					if(enemies[i]->getX() < targetX){// && !checkPlace(r)){// enemy move right
-						u.setX(u.x()-30);
-						d.setX(d.x()-30);
-//						if((checkPlace(u) || checkPlace(d)))
-							enemies[i]->move(enemies[i]->getX()+50, enemies[i]->getY());
-//						else if((!checkPlace(u) && !checkPlace(d)))
-//							enemies[i]->move(enemies[i]->getX()+50, enemies[i]->getY());
-					}
-				}
-				else{
-				enemies[i]->setHunt(true);
-				}
-				if(enemies[i]->getHunt() == true){
-					if(enemies[i]->getX() > 300){
-					}
-				}*/
 			}
 		}
 	}
