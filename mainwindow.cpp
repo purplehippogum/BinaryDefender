@@ -224,6 +224,8 @@ void MainWindow::handleTimer()
 	else q4->setUp(false);
 	
 // SMASH the central and top walls
+
+if(t1){
 	if(t1->getDown() && ( t1->getY() < 0) ){
 		t1->moveDown();
 	}
@@ -244,6 +246,7 @@ void MainWindow::handleTimer()
 		b1->moveUp();
 	}
 	else b1->setUp(false);
+}
 	
 /** Now bring em back after they collide */
 // reset the top two walls
@@ -275,6 +278,7 @@ void MainWindow::handleTimer()
 			q4->moveDown();
 	}
 	
+if(t1){
 // reset the central and top walls
 	if(!t1->getDown() && ( t1->getY() > -23 ) ){
 			t1->moveUp();
@@ -290,7 +294,8 @@ void MainWindow::handleTimer()
 	if(!b1->getUp() && ( b1->getY() < WINDOW_MAX_Y-120 ) ){
 			b1->moveDown();
 	}
-	
+}
+
 /** Checks which bullets should be moving */
 	for(unsigned int i = 0; i < bullets.size(); i++){
 		if(bullets[i]->getDir() == 2){// move left
@@ -459,7 +464,7 @@ void MainWindow::handleTimer()
 	}
 
 /** Handles enemy movement. Speed, etc */
-	if(enemy && fmod( gameTimer,(1.0 - enemySpeed) ) == 0){
+	if(enemy && fmod( gameTimer,(3.0 - enemySpeed) ) == 0){
 		if(level == 1){
 			for(unsigned int i = 0; i < enemies.size(); i++){
 				if(!enemies[i]->getHunt())
@@ -477,6 +482,20 @@ void MainWindow::handleTimer()
 			int dy = abs(enemies[i]->getY() - player->getY());
 			int dx = abs(enemies[i]->getX() - player->getX());
 
+			int playerLoc = -1;
+			if(player->getX() >= 500){
+				playerLoc = 3;
+			}
+			if(player->getX() <= 250 ){
+				playerLoc = 5;
+			}
+			if(player->getY() < 90 && (player->getX() > 180 && player->getX() < 320) ){
+				playerLoc = 1;
+			}
+			if(playerLoc != -1){
+//				cout << " " << playerLoc;
+			}
+
 			/** Move to a node */
 //				if(dx >= 8 && dy >= 8){
 					if(enemies[i]->getPath() == 0){
@@ -493,6 +512,10 @@ void MainWindow::handleTimer()
 					}
 					if(enemies[i]->getPath() == 5){
 						enemies[i]->move(420, 315);
+					}
+					
+					if(enemies[i]->getPath() == 3 && dy <= 15 ){
+						enemies[i]->move(player->getX(), player->getY());
 					}
 				/** Stop at a node and choose a direction */
 					if(enemies[i]->getX() == 420 && enemies[i]->getY() == WINDOW_MAX_Y/2-15){//reaches node 0
@@ -540,10 +563,11 @@ void MainWindow::handleTimer()
 								enemies[i]->setPath(1);
 							}
 					}
+					if(enemies[i]->getX() == 200 && enemies[i]->getY() == 212){
+//					cout << "three" << endl;
+						enemies[i]->setPath(3);
+					}
 //				}
-				else{
-//					enemies[i]->move(player->getX(), player->getY());
-				}
 			}
 		}
 	}
@@ -705,7 +729,6 @@ void MainWindow::handleDeath()
 		int index = 0;
 		for(it = highScores.begin(); it != highScores.end(); ++it){
 			if(score->getPoints() >= *it){
-				cout << "points " <<  *it << endl;
 				it = highScores.insert(it, score->getPoints());
 				sit = highScoreNames.insert(sit, name);
 				break;
@@ -715,7 +738,6 @@ void MainWindow::handleDeath()
 		}
 		
 		if(highScores.size() == 0){
-			cout << "Empty" << endl;
 			highScores.push_back(score->getPoints());
 			highScoreNames.push_back(name);
 		}
@@ -854,9 +876,7 @@ MainWindow::MainWindow()
 		scoreFile.close();
 	}
 	else{
-		cout << "create" << endl;
 		scoreFile.open("high_scores.txt", fstream::out);
-//		scoreFile << "asdsadasd";
 		scoreFile.close();
 	}
 
@@ -915,7 +935,7 @@ MainWindow::MainWindow()
 	/** Sets up SMASH power */
 	SMASHcount = 1;
 	/** Set up rounds */
-	rounds = 5;
+	rounds = 1;
 	rString = "Round";
 	ROUND = new QGraphicsSimpleTextItem;
 	ROUND->setText(rString);
