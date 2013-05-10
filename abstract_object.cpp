@@ -16,8 +16,8 @@ AbstractObject::AbstractObject(QPixmap *pm, double nx, double ny, double w, doub
 	pixMap = new QPixmap;//(pm);// QPixmap
 	pixMap = pm;
 	setPixmap(*pm);
-	this->setTransformOriginPoint(x + width/2.0, y + height/2.0);
-	this->update(x, y, width, height);
+	setTransformOriginPoint(x + width/2.0, y + height/2.0);
+	update(x, y, width, height);
 }
 
 int AbstractObject::getVelX()

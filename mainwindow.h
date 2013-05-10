@@ -74,6 +74,7 @@ private:
 	void pushOut(AbstractObject *obj, int dir);
 	/** Sets up the geometry for level 2 */
 	void buildLevelTwo();
+	bool buildLevel;
 	
 	QVBoxLayout *layout;
 
@@ -139,6 +140,7 @@ private:
 	GameObject *healthOutline;
 	/** Heart object */
 	Heart *heart;
+	std::vector<Heart*> hearts;
 	bool heartCreated;
 	
 	/** Numerical Arrow count display */
@@ -146,6 +148,8 @@ private:
 	QGraphicsSimpleTextItem *arrowText;
 	/** Gaphical Arrow count display */
 	ArrowCount *arrowCount;
+	
+	bool moving;
 	
 	/** Enemy letter objects */
 	Enemy *enemy;

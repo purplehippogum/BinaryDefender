@@ -53,11 +53,18 @@ bool MainWindow::checkPlace(QPointF p)
 void MainWindow::pushOut(AbstractObject *obj, int dir)
 {
 	if(checkCollision(player) && dir == 0){
-		obj->moveBy(-5,0);
+		obj->moveBy(0,1);
 	}
 	if(checkCollision(player) && dir == 1){
-		obj->moveBy(-5,0);
+		obj->moveBy(0,-1);
 	}
+	if(checkCollision(player) && dir == 2){
+		obj->moveBy(1,0);
+	}
+	if(checkCollision(player) && dir == 3){
+		obj->moveBy(-1,0);
+	}
+	
 }
 
 void MainWindow::handleTimer()
@@ -71,29 +78,36 @@ void MainWindow::handleTimer()
 		arrowCount->deSelect();
 	
 	if(rounds % 2 == 0 && !heartCreated){
-		heart = new Heart(heartIMG, 300, 320, 16, 16, 5);
+		heart = new Heart(heartIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 16, 16, 5);
+		hearts.push_back(heart);
 		scene->addItem(heart);
 		heartCreated = true;
 	}
-	if(heart && player->collidesWithItem(heart, Qt::IntersectsItemShape)){
+
+	for(unsigned int i = 0; i < hearts.size(); i++){
+		
+	if(hearts[i] && player->collidesWithItem(hearts[i], Qt::IntersectsItemShape)){
 		if(player->getHealth() < 100){
 			player->setHealth(player->getHealth()+5);
 			health->setWidth(player->getHealth()*1.2);
 		}
-		scene->removeItem(heart);
+		scene->removeItem(hearts[i]);
+		hearts.erase(std::find(hearts.begin(), hearts.end(), hearts[i]));
 		heart = NULL;
 	}
-	if(heart && !checkCollision(heart) &&(
-	 ( abs(heart->getX() - player->getX()) ) <= 80 || ( abs(heart->getY() - player->getY()) ) <= 60) ){
-		if(heart->getX() >= player->getX())
-			heart->moveRight(1);
-		else
-			heart->moveLeft(1);
-			
-		if(heart->getY() >= player->getY())
-			heart->moveDown(1);
-		else
-			heart->moveUp(1);
+		if(hearts[i] && !checkCollision(hearts[i]) && abs(hearts[i]->getX() - player->getX()) <= 50){
+			if(hearts[i]->getX() >= player->getX())
+				hearts[i]->moveRight(1);
+			else
+				hearts[i]->moveLeft(1);
+		}
+
+		if( !checkCollision(hearts[i]) && abs(hearts[i]->getY() - player->getY()) <= 50){
+			if(hearts[i]->getY() >= player->getY())
+				hearts[i]->moveDown(1);
+			else
+				hearts[i]->moveUp(1);
+		}
 	}
 	
 	/** Ends game if player's health falls below zero */
@@ -109,9 +123,9 @@ void MainWindow::handleTimer()
 	if(killCount >= enemyLimit){// beginning of a new round
 //			cout << "Seconds for round " << seconds << endl;
 			enemyLimit += rounds*1.2;
-			if(enemySpeed < 2.5)
+			if(enemySpeed < 2.0)
 				enemySpeed += 0.5;
-			if(enemySpawnRate < 200)
+			if(enemySpawnRate < 250)
 				enemySpawnRate += 50;
 			killCount = 0;
 			seconds = 1;
@@ -123,11 +137,11 @@ void MainWindow::handleTimer()
 			heartCreated = false;
 //			cout << "Enemy limit " << enemyLimit << endl;
 	}
-	/** Set up level 2 */
+	/** Set up level 2 
 	if(rounds == 5 && level == 1){
 		buildLevelTwo();
 		level++;
-	}
+	}*/
 /** Handle player movement */
 // up
 	if(player->getDir() == 0 && !checkCollision(player) ){
@@ -137,9 +151,9 @@ void MainWindow::handleTimer()
 		player->setRotation(0);
 		player->moveUp(1);
 	}
-	else if(player->rotation() == 0 && checkCollision(player)){
-		player->moveDown(1);
-		pushOut(player, 0);
+	else if(player->rotation() == 0 && checkCollision(player) && moving == false){
+//		player->moveDown(1);
+//		pushOut(player, 0);
 		nameDisp->setPos(player->getX(), player->getY()-20);
 	}
 // down
@@ -148,80 +162,82 @@ void MainWindow::handleTimer()
 		nameDisp->setRotation(0);
 		player->setTransformOriginPoint(14, 18);
 		player->setRotation(180);
-		player->moveDown(1);
+//		player->moveDown(1);
 	}
-	else if(player->rotation() == 180 && checkCollision(player)){
-		player->moveUp(1);
-		pushOut(player, 1);
+	else if(player->rotation() == 180 && checkCollision(player)  && moving == false ){
+//		player->moveUp(1);
+//		pushOut(player, 1);
 	}
 // left
 	if(player->getDir() == 2 && !checkCollision(player) ){
-		player->setTransformOriginPoint(10, 20);
+		player->setTransformOriginPoint(10, 12);
 		player->setRotation(-90);
 		player->moveLeft(1);
 		nameDisp->setPos(player->getX()+20, player->getY()+35);
 		nameDisp->setRotation(-90);
 	}
-	else if(player->rotation() == -90 && checkCollision(player)){
-		player->moveRight(1);
+	else if(player->rotation() == -90 && checkCollision(player)  && moving == false ){
+//		player->moveRight(1);
+//		pushOut(player, 2);
 	}
 //  right
 	if(player->getDir() == 3 && !checkCollision(player)){
-		player->setTransformOriginPoint(10, 15);
+		player->setTransformOriginPoint(12, 12);
 		player->setRotation(90);
 		nameDisp->setPos(player->getX(), player->getY());
 		nameDisp->setRotation(90);
 		player->moveRight(1);
 	}
-	else if(player->rotation() == 90 && checkCollision(player) ){
-		player->moveLeft(1);
+	else if(player->rotation() == 90 && checkCollision(player)  && moving == false ){
+//		player->moveLeft(1);
+//		pushOut(player, 3);
 	}
-	
-	else if(player->getDir() == 3 && player->rotation() == 90 && checkCollision(player) ){
+/*	
+	else if(player->getDir() == 3 && player->rotation() == 90 && checkCollision(player)  && moving == false ){
 		player->moveUp(1);
-	}
+	}*/
 
 /** SMASH the walls! */
 // SMASH the top two walls	
 	if(q1->getRight() && ( q1->getX() < (WINDOW_MAX_X/2 - q1->getWidth() - 10) ) ){
 		q1->moveRight();
 	}
-	else q1->setRight(false);
+	else {q1->setRight(false); moving = false;}
 	
 	if(q3->getLeft() && q3->getX() > ( WINDOW_MAX_X/2 + 10 )){
 		q3->moveLeft();
 	}
-	else q3->setLeft(false);
+	else { q3->setLeft(false); moving = false;}
 // SMASH the bottom two walls	
 	if(q2->getRight() && ( q2->getX() < (WINDOW_MAX_X/2 - q2->getWidth() - 10) ) ){
 		q2->moveRight();
 	}
-	else q2->setRight(false);
+	else { q2->setRight(false); moving = false; }
 	
 	if(q4->getLeft() && q4->getX() > ( WINDOW_MAX_X/2 + 10 )){
 		q4->moveLeft();
 	}
-	else q4->setLeft(false);
+	else { q4->setLeft(false); moving = false;}
 // SMASH left two walls
 	if(q1->getDown() && ( q1->getY() < (WINDOW_MAX_Y/2 - q1->getHeight() - 15) ) ){
 		q1->moveDown();
 	}
-	else q1->setDown(false);
+	else { q1->setDown(false); moving = false;}
 	
 	if(q2->getUp() && q2->getY() > WINDOW_MAX_Y/2 + 15){
 		q2->moveUp();
 	}
-	else q2->setUp(false);
+	else { q2->setUp(false); moving = false;}
 // SMASH the right two walls
 	if(q3->getDown() && ( q3->getY() < WINDOW_MAX_Y/2 - 241) ){
 		q3->moveDown();
 	}
-	else q3->setDown(false);
+	else { q3->setDown(false); moving = false; }
 
 	if(q4->getUp() && q4->getY() > ( WINDOW_MAX_Y/2 + 15 )){
 		q4->moveUp();
 	}
-	else q4->setUp(false);
+	else { q4->setUp(false); moving = false; }
 	
 // SMASH the central and top walls
 
@@ -229,23 +245,23 @@ if(t1){
 	if(t1->getDown() && ( t1->getY() < 0) ){
 		t1->moveDown();
 	}
-	else t1->setDown(false);
+	else { t1->setDown(false); moving = false; }
 
 	if(c1->getUp() && c1->getY() > ( 130 )){
 		c1->moveUp();
 	}
-	else c1->setUp(false);
+	else { c1->setUp(false); moving = false;}
 	
 // SMASH the central and bottom walls
 	if(c1->getDown() && ( c1->getY() < 170) ){
 		c1->moveDown();
 	}
-	else c1->setDown(false);
+	else { c1->setDown(false); moving = false;}
 
 	if(b1->getUp() && b1->getY() > ( 330 )){
 		b1->moveUp();
 	}
-	else b1->setUp(false);
+	else { b1->setUp(false); moving = false;}
 }
 	
 /** Now bring em back after they collide */
@@ -317,10 +333,11 @@ if(t1){
 	}
 /** Check for enemy collison with player */
 	for(unsigned int i = 0; i < enemies.size(); i++){
-		if(enemies[i]->collidesWithItem(q1, Qt::IntersectsItemShape) ||
+/*		if(enemies[i]->collidesWithItem(q1, Qt::IntersectsItemShape) ||
 		enemies[i]->collidesWithItem(q2, Qt::IntersectsItemShape) || 
 		enemies[i]->collidesWithItem(q3, Qt::IntersectsItemShape) ||
-		enemies[i]->collidesWithItem(q4, Qt::IntersectsItemShape) ){
+		enemies[i]->collidesWithItem(q4, Qt::IntersectsItemShape) ){*/
+		if(checkCollision(enemies[i])){
 			delete enemies[i];
 			enemies.erase(std::find(enemies.begin(), enemies.end(), enemies[i]));
 			killCount++;
@@ -374,34 +391,34 @@ if(t1){
 		}
 	}
 /** This if statement handles enemy spawning */
-	if(fmod( gameTimer, (200.0- enemySpawnRate) ) == 0){
+	if(fmod( gameTimer, (300.0- enemySpawnRate) ) == 0){
 		int dir = rand()%6;
 //		dir = 0;
 		if(level == 1){
 			switch(dir){
 			// right side
-				case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 48);
+				case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X-50, WINDOW_MAX_Y/2-15, 32, 32, 32, 48);
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
 								break;
 							}
 			// left side
-				case 1: { enemy = new Enemy(enemyIMG, 0, WINDOW_MAX_Y/2-20, 32, 32, 32, 48);
+				case 1: { enemy = new Enemy(enemyIMG, 10, WINDOW_MAX_Y/2-20, 32, 32, 32, 48);
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
 								break;
 							}
 			// bottom
-				case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, WINDOW_MAX_Y+40, 32, 32, 32, 48);
+				case 2: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y-60, 32, 32, 32, 48);//+40
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
 								break;
 							}
 			// top
-				case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2, -25, 32, 32, 32, 48);
+				case 3: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X/2-11, 5, 32, 32, 32, 48);//-25
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
@@ -409,14 +426,14 @@ if(t1){
 							}
 			}
 		}
-		else if(level == 2){
+		if(level == 2){
 			switch(dir){
 			// right side
 				case 0: { enemy = new Enemy(enemyIMG, WINDOW_MAX_X, WINDOW_MAX_Y/2-15, 32, 32, 32, 48);
 								enemy->setDamage(5);
 								enemies.push_back(enemy);
 								scene->addItem(enemy);
-								enemy->setPath(0);
+								enemy->setPath(1);
 								break;
 							}
 			// left side
@@ -477,7 +494,7 @@ if(t1){
 				}
 			}
 		}
-		else if(level == 2){
+		if(level == 2){
 			for(unsigned int i = 0; i < enemies.size(); i++){
 			int dy = abs(enemies[i]->getY() - player->getY());
 			int dx = abs(enemies[i]->getX() - player->getX());
@@ -498,9 +515,9 @@ if(t1){
 
 			/** Move to a node */
 //				if(dx >= 8 && dy >= 8){
-					if(enemies[i]->getPath() == 0){
+/*					if(enemies[i]->getPath() == 0){
 						enemies[i]->move(420, WINDOW_MAX_Y/2-15);
-					}
+					}*/
 					if(enemies[i]->getPath() == 1){
 						enemies[i]->move(420, 110);
 					}
@@ -514,9 +531,12 @@ if(t1){
 						enemies[i]->move(420, 315);
 					}
 					
-					if(enemies[i]->getPath() == 3 && dy <= 15 ){
+					if(enemies[i]->getPath() == 0){
 						enemies[i]->move(player->getX(), player->getY());
 					}
+/*					if(enemies[i]->getPath() == 0){
+						enemies[i]->move(player->getX(), player->getY());
+					}*/
 				/** Stop at a node and choose a direction */
 					if(enemies[i]->getX() == 420 && enemies[i]->getY() == WINDOW_MAX_Y/2-15){//reaches node 0
 						int randDir = rand()%2;
@@ -529,21 +549,29 @@ if(t1){
 					}
 					if(enemies[i]->getX() == 420 && enemies[i]->getY() == 110){//reaches node 1
 						int randDir = rand()%2;
-							if(randDir == 0){
-								enemies[i]->setPath(2);
-							}
-							else{
-								enemies[i]->setPath(5);
-							}
+						
+						if(dx <= 15 && player->getY() < enemies[i]->getY() )// 
+							enemies[i]->setPath(0);
+							
+						else if(randDir == 0){
+							enemies[i]->setPath(2);
+						}
+						else{
+							enemies[i]->setPath(5);
+						}
 					}
 					if(enemies[i]->getX() == 200 && enemies[i]->getY() == 110){// reaches node 2
 						int randDir = rand()%2;
-							if(randDir == 0){
-								enemies[i]->setPath(1);
-							}
-							else{
-								enemies[i]->setPath(4);
-							}
+						
+						if(dx <= 15 && player->getY() < enemies[i]->getY() )
+							enemies[i]->setPath(0);
+							
+						else if(randDir == 0){
+							enemies[i]->setPath(1);
+						}
+						else{
+							enemies[i]->setPath(4);
+						}
 					}
 					if(enemies[i]->getX() == 200 && enemies[i]->getY() == 315){// reaches node 4
 						int randDir = rand()%2;
@@ -563,9 +591,29 @@ if(t1){
 								enemies[i]->setPath(1);
 							}
 					}
-					if(enemies[i]->getX() == 200 && enemies[i]->getY() == 212){
-//					cout << "three" << endl;
-						enemies[i]->setPath(3);
+					if(enemies[i]->getX() == 200 && enemies[i]->getY() == 220){
+						if( dy <= 15 && player->getX() < enemies[i]->getX() )
+							enemies[i]->setPath(0);
+					}
+					if(enemies[i]->getX() == 420 && enemies[i]->getY() == 220){
+						if(dy <= 15 && player->getX() > enemies[i]->getX() )
+							enemies[i]->setPath(0);
+					}
+/*					if(enemies[i]->getX() == 200 && enemies[i]->getY() == 110){// node 2
+						if(dx <= 15 && player->getY() < enemies[i]->getY() )
+							enemies[i]->setPath(0);
+					}
+					if(enemies[i]->getX() == 420 && enemies[i]->getY() == 110){// node 1
+						if(dx <= 15 && player->getY() < enemies[i]->getY() )
+							enemies[i]->setPath(0);
+					}*/
+					if(enemies[i]->getX() == 420 && enemies[i]->getY() == 315){// node 5
+						if(dx <= 15 && player->getY() > enemies[i]->getY() )
+							enemies[i]->setPath(0);
+					}
+					if(enemies[i]->getX() == 200 && enemies[i]->getY() == 315){ // node 4
+						if(dx <= 15 && player->getY() > enemies[i]->getY() )
+							enemies[i]->setPath(0);
 					}
 //				}
 			}
@@ -575,6 +623,7 @@ if(t1){
 
 void MainWindow::buildLevelTwo()
 {
+	buildLevel = true;
 	/** Move and scale down the existing walls to the corners */
 	q1->setSize(200, 230);
 	q2->setSize(200, 230);
@@ -597,11 +646,19 @@ void MainWindow::buildLevelTwo()
 	c1 = new GameObject(WINDOW_MAX_X/2-75, WINDOW_MAX_Y/2-85, 150, 150, 0, 0);
 	c1->setBrush(black);
 	scene->addItem(c1);
+
+	delete player;
+	scene->removeItem(player);
 	
-//	player->setPos(300, 320);
+	player = new Player(playerIMG, 280, 320, 72, 72, 100);
+	scene->addItem(player);
+	
+//	player->setPos(280, 320);
+//	player->mapToScene(280, 320);
 //	player->setRotation(0);
 //	player->update(300, 320, 72, 72);
-	nameDisp->setPos(player->getX(), player->getY()+100);
+//	nameDisp->setPos(player->getX(), player->getY()+100);
+	buildLevel = false;
 }
 
 void MainWindow::shoot()
@@ -674,8 +731,8 @@ void MainWindow::shoot()
 		else if( player->rotation() == 90 ){// shoot right
 			valid = p;
 			if(player->getAmmo() == 0){
-				bullet = new BasicBullet(bbIMG, player->getX()+1, player->getY()-3, 16, 16, p.x(), p.y(), 1, 8);
-				bullet->setTransformOriginPoint(10, 23);
+				bullet = new BasicBullet(bbIMG, player->getX()-5, player->getY()-8, 16, 16, p.x(), p.y(), 1, 8);
+				bullet->setTransformOriginPoint(10, 30);
 				bullet->setDir(3);
 				scene->addItem(bullet);
 				bullets.push_back(bullet);
@@ -781,21 +838,25 @@ void MainWindow::SMASHWalls()
 				SMASHcount--;
 				q1->setRight(true);
 				q3->setLeft(true);
+				moving = true;
 			}
 			else if(	( p.y() > 338 && (p.x() > 320 && p.x() < 384 ) ) ){// down alley
 				SMASHcount--;
 				q2->setRight(true);
 				q4->setLeft(true);
+				moving = true;
 			}
 			if( (p.x() < 321 && ( p.y() < 340 && p.y() > 270 ) ) ){// left alley
 				q1->setDown(true);
 				q2->setUp(true);
 				SMASHcount--;
+				moving = true;
 			}
 			else if( ( p.x() > 380 && ( p.y() < 340 && p.y() > 270 ) ) ){// right alley
 				q3->setDown(true);
 				q4->setUp(true);
 				SMASHcount--;
+				moving = true;
 			}
 		}
 		else{
@@ -803,21 +864,25 @@ void MainWindow::SMASHWalls()
 				b1->setUp(true);
 				c1->setDown(true);
 				SMASHcount--;
+				moving = true;
 			}
 			if( (p.y() >= 160 && p.y() <= 220) && (p.x() >= 280 && p.x() <= 430 ) ){
 				t1->setDown(true);
 				c1->setUp(true);
 				SMASHcount--;
+				moving = true;
 			}
 			if( (p.x() < 210 && ( p.y() < 340 && p.y() > 270 ) ) ){// left alley
 				q1->setDown(true);
 				q2->setUp(true);
 				SMASHcount--;
+				moving = true;
 			}
 			if( p.x() > 500 && ( p.y() < 340 && p.y() > 270 ) ){// right alley
 				q3->setDown(true);
 				q4->setUp(true);
 				SMASHcount--;
+				moving = true;
 			}
 /*			if( (p.x() >= 210 && p.x() <= 280) && ( p.y() <= 160 && p.y() > 0 ) ){
 				q1->setRight(true);
@@ -843,6 +908,7 @@ MainWindow::MainWindow()
 	
 	/** Set up the welcome beginning window */
 	begin = new BeginWindow(this, WINDOW_MAX_X/2-100, WINDOW_MAX_Y/2+100);
+	buildLevel = false;
 	
 	/** Set up the reboot QAction */
 	actionReboot = new QAction(this);
@@ -956,7 +1022,7 @@ MainWindow::MainWindow()
 	arrowStr.setNum(player->getArrows());
 	arrowText = new QGraphicsSimpleTextItem;
 	arrowText->setText(arrowStr);
-	arrowText->setPos(125, -43);
+	arrowText->setPos(120, -43);
 	
 	
 	/** Set up the paths the enemies will traverse */
@@ -1035,17 +1101,19 @@ MainWindow::MainWindow()
 
 void MainWindow::movePlayer(std::string dir)
 {
-//	cout << "player pos " << player->getX() << ", " << player->getY() << endl;
-	if(dir == "up")
-		player->setDir(0);
-	else if(dir == "down")
-		player->setDir(1);
-	else if(dir == "left")
-		player->setDir(2);
-	else if(dir == "right")
-		player->setDir(3);
-	else
-		player->setDir(-1);
+	if(!buildLevel){
+	//	cout << "player pos " << player->getX() << ", " << player->getY() << endl;
+		if(dir == "up")
+			player->setDir(0);
+		else if(dir == "down")
+			player->setDir(1);
+		else if(dir == "left")
+			player->setDir(2);
+		else if(dir == "right")
+			player->setDir(3);
+		else
+			player->setDir(-1);
+	}
 }
 
 void MainWindow::show() {
