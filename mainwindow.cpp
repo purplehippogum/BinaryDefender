@@ -146,13 +146,13 @@ void MainWindow::handleTimer()
 // up
 	if(player->getDir() == 0 && !checkCollision(player) ){
 		nameDisp->setPos(player->getX(), player->getY()+25);
-		player->setTransformOriginPoint(0, 23);// 23
+//		player->setTransformOriginPoint(10, 23);// 23
 		nameDisp->setRotation(0);
 		player->setRotation(0);
 		player->moveUp(1);
 	}
 	else if(player->rotation() == 0 && checkCollision(player) && moving == false){
-//		player->moveDown(1);
+		player->moveDown(1);
 //		pushOut(player, 0);
 		nameDisp->setPos(player->getX(), player->getY()-20);
 	}
@@ -160,36 +160,36 @@ void MainWindow::handleTimer()
 	if(player->getDir() == 1 && !checkCollision(player) ){
 		nameDisp->setPos(player->getX(), player->getY()-9);
 		nameDisp->setRotation(0);
-		player->setTransformOriginPoint(14, 18);
+//		player->setTransformOriginPoint(14, 18);
 		player->setRotation(180);
-//		player->moveDown(1);
+		player->moveDown(1);
 	}
 	else if(player->rotation() == 180 && checkCollision(player)  && moving == false ){
-//		player->moveUp(1);
+		player->moveUp(1);
 //		pushOut(player, 1);
 	}
 // left
 	if(player->getDir() == 2 && !checkCollision(player) ){
-		player->setTransformOriginPoint(10, 12);
+//		player->setTransformOriginPoint(14, 18);
 		player->setRotation(-90);
 		player->moveLeft(1);
 		nameDisp->setPos(player->getX()+20, player->getY()+35);
 		nameDisp->setRotation(-90);
 	}
 	else if(player->rotation() == -90 && checkCollision(player)  && moving == false ){
-//		player->moveRight(1);
+		player->moveRight(1);
 //		pushOut(player, 2);
 	}
 //  right
 	if(player->getDir() == 3 && !checkCollision(player)){
-		player->setTransformOriginPoint(12, 12);
+//		player->setTransformOriginPoint(15, 16);
 		player->setRotation(90);
 		nameDisp->setPos(player->getX(), player->getY());
 		nameDisp->setRotation(90);
 		player->moveRight(1);
 	}
 	else if(player->rotation() == 90 && checkCollision(player)  && moving == false ){
-//		player->moveLeft(1);
+		player->moveLeft(1);
 //		pushOut(player, 3);
 	}
 /*	
@@ -651,6 +651,7 @@ void MainWindow::buildLevelTwo()
 	scene->removeItem(player);
 	
 	player = new Player(playerIMG, 280, 320, 72, 72, 100);
+//	player->setTransformOriginPoint(13, 23);// 23
 	scene->addItem(player);
 	
 //	player->setPos(280, 320);
@@ -711,7 +712,7 @@ void MainWindow::shoot()
 		else if( player->rotation() == -90 ){// shoot left
 			if(player->getAmmo() == 0){
 				valid = p;
-				bullet = new BasicBullet(bbIMG, player->getX()-1, player->getY()-4, 16, 16, p.x(), p.y(), 1, 8);
+				bullet = new BasicBullet(bbIMG, player->getX()+3, player->getY()-10, 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(6, 23);
 				bullet->setDir(2);
 				scene->addItem(bullet);
@@ -731,7 +732,7 @@ void MainWindow::shoot()
 		else if( player->rotation() == 90 ){// shoot right
 			valid = p;
 			if(player->getAmmo() == 0){
-				bullet = new BasicBullet(bbIMG, player->getX()-5, player->getY()-8, 16, 16, p.x(), p.y(), 1, 8);
+				bullet = new BasicBullet(bbIMG, player->getX()-6, player->getY()-13, 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(10, 30);
 				bullet->setDir(3);
 				scene->addItem(bullet);
@@ -952,7 +953,7 @@ MainWindow::MainWindow()
 	/** Initialize a pixmap for the player */
 	playerIMG = new QPixmap("player.png", "png", Qt::AutoColor);
 	player = new Player(playerIMG, WINDOW_MAX_X/2-10, WINDOW_MAX_Y/2-10, 72, 72, 100);
-	player->setTransformOriginPoint(10, 17);// 10, 17
+	player->setTransformOriginPoint(13, 15);// 10, 17
 
 	/** Initialize heart */
 	heartIMG = new QPixmap("heart.png", "png", Qt::AutoColor);

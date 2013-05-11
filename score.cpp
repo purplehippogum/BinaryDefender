@@ -46,7 +46,7 @@ void Score::updateScore()
 		if(digits[i] != NULL){
 			digits[i]->setBin(false);
 			scene->removeItem(digits[i]);
-//			delete digits[i];
+			delete digits[i];
 			digits.erase(std::find(digits.begin(), digits.end(), digits[i]));
 			digits[i] = NULL;
 		}
@@ -60,7 +60,7 @@ void Score::updateScore()
 	
 	for(int i = 0; i < s.length(); i++){
 		digit = new Digit(i*16 + x + 242, y - 28, 14, 24, 0, 0, player, this);
-//		digit->setPen(Qt::NoPen);
+		digit->setPen(Qt::NoPen);
 		digit->setIndex(i);
 		
 		if(s[i] == '0'){
