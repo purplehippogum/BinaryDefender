@@ -1,9 +1,3 @@
-# Game - Programming Assignments Private Repository
-### Student Information
-  + Name: Zachary Vega-Perkins
-  + USC Email: vegaperk@usc.edu
-  + USC ID: 5292489073
-
 ### Game Information
   + Game Name: Binary Defender
   + Game Description: Fight the evil swarms of the letter A with an arsenal of numbers
@@ -19,9 +13,4 @@ The grader should use the following procedure to compile and run the code:
 echo "qmake -project"
 echo "qmake"
 echo "make"
-#Doxygen Instructions
-echo "doxygen -g config.txt"
-echo "doxygen config.txt"
-#Command to run
-echo "./game_vegaperk"
 ```
