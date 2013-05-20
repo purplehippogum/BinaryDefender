@@ -693,7 +693,7 @@ void MainWindow::shoot()
 		else if( player->rotation() == 180){// shoot down
 			if(player->getAmmo() == 0){
 				valid = p;
-				bullet = new BasicBullet(bbIMG, player->getX()+4, player->getY()+1, 16, 16, p.x(), p.y(), 1, 8);
+				bullet = new BasicBullet(bbIMG, player->getX()+2, player->getY()-3, 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(9, 21);
 				bullet->setDir(1);
 				scene->addItem(bullet);
@@ -712,7 +712,7 @@ void MainWindow::shoot()
 		else if( player->rotation() == -90 ){// shoot left
 			if(player->getAmmo() == 0){
 				valid = p;
-				bullet = new BasicBullet(bbIMG, player->getX()+3, player->getY()-10, 16, 16, p.x(), p.y(), 1, 8);
+				bullet = new BasicBullet(bbIMG, player->getX()+5, player->getY()-7, 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(6, 23);
 				bullet->setDir(2);
 				scene->addItem(bullet);
@@ -732,7 +732,7 @@ void MainWindow::shoot()
 		else if( player->rotation() == 90 ){// shoot right
 			valid = p;
 			if(player->getAmmo() == 0){
-				bullet = new BasicBullet(bbIMG, player->getX()-6, player->getY()-13, 16, 16, p.x(), p.y(), 1, 8);
+				bullet = new BasicBullet(bbIMG, player->getX()-6, player->getY()-11, 16, 16, p.x(), p.y(), 1, 8);
 				bullet->setTransformOriginPoint(10, 30);
 				bullet->setDir(3);
 				scene->addItem(bullet);
